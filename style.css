@@ -15,6 +15,10 @@
   --speed:.35s;
 }
 
+/* Smooth scroll + espace en haut quand on cible #infos */
+html { scroll-behavior: smooth; }
+#infos { scroll-margin-top: 24px; }
+
 /* reset minimal */
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
@@ -116,3 +120,4 @@ body{
 footer{ color:var(--muted); padding:30px 0 24px; text-align:center }
 a.simple{ color:#9ec5ff }
 .li-gap li{ margin-bottom:6px }
+
