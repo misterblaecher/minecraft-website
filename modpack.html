@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Télécharger le Modpack</title>
+  <style>
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#0d1117;
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:40px 20px;
+    }
+    h1{ font-size:2rem; margin-bottom:10px; }
+    p{ opacity:.8; margin-bottom:20px; }
+
+    .btn-diagonal{
+      --bg: #ff6b00;
+      --bg-dark:#d55900;
+      --text:#fff;
+      position: relative;
+      display: inline-block;
+      text-decoration: none;
+      font: 600 16px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      margin:15px 10px;
+      padding:14px 26px;
+      border-radius:12px;
+      overflow: hidden;
+      background: var(--bg);
+      transition: color .3s ease;
+      z-index:0;
+    }
+    .btn-diagonal::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: var(--bg-dark);
+      transform: skewX(-20deg) scaleX(0);
+      transform-origin: left;
+      transition: transform .35s ease;
+      z-index:-1;
+    }
+    .btn-diagonal:hover::before{
+      transform: skewX(-20deg) scaleX(1);
+    }
+
+    section{
+      max-width:800px;
+      background:#161b22;
+      padding:20px;
+      border-radius:12px;
+      margin-top:20px;
+      line-height:1.6;
+    }
+    ol{ padding-left:20px; }
+  </style>
+</head>
+<body>
+  <h1>📥 Télécharger le Modpack</h1>
+  <p>Installez facilement tous les mods nécessaires pour rejoindre le serveur</p>
+
+  <!-- Bouton de téléchargement -->
+  <a class="btn-diagonal" href="modpack.zip" download>⬇️ Télécharger Modpack</a>
+
+  <!-- Bouton retour -->
+  <a class="btn-diagonal" href="index.html" style="--bg:#5865F2; --bg-dark:#4752c4;">🏠 Retour Accueil</a>
+
+  <section>
+    <h2>⚙️ Instructions d’installation</h2>
+    <ol>
+      <li>Téléchargez le fichier <code>modpack.zip</code> avec le bouton ci-dessus.</li>
+      <li>Extrayez son contenu dans votre dossier <code>.minecraft/mods</code>.</li>
+      <li>Utilisez la version <strong>Minecraft 1.21.1 + NeoForge</strong>.</li>
+      <li>Lancez le jeu avec votre launcher (Prism/CurseForge) et choisissez le profil NeoForge.</li>
+      <li>Rejoignez le serveur avec l’IP : <code>192.168.1.5</code> (ou votre IP publique si ouvert aux amis).</li>
+    </ol>
+  </section>
+</body>
+</html>
