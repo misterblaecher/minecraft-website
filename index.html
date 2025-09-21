@@ -1,20 +1,78 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Serveur Minecraft</title>
+  <meta name="description" content="Serveur Minecraft moddé – carte en ligne, modpack et infos." />
+
+  <!-- OpenGraph (aperçu partage) -->
+  <meta property="og:title" content="Serveur Minecraft" />
+  <meta property="og:description" content="Carte en ligne, modpack et infos du serveur." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/logo.png" />
+
+  <link rel="icon" href="assets/logo.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Bienvenue sur le serveur Minecraft</h1>
-    <p>Rejoins l’aventure avec nous !</p>
+  <header class="container">
+    <section class="hero">
+      <div class="hero-head">
+        <img class="logo" src="assets/logo.png" alt="Logo Serveur" onerror="this.style.display='none'">
+        <div>
+          <h1 class="title">Serveur Minecraft</h1>
+          <p class="subtitle">Bienvenue sur notre monde moddé !</p>
+        </div>
+      </div>
+    </section>
+  </header>
 
-    <div class="buttons">
-      <a class="btn-slice map" href="http://192.168.1.5:8100/#world:-80:0:-352:1500:0:0:0:0:perspective" target="_blank">Voir la carte</a>
-      <a class="btn-slice modpack" href="https://drive.google.com/uc?export=download&id=1pBRd7FtJDDwK3YcZLo62jRoOJ4pqH0lB" target="_blank">Télécharger le Modpack</a>
+  <main class="container">
+    <div class="grid">
+      <!-- Carte + Modpack -->
+      <section class="card card--left center">
+        <h2 class="h2">Carte & Modpack</h2>
+        <p class="muted mt--6">Explore la carte en ligne et récupère le modpack.</p>
+        <div class="stack center">
+          <a class="btn-slice btn-green" data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
+          <a class="btn-slice btn-orange" data-link="modpack" target="_blank" rel="noopener">Télécharger Modpack</a>
+        </div>
+      </section>
+
+      <!-- Communauté -->
+      <section class="card card--right center">
+        <h2 class="h2">Communauté</h2>
+        <p class="muted mt--6">Rejoins-nous et lis les infos & règles.</p>
+        <div class="stack center">
+          <a class="btn-slice btn-blue" data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
+          <a class="btn-slice btn-purple" href="#infos">Infos & Règles</a>
+        </div>
+      </section>
+
+      <!-- Infos & Règles -->
+      <section id="infos" class="card card--full">
+        <h3 class="h3">Infos & Règles</h3>
+        <ul class="muted li-gap">
+          <li>Version : 1.21.1 (NeoForge)</li>
+          <li>Whitelist sur demande (Discord)</li>
+          <li>Respect, fair-play, pas de grief/cheat</li>
+        </ul>
+        <p class="muted">
+          Besoin d’aide pour installer le modpack ? Suis le guide dans le salon #install sur notre
+          <a class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
+        </p>
+      </section>
     </div>
-  </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="y"></span> — Serveur Minecraft. Carte par BlueMap.
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
 </body>
 </html>
