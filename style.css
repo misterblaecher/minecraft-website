@@ -121,3 +121,18 @@ footer{ color:var(--muted); padding:30px 0 24px; text-align:center }
 a.simple{ color:#9ec5ff }
 .li-gap li{ margin-bottom:6px }
 
+/* Défilement fluide et marge quand on cible une ancre */
+html { scroll-behavior: smooth; }
+#infos { scroll-margin-top: 28px; }
+
+/* Laisse de la hauteur au bas de page pour qu'il y ait
+   vraiment de quoi scroller sur les grands écrans */
+main { padding-bottom: 40vh; }
+
+/* Petit effet visuel quand on arrive sur la section */
+#infos.flash {
+  outline: 2px solid #8a63ff;
+  box-shadow: 0 0 0 8px rgba(138,99,255,.22), 0 10px 30px rgba(0,0,0,.25);
+  transition: outline-color .3s ease;
+}
+
