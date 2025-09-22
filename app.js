@@ -1,7 +1,7 @@
 // ⚠️ Mets tes URL réelles ici
-const MAP_URL      = "http://192.168.1.5:8100/#worldid=overworld:0:64:0:perspective"; // BlueMap
+const MAP_URL      = "http://192.168.1.5:8100/#worldid=overworld:0:64:0:perspective";
 const MODPACK_URL  = "https://drive.google.com/file/d/1pBRd7FtJDDwK3YcZLo62jRoOJ4pqH0lB/view?usp=drive_link";
-const DISCORD_URL  = "https://discord.gg/ton-invite"; // optionnel
+const DISCORD_URL  = "https://discord.gg/ton-invite";
 
 function injectLinks() {
   document.querySelectorAll("[data-link='map']").forEach(a => a.href = MAP_URL);
@@ -9,48 +9,49 @@ function injectLinks() {
   document.querySelectorAll("[data-link='discord']").forEach(a => a.href = DISCORD_URL);
 }
 
-function scrollToHash(hash, withHighlight = true) {
-  if (!hash) return;
-  const id = hash.replace('#', '');
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  // plusieurs tentatives au cas où le layout se stabilise après rendu
-  const go = () => {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (withHighlight) {
-      el.classList.add('flash');
-      setTimeout(() => el.classList.remove('flash'), 1200);
-    }
-  };
-  // tout de suite + un peu plus tard (fix GitHub Pages/caches)
-  go();
-  setTimeout(go, 80);
-  setTimeout(go, 200);
+/* Glow utilitaire */
+function glow(el){
+  if(!el) return;
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 900);
 }
 
-function bindInternalAnchors() {
-  // Intercepter TOUS les liens internes pour forcer le scroll
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', (e) => {
+/* Collapsible logiques */
+function bindCollapsibles(){
+  const panel = document.getElementById('infos');
+  const triggers = document.querySelectorAll('[data-toggle="infos"]');
+
+  const open = () => {
+    panel.classList.add('is-open');
+    glow(panel);
+  };
+  const close = () => panel.classList.remove('is-open');
+  const toggle = () => panel.classList.toggle('is-open');
+
+  triggers.forEach(t => {
+    t.addEventListener('click', (e) => {
       e.preventDefault();
-      const hash = a.getAttribute('href');
-      history.pushState(null, "", hash); // met à jour l’URL
-      scrollToHash(hash);
+      toggle();
+      if(panel.classList.contains('is-open')) glow(panel);
     });
   });
 
-  // si la page charge déjà avec un hash
-  if (location.hash) {
-    // petit délai pour laisser le CSS/DOM se poser
-    setTimeout(() => scrollToHash(location.hash), 60);
+  if (location.hash === '#infos') {
+    setTimeout(() => {
+      open();
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   }
 
-  // navigation historique (retour/avant)
-  window.addEventListener('hashchange', () => scrollToHash(location.hash));
+  window.addEventListener('hashchange', () => {
+    if (location.hash === '#infos') {
+      open();
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   injectLinks();
-  bindInternalAnchors();
+  bindCollapsibles();
 });
