@@ -30,28 +30,33 @@
 
 <main class="container">
   <div class="grid">
-    <!-- Carte + Modpack -->
-    <section class="card card--left center">
-      <h2 class="h2">Carte & Modpack</h2>
-      <p class="muted mt--6">Explore la carte en ligne et récupère le modpack.</p>
-      <div class="stack center">
-        <!-- Remis href="#" pour la clicabilité ; le JS capte data-link -->
-        <a href="#" class="btn-slice btn-green" data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
-        <a href="#" class="btn-slice btn-orange" data-link="modpack" target="_blank" rel="noopener">Télécharger Modpack</a>
-      </div>
-    </section>
+<!-- Carte & Modpack -->
+<section class="card card--left center">
+  <h2 class="h2">Carte & Modpack</h2>
+  <p class="muted mt--6">Explore la carte en ligne et récupère le modpack.</p>
+  <div class="stack center">
+    <!-- Fallbacks HTML + data-link pour que app.js puisse surcharger -->
+    <a class="btn-slice btn-green"
+       href="http://192.168.1.5:8100/#worldid=overworld:0:64:0:perspective"
+       data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
 
-    <!-- Communauté -->
-    <section class="card card--right center">
-      <h2 style="margin-top:0">Communauté</h2>
-      <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
-      <div class="stack center" style="justify-content:center">
-        <a href="#" class="btn-slice btn-blue" data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
-        <!-- Le bouton ouvre/ferme le panneau -->
-        <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
-      </div>
-    </section>
+    <a class="btn-slice btn-orange"
+       href="modpack.html"
+       data-link="modpack" target="_blank" rel="noopener">Télécharger Modpack</a>
+  </div>
+</section>
 
+<!-- Communauté -->
+<section class="card card--right center">
+  <h2 style="margin-top:0">Communauté</h2>
+  <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
+  <div class="stack center" style="justify-content:center">
+    <a class="btn-slice btn-blue"
+       href="https://discord.gg/ton-invite"
+       data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
+    <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
+  </div>
+</section>
     <!-- Infos & Règles (collapsible) -->
     <section id="infos" class="card glow" style="grid-column:span 12">
       <h3 style="margin-top:0">Infos & Règles</h3>
@@ -81,3 +86,9 @@
     </section>
   </div>
 </main>
+
+<!-- on charge le JS ici -->
+<script src="app.js" defer></script>
+</body>
+</html>
+
