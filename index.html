@@ -28,45 +28,56 @@
     </section>
   </header>
 
-  <main class="container">
-    <div class="grid">
-      <!-- Carte + Modpack -->
-      <section class="card card--left center">
-        <h2 class="h2">Carte & Modpack</h2>
-        <p class="muted mt--6">Explore la carte en ligne et récupère le modpack.</p>
-        <div class="stack center">
-          <a class="btn-slice btn-green" data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
-          <a class="btn-slice btn-orange" data-link="modpack" target="_blank" rel="noopener">Télécharger Modpack</a>
-        </div>
-      </section>
+<main class="container">
+  <div class="grid">
+    <!-- Carte + Modpack -->
+    <section class="card card--left center">
+      <h2 class="h2">Carte & Modpack</h2>
+      <p class="muted mt--6">Explore la carte en ligne et récupère le modpack.</p>
+      <div class="stack center">
+        <!-- Remis href="#" pour la clicabilité ; le JS capte data-link -->
+        <a href="#" class="btn-slice btn-green" data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
+        <a href="#" class="btn-slice btn-orange" data-link="modpack" target="_blank" rel="noopener">Télécharger Modpack</a>
+      </div>
+    </section>
 
-      <!-- ==== Communauté ==== -->
-<section class="card card--right center">
-  <h2 style="margin-top:0">Communauté</h2>
-  <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
-  <div class="stack center" style="justify-content:center">
-    <a class="btn-slice btn-blue" data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
-    <!-- Le bouton ouvre/ferme le panneau -->
-    <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
+    <!-- Communauté -->
+    <section class="card card--right center">
+      <h2 style="margin-top:0">Communauté</h2>
+      <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
+      <div class="stack center" style="justify-content:center">
+        <a href="#" class="btn-slice btn-blue" data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
+        <!-- Le bouton ouvre/ferme le panneau -->
+        <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
+      </div>
+    </section>
+
+    <!-- Infos & Règles (collapsible) -->
+    <section id="infos" class="card glow" style="grid-column:span 12">
+      <h3 style="margin-top:0">Infos & Règles</h3>
+      <p>Bienvenue sur notre serveur Minecraft moddé ! Voici les principales règles :</p>
+      <ul>
+        <li>Respectez les autres joueurs.</li>
+        <li>Pas de cheat, hack ou exploit de bugs.</li>
+        <li>Pas de griefing ou vol.</li>
+        <li>Utilisez le Discord pour toute question ou report.</li>
+      </ul>
+      <p>👉 Pour voir la liste complète et détaillée :
+        <a href="infos.html">Infos & Règles complètes</a>
+      </p>
+
+      <!-- Le contenu repliable doit rester DANS la section -->
+      <div class="reveal">
+        <ul class="muted" style="margin:0 0 6px 18px">
+          <li>Version : 1.21.1 (NeoForge)</li>
+          <li>Whitelist sur demande (Discord)</li>
+          <li>Respect, fair-play, pas de grief/cheat</li>
+        </ul>
+        <p class="muted">
+          Besoin d’aide pour installer le modpack ? Guide dans #install sur notre
+          <a href="#" class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
+        </p>
+      </div>
+    </section>
   </div>
-</section>
-
-<!-- ==== Infos & Règles (collapsible) ==== -->
-<section id="infos" class="card glow" style="grid-column:span 12">
-  <h3 style="margin-top:0">Infos & Règles</h3>
-
-  <!-- Bloc qui se déplie -->
-  <div class="reveal">
-    <ul class="muted" style="margin:0 0 6px 18px">
-      <li>Version : 1.21.1 (NeoForge)</li>
-      <li>Whitelist sur demande (Discord)</li>
-      <li>Respect, fair-play, pas de grief/cheat</li>
-    </ul>
-    <p class="muted">
-      Besoin d’aide pour installer le modpack ? Guide dans #install sur notre
-      <a class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
-    </p>
-  </div>
-</section>
-
-
+</main>
