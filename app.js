@@ -1,7 +1,8 @@
 // ⚙️ mets tes URL
-const MAP_URL     = "http://192.168.1.5:8100/#worldid=overworld:0:64:0:perspective";
-const MODPACK_URL = "https://drive.google.com/file/d/1pBRd7FtJDDwK3YcZLo62jRoOJ4pqH0lB/view?usp=drive_link";
-const DISCORD_URL = "https://discord.gg/ton-invite";
+const MAP_URL     = "http://192.168.1.5:8100/#worldid=overworld:0:64:0:perspective"; // ou ta carte publique
+const MODPACK_URL = "modpack.html";       // si c’est une page locale
+const DISCORD_URL = "https://discord.gg/ton-invite"; // remplace par ton vrai invite
+
 
 function injectLinks(){
   document.querySelectorAll("[data-link='map']").forEach(a => a.href = MAP_URL);
