@@ -40,39 +40,36 @@
         </div>
       </section>
 
-      <!-- Communauté -->
-      <section class="card card--right center">
-        <h2 class="h2">Communauté</h2>
-        <p class="muted mt--6">Rejoins-nous et lis les infos & règles.</p>
-        <div class="stack center">
-          <a class="btn-slice btn-blue" data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
-          <a class="btn-slice btn-purple" href="#infos">Infos & Règles</a>
-        </div>
-      </section>
+      <!-- ==== Communauté ==== -->
+<section class="card card--right center">
+  <h2 style="margin-top:0">Communauté</h2>
+  <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
+  <div class="stack center" style="justify-content:center">
+    <a class="btn-slice btn-blue" data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
+    <!-- Le bouton ouvre/ferme le panneau -->
+    <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
+  </div>
+</section>
 
-      <!-- Infos & Règles -->
-      <section id="infos" class="card card--full">
-        <h3 class="h3">Infos & Règles</h3>
-        <ul class="muted li-gap">
-          <li>Version : 1.21.1 (NeoForge)</li>
-          <li>Whitelist sur demande (Discord)</li>
-          <li>Respect, fair-play, pas de grief/cheat</li>
-        </ul>
-        <p class="muted">
-          Besoin d’aide pour installer le modpack ? Suis le guide dans le salon #install sur notre
-          <a class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
-        </p>
-      </section>
-    </div>
-  </main>
+<!-- ==== Infos & Règles (collapsible) ==== -->
+<section id="infos" class="card collapsible">
+  <button class="collapsible__header" type="button" data-toggle="infos">
+    <span>Infos & Règles</span>
+    <svg class="chev" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M8 10l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
 
-  <footer>
-    <div class="container">
-      © <span id="y"></span> — Serveur Minecraft. Carte par BlueMap.
-    </div>
-  </footer>
+  <div class="collapsible__body">
+    <ul class="muted" style="margin:0 0 6px 18px">
+      <li>Version : 1.21.1 (NeoForge)</li>
+      <li>Whitelist sur demande (Discord)</li>
+      <li>Respect, fair-play, pas de grief/cheat</li>
+    </ul>
+    <p class="muted">
+      Besoin d’aide pour installer le modpack ? Suis le guide dans le salon #install sur notre
+      <a class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
+    </p>
+  </div>
+</section>
 
-  <script src="app.js"></script>
-  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
-</body>
-</html>
