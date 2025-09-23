@@ -6,7 +6,7 @@
   <title>Serveur Minecraft</title>
   <meta name="description" content="Serveur Minecraft moddé – carte en ligne, modpack et infos." />
 
-  <!-- OpenGraph (aperçu partage) -->
+  <!-- OpenGraph -->
   <meta property="og:title" content="Serveur Minecraft" />
   <meta property="og:description" content="Carte en ligne, modpack et infos du serveur." />
   <meta property="og:type" content="website" />
@@ -28,68 +28,81 @@
     </section>
   </header>
 
-<main class="container">
-  <div class="grid">
-<!-- Carte & Modpack -->
+  <main class="container">
+    <div class="grid">
 
-<div class="stack center">
-  <a class="btn-slice btn-green"
-     href="http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective"
-     data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
+      <!-- Carte & Modpack -->
+      <section class="card card--left">
+        <h2 class="h2">Carte & Modpack</h2>
+        <p class="muted mt--6">Explore la carte en ligne et récupère le modpack.</p>
 
-  <!-- ⬇️ Modpack + Shaderpack -->
-  <a class="btn-slice btn-orange"
-     href="modpack.html#shaderpack"
-     data-link="modpack" target="_blank" rel="noopener">Modpack & Shaders</a>
-</div>
-<p class="muted" style="margin-top:6px">
-  Inclut le shaderpack recommandé : <strong>Complementary Shaders – Unbound</strong>.
-</p>
-  
+        <!-- mini-grille : boutons à gauche, note à droite -->
+        <div style="
+          display:grid;
+          grid-template-columns:minmax(170px,220px) 1fr;
+          gap:18px;
+          align-items:start;
+        ">
+          <div class="stack center" style="align-items:stretch">
+            <a class="btn-slice btn-green"
+               href="http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective"
+               data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
 
-<!-- Communauté -->
-<section class="card card--right center">
-  <h2 style="margin-top:0">Communauté</h2>
-  <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
-  <div class="stack center" style="justify-content:center">
-    <a class="btn-slice btn-blue"
-       href="https://discord.gg/ton-invite"
-       data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
-    <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
-  </div>
-</section>
-    <!-- Infos & Règles (collapsible) -->
-    <section id="infos" class="card glow" style="grid-column:span 12">
-      <h3 style="margin-top:0">Infos & Règles</h3>
-      <p>Bienvenue sur notre serveur Minecraft moddé ! Voici les principales règles :</p>
-      <ul>
-        <li>Respectez les autres joueurs.</li>
-        <li>Pas de cheat, hack ou exploit de bugs.</li>
-        <li>Pas de griefing ou vol.</li>
-        <li>Utilisez le Discord pour toute question ou report.</li>
-      </ul>
-      <p>👉 Pour voir la liste complète et détaillée :
-        <a href="infos.html">Infos & Règles complètes</a>
-      </p>
+            <a class="btn-slice btn-orange"
+               href="modpack.html#shaderpack"
+               data-link="modpack" target="_blank" rel="noopener">Modpack & Shaders</a>
+          </div>
 
-      <!-- Le contenu repliable doit rester DANS la section -->
-      <div class="reveal">
-        <ul class="muted" style="margin:0 0 6px 18px">
-          <li>Version : 1.21.1 (NeoForge)</li>
-          <li>Whitelist sur demande (Discord)</li>
-          <li>Respect, fair-play, pas de grief/cheat</li>
+          <p class="muted" style="margin:4px 0 0">
+            Inclut le shaderpack recommandé :
+            <strong>Complementary Shaders – Unbound</strong>.
+          </p>
+        </div>
+      </section>
+
+      <!-- Communauté -->
+      <section class="card card--right center">
+        <h2 style="margin-top:0">Communauté</h2>
+        <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
+        <div class="stack center" style="justify-content:center">
+          <a class="btn-slice btn-blue"
+             href="https://discord.gg/ton-invite"
+             data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
+          <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
+        </div>
+      </section>
+
+      <!-- Infos & Règles -->
+      <section id="infos" class="card glow" style="grid-column:span 12">
+        <h3 style="margin-top:0">Infos & Règles</h3>
+        <p>Bienvenue sur notre serveur Minecraft moddé ! Voici les principales règles :</p>
+        <ul>
+          <li>Respectez les autres joueurs.</li>
+          <li>Pas de cheat, hack ou exploit de bugs.</li>
+          <li>Pas de griefing ou vol.</li>
+          <li>Utilisez le Discord pour toute question ou report.</li>
         </ul>
-        <p class="muted">
-          Besoin d’aide pour installer le modpack ? Guide dans #install sur notre
-          <a href="#" class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
+        <p>👉 Pour voir la liste complète et détaillée :
+          <a href="infos.html">Infos & Règles complètes</a>
         </p>
-      </div>
-    </section>
-  </div>
-</main>
 
-<!-- on charge le JS ici -->
-<script src="app.js" defer></script>
+        <div class="reveal">
+          <ul class="muted" style="margin:0 0 6px 18px">
+            <li>Version : 1.21.1 (NeoForge)</li>
+            <li>Whitelist sur demande (Discord)</li>
+            <li>Respect, fair-play, pas de grief/cheat</li>
+          </ul>
+          <p class="muted">
+            Besoin d’aide pour installer le modpack ? Guide dans #install sur notre
+            <a href="#" class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- on charge le JS ici -->
+  <script src="app.js" defer></script>
 </body>
 </html>
-
