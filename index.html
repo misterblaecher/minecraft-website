@@ -31,20 +31,21 @@
 <main class="container">
   <div class="grid">
 <!-- Carte & Modpack -->
-<section class="card card--left center">
-  <h2 class="h2">Carte & Modpack</h2>
-  <p class="muted mt--6">Explore la carte en ligne et récupère le modpack.</p>
-  <div class="stack center">
-    <!-- Fallbacks HTML + data-link pour que app.js puisse surcharger -->
-    <a class="btn-slice btn-green"
-       href="http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective"
-       data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
 
-    <a class="btn-slice btn-orange"
-       href="modpack.html"
-       data-link="modpack" target="_blank" rel="noopener">Télécharger Modpack</a>
-  </div>
-</section>
+<div class="stack center">
+  <a class="btn-slice btn-green"
+     href="http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective"
+     data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
+
+  <!-- ⬇️ Modpack + Shaderpack -->
+  <a class="btn-slice btn-orange"
+     href="modpack.html#shaderpack"
+     data-link="modpack" target="_blank" rel="noopener">Modpack & Shaders</a>
+</div>
+<p class="muted" style="margin-top:6px">
+  Inclut le shaderpack recommandé : <strong>Complementary Shaders – Unbound</strong>.
+</p>
+  
 
 <!-- Communauté -->
 <section class="card card--right center">
