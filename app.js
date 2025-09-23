@@ -1,5 +1,5 @@
 // ⚙️ mets tes URL
-const MAP_URL     = "http://192.168.1.5:8100/#worldid=overworld:0:64:0:perspective"; 
+const MAP_URL     = "http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective"; 
 const MODPACK_URL = "modpack.html";       
 const DISCORD_URL = "https://discord.gg/8SBNM537uZ"; // ✅ ton vrai lien
 
