@@ -1,6 +1,6 @@
 // ⚙️ mets tes URL
 const MAP_URL     = "http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective"; 
-const MODPACK_URL = "modpack.html";       
+const MODPACK_URL = "modpack.html#shaderpack";       
 const DISCORD_URL = "https://discord.gg/8SBNM537uZ"; // ✅ ton vrai lien
 
 function injectLinks(){
