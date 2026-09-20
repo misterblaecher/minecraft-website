@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Éditeur UV Minecraft</title>
+  <meta name="description" content="Détecte, nomme et remappe les zones d'une texture Minecraft directement dans le navigateur." />
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="texture-editor.css">
+</head>
+<body>
+  <header class="container texture-header">
+    <a class="simple texture-back" href="index.html">← Retour au site</a>
+    <section class="hero texture-hero">
+      <div>
+        <p class="texture-kicker">OUTIL RESOURCE PACK</p>
+        <h1 class="title">Éditeur UV Minecraft</h1>
+        <p class="subtitle">
+          Importe une image source et un template Minecraft, détecte les îlots séparés par de la transparence,
+          nomme les parties puis remappe-les automatiquement.
+        </p>
+      </div>
+    </section>
+  </header>
+
+  <main class="container texture-main">
+    <section class="card texture-help">
+      <div>
+        <h2 class="h2">Comment ça marche ?</h2>
+        <p class="muted">
+          1. Importe ton dessin source. 2. Détecte les zones ou trace-les manuellement.
+          3. Donne à chaque zone un nom comme <strong>head_front</strong>.
+          4. Fais pareil sur le template cible. 5. Les zones ayant le même nom sont copiées au bon endroit.
+        </p>
+      </div>
+      <div class="texture-tip">
+        <strong>Astuce :</strong> la détection automatique fonctionne surtout quand les différentes pièces
+        sont séparées par des pixels transparents. Si ce n'est pas le cas, utilise le mode « Tracer une zone ».
+      </div>
+    </section>
+
+    <section class="texture-columns">
+      <article class="card texture-panel">
+        <div class="texture-panel__head">
+          <div>
+            <p class="texture-step">ÉTAPE 1</p>
+            <h2>Image source</h2>
+          </div>
+          <span id="sourceMeta" class="texture-meta">Aucune image</span>
+        </div>
+
+        <label class="texture-drop">
+          <input id="sourceInput" type="file" accept="image/png,image/webp,image/jpeg" />
+          <span>Importer le dessin / atlas source</span>
+          <small>PNG recommandé pour conserver la transparence</small>
+        </label>
+
+        <div class="texture-toolbar">
+          <label>
+            Alpha minimum
+            <input id="sourceAlpha" type="number" min="0" max="255" value="8" />
+          </label>
+          <label>
+            Taille min.
+            <input id="sourceMinPixels" type="number" min="1" value="4" />
+          </label>
+          <button id="detectSource" class="btn-slice btn-blue btn-small" type="button">Détecter les îlots</button>
+          <button id="detectSourceEmpty" class="btn-slice btn-blue btn-small" type="button">Détecter les zones vides</button>
+          <button id="drawSource" class="btn-slice btn-purple btn-small" type="button">Tracer une zone</button>
+        </div>
+
+        <div class="texture-canvas-shell">
+          <canvas id="sourceCanvas" class="texture-canvas" width="320" height="220"></canvas>
+          <div class="texture-canvas-caption">Clique une zone pour la sélectionner. En mode tracé, glisse sur l'image.</div>
+        </div>
+
+        <div class="texture-zone-head">
+          <h3>Zones source</h3>
+          <button id="clearSourceZones" class="texture-link-button" type="button">Tout effacer</button>
+        </div>
+        <div id="sourceZones" class="texture-zones texture-empty">Aucune zone.</div>
+      </article>
+
+      <article class="card texture-panel">
+        <div class="texture-panel__head">
+          <div>
+            <p class="texture-step">ÉTAPE 2</p>
+            <h2>Template cible</h2>
+          </div>
+          <span id="targetMeta" class="texture-meta">Aucune image</span>
+        </div>
+
+        <label class="texture-drop">
+          <input id="targetInput" type="file" accept="image/png,image/webp,image/jpeg" />
+          <span>Importer le template du resource pack</span>
+          <small>Ex. villager.png 64×64</small>
+        </label>
+
+        <div class="texture-toolbar">
+          <label>
+            Alpha minimum
+            <input id="targetAlpha" type="number" min="0" max="255" value="8" />
+          </label>
+          <label>
+            Taille min.
+            <input id="targetMinPixels" type="number" min="1" value="4" />
+          </label>
+          <button id="detectTarget" class="btn-slice btn-blue btn-small" type="button">Détecter les îlots</button>
+          <button id="detectTargetEmpty" class="btn-slice btn-blue btn-small" type="button">Détecter les zones vides</button>
+          <button id="drawTarget" class="btn-slice btn-purple btn-small" type="button">Tracer une zone</button>
+        </div>
+
+        <div class="texture-canvas-shell">
+          <canvas id="targetCanvas" class="texture-canvas" width="320" height="220"></canvas>
+          <div class="texture-canvas-caption">Les coordonnées sont toujours calculées dans la résolution originale.</div>
+        </div>
+
+        <div class="texture-zone-head">
+          <h3>Zones cible</h3>
+          <button id="clearTargetZones" class="texture-link-button" type="button">Tout effacer</button>
+        </div>
+        <div id="targetZones" class="texture-zones texture-empty">Aucune zone.</div>
+      </article>
+    </section>
+
+    <section class="card texture-result">
+      <div class="texture-panel__head">
+        <div>
+          <p class="texture-step">ÉTAPE 3</p>
+          <h2>Résultat & preview</h2>
+        </div>
+        <span id="matchMeta" class="texture-meta">0 correspondance</span>
+      </div>
+
+      <div class="texture-result-toolbar">
+        <label class="texture-check">
+          <input id="keepTarget" type="checkbox" />
+          <span>Garder les pixels du template cible sous les zones copiées</span>
+        </label>
+        <label class="texture-check">
+          <input id="fitMode" type="checkbox" checked />
+          <span>Adapter chaque pièce à la taille de sa zone cible (nearest-neighbor)</span>
+        </label>
+        <button id="buildResult" class="btn-slice btn-green" type="button">Générer la texture</button>
+      </div>
+
+      <div class="texture-preview-grid">
+        <div>
+          <h3>Texture finale</h3>
+          <div class="texture-canvas-shell texture-result-canvas-shell">
+            <canvas id="resultCanvas" class="texture-canvas texture-canvas--result" width="320" height="220"></canvas>
+          </div>
+        </div>
+        <div>
+          <h3>Preview personnage</h3>
+          <div class="texture-character-preview">
+            <canvas id="characterCanvas" width="280" height="360"></canvas>
+            <p class="muted">
+              Preview simplifiée basée sur les zones nommées <code>head_front</code>,
+              <code>body_front</code>, <code>arm_front</code> et <code>leg_front</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="texture-actions">
+        <button id="downloadPng" class="btn-slice btn-orange" type="button" disabled>Télécharger le PNG</button>
+        <button id="downloadJson" class="btn-slice btn-blue" type="button">Télécharger les zones JSON</button>
+        <button id="loadJson" class="btn-slice btn-purple" type="button">Importer un JSON</button>
+        <input id="jsonInput" type="file" accept="application/json,.json" hidden />
+      </div>
+
+      <p id="editorStatus" class="texture-status" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <datalist id="partNames">
+    <option value="head_top"></option>
+    <option value="head_bottom"></option>
+    <option value="head_front"></option>
+    <option value="head_back"></option>
+    <option value="head_left"></option>
+    <option value="head_right"></option>
+    <option value="nose_top"></option>
+    <option value="nose_bottom"></option>
+    <option value="nose_front"></option>
+    <option value="nose_back"></option>
+    <option value="nose_left"></option>
+    <option value="nose_right"></option>
+    <option value="body_top"></option>
+    <option value="body_bottom"></option>
+    <option value="body_front"></option>
+    <option value="body_back"></option>
+    <option value="body_left"></option>
+    <option value="body_right"></option>
+    <option value="arm_top"></option>
+    <option value="arm_bottom"></option>
+    <option value="arm_front"></option>
+    <option value="arm_back"></option>
+    <option value="arm_left"></option>
+    <option value="arm_right"></option>
+    <option value="leg_top"></option>
+    <option value="leg_bottom"></option>
+    <option value="leg_front"></option>
+    <option value="leg_back"></option>
+    <option value="leg_left"></option>
+    <option value="leg_right"></option>
+    <option value="robe_front"></option>
+    <option value="robe_back"></option>
+    <option value="robe_left"></option>
+    <option value="robe_right"></option>
+    <option value="hat_top"></option>
+    <option value="hat_bottom"></option>
+    <option value="hat_front"></option>
+    <option value="hat_back"></option>
+    <option value="hat_left"></option>
+    <option value="hat_right"></option>
+  </datalist>
+
+  <script src="texture-editor.js" defer></script>
+</body>
+</html>
