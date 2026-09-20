@@ -3,30 +3,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Viewer 3D de textures Minecraft</title>
-  <meta name="description" content="Charge une texture Minecraft, choisis le modèle UV correspondant et visualise-la en 3D." />
+  <title>Minecraft Entity Texture Studio</title>
+  <meta name="description" content="Visualise les skins et textures d'entités Minecraft en 3D et prépare des prompts HD directs ou guidés." />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="style.css?v=20260920-2057">
-  <link rel="stylesheet" href="skin-viewer.css?v=20260920-2057">
+  <link rel="stylesheet" href="style.css?v=20260920-2115">
+  <link rel="stylesheet" href="skin-viewer.css?v=20260920-2115">
+  <link rel="stylesheet" href="texture-editor.css?v=20260920-2115">
 </head>
 <body>
   <header class="container viewer-header">
     <a class="simple viewer-back" href="index.html">← Retour au site</a>
     <section class="hero viewer-hero">
-      <p class="viewer-kicker">OUTIL MINECRAFT · ENTITY UV v2</p>
-      <h1 class="title">Entity & Skin Viewer 3D</h1>
+      <p class="viewer-kicker">MINECRAFT TEXTURE STUDIO · v3</p>
+      <h1 class="title">Entity Viewer + Générateur HD</h1>
       <p class="subtitle">
-        Choisis le modèle Minecraft correspondant à ta texture, charge ton PNG puis inspecte le résultat en 3D.
-        Les UV sont normalisés sur la taille native du modèle : une texture HD garde donc le même mapping.
+        1) choisis le modèle UV et teste ta texture en 3D ; 2) génère une nouvelle texture avec la méthode directe
+        ou la méthode guidée avec noms de parties.
       </p>
     </section>
   </header>
 
   <main class="container viewer-main">
-    <section class="viewer-layout">
+    <nav class="studio-nav" aria-label="Sections de l'outil">
+      <a href="#viewer">Viewer 3D</a>
+      <a href="#generator">Générateur HD</a>
+      <a href="#guided">Méthode guidée</a>
+    </nav>
+
+    <section id="viewer" class="viewer-layout">
       <aside class="card viewer-controls">
         <div>
           <p class="viewer-step">1 · MODÈLE</p>
@@ -73,7 +80,7 @@
         <label id="skinDrop" class="viewer-drop">
           <input id="skinInput" type="file" accept="image/png" />
           <span>Choisir une texture PNG</span>
-          <small>Vanilla ou HD : 64×64, 128×64, 1024×1024, etc.</small>
+          <small>Player vanilla/HD ou texture d'entité. Le fichier reste local dans ton navigateur.</small>
         </label>
 
         <div id="skinInfo" class="viewer-info">Aucune texture chargée.</div>
@@ -82,7 +89,6 @@
         <div id="playerAnimationControls">
           <div class="viewer-divider"></div>
           <p class="viewer-step">3 · ANIMATION PLAYER</p>
-
           <div class="viewer-control-grid">
             <label>
               Animation
@@ -94,16 +100,14 @@
                 <option value="crouch">Accroupi</option>
               </select>
             </label>
-
             <label>
               Vitesse
               <input id="animationSpeed" type="range" min="0" max="2.5" step="0.05" value="1" />
             </label>
           </div>
-
           <label class="viewer-check">
             <input id="pauseAnimation" type="checkbox" />
-            <span>Mettre l’animation en pause</span>
+            <span>Mettre l'animation en pause</span>
           </label>
         </div>
 
@@ -128,8 +132,8 @@
         </div>
 
         <p class="muted viewer-note">
-          Le catalogue d’entités utilise les modèles Java Edition du CEM Template Loader. Certains modèles spéciaux
-          utilisent plusieurs textures ou des éléments particuliers et peuvent avoir une preview simplifiée.
+          Le Player n'utilise plus skinview3d : il est rendu par le même moteur local que les entités afin d'éviter les
+          erreurs de chargement. Le catalogue d'entités vient des templates CEM Java Edition.
         </p>
       </aside>
 
@@ -143,11 +147,10 @@
         </div>
 
         <div id="viewerStage" class="viewer-stage">
-          <canvas id="skinCanvas"></canvas>
-          <canvas id="entityCanvas" hidden></canvas>
+          <canvas id="entityCanvas"></canvas>
           <div id="viewerEmpty" class="viewer-empty">
             <strong>Charge une texture pour commencer</strong>
-            <span>Choisis d’abord le bon modèle UV si ce n’est pas un skin Player.</span>
+            <span>Le Player 64×64 / 64×32 et les textures HD proportionnelles sont acceptés.</span>
           </div>
         </div>
       </section>
@@ -156,18 +159,168 @@
     <section class="card viewer-about">
       <h2>UV adaptatifs à la résolution</h2>
       <p class="muted">
-        Chaque modèle possède une taille UV native (par exemple 64×64, 64×32 ou 128×64). Le viewer utilise ces
-        coordonnées en valeurs normalisées : si tu charges une texture 1024×1024 pour un modèle 64×64, le même
-        mapping est utilisé à l’échelle 16×. Une alerte apparaît si le ratio de ton image ne correspond pas au modèle.
+        Le viewer travaille avec les coordonnées UV natives du modèle et les normalise. Un modèle 64×64 fonctionne donc
+        aussi avec une texture 128×128, 512×512 ou 1024×1024 sans déplacer les UV.
       </p>
+    </section>
+
+    <section id="generator" class="card texture-section studio-generator">
+      <div class="texture-panel__head">
+        <div>
+          <p class="texture-step">GÉNÉRATEUR HD · ÉTAPE 1</p>
+          <h2>Template Minecraft de référence</h2>
+        </div>
+        <span id="templateMeta" class="texture-meta">Aucune image</span>
+      </div>
+
+      <label id="templateDrop" class="texture-drop">
+        <input id="templateInput" type="file" accept="image/png,image/webp" />
+        <span>Charger le PNG UV original</span>
+        <small>Le même fichier que tu utilises comme base Minecraft : villager.png, creeper.png, cow.png, etc.</small>
+      </label>
+
+      <div class="texture-template-layout">
+        <div class="texture-canvas-shell texture-template-preview">
+          <canvas id="templateCanvas" width="512" height="512"></canvas>
+        </div>
+
+        <div class="texture-template-settings">
+          <label class="texture-field">
+            <span>Échelle HD</span>
+            <select id="scaleMode">
+              <option value="auto">Auto · plus grande échelle entière jusqu'à 1024 px</option>
+              <option value="64">64×</option>
+              <option value="32">32×</option>
+              <option value="16">16×</option>
+              <option value="8">8×</option>
+              <option value="4">4×</option>
+              <option value="2">2×</option>
+              <option value="1">1×</option>
+            </select>
+          </label>
+
+          <div id="resolutionSummary" class="texture-resolution-summary">
+            Charge un template pour calculer la résolution cible.
+          </div>
+
+          <label class="texture-field">
+            <span>Design souhaité</span>
+            <textarea id="designBrief" rows="9" placeholder="Ex. Belgian street-food villager, purple jacket with neon green trim, white apron, fries logo, Belgian flag accents…"></textarea>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="card texture-section">
+      <div class="texture-panel__head">
+        <div>
+          <p class="texture-step">MÉTHODE A · DIRECTE</p>
+          <h2>Template + design → texture finale</h2>
+        </div>
+        <span id="directStatus" class="texture-meta">Prêt</span>
+      </div>
+
       <p class="muted">
-        Sources du catalogue : modèles CEM Java Edition utilisés par le plugin Blockbench CEM Template Loader.
+        Pour les UV simples : joins uniquement le template original dans ChatGPT Images avec ce prompt.
       </p>
+
+      <label class="texture-field">
+        <span>Prompt direct</span>
+        <textarea id="directPromptOutput" rows="28" readonly></textarea>
+      </label>
+
+      <div class="texture-actions">
+        <button id="copyDirectPrompt" class="btn-slice btn-blue" type="button">Copier le prompt direct</button>
+        <button id="openDirectImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+      </div>
+    </section>
+
+    <section id="guided" class="card texture-section texture-guided">
+      <div class="texture-panel__head">
+        <div>
+          <p class="texture-step">MÉTHODE B · GUIDÉE</p>
+          <h2>Nommer les parties avant de générer</h2>
+        </div>
+        <span id="guideStatus" class="texture-meta">Pour UV répétitifs / ambigus</span>
+      </div>
+
+      <div class="texture-guided-intro">
+        <p>
+          Ici on demande d'abord à l'IA de refaire <strong>le template Minecraft de base avec le nom de chaque partie
+          directement sur l'image</strong>. Ensuite le site lit ces noms par OCR et les injecte dans le prompt final.
+        </p>
+        <p class="muted">
+          Exemple : <code>HEAD_FRONT</code>, <code>LEG_1_FRONT</code>, <code>LEG_2_FRONT</code>,
+          <code>TENTACLE_3_LEFT</code>. Deux zones répétées ne doivent jamais porter le même nom.
+        </p>
+      </div>
+
+      <div class="texture-guided-grid">
+        <div>
+          <p class="texture-substep">B1 · Générer l'image annotée</p>
+          <label class="texture-field">
+            <span>Prompt « nommer toutes les parties »</span>
+            <textarea id="labelPromptOutput" rows="24" readonly></textarea>
+          </label>
+
+          <div class="texture-actions">
+            <button id="copyLabelPrompt" class="btn-slice btn-blue" type="button">Copier le prompt d'annotation</button>
+            <button id="openLabelImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+          </div>
+        </div>
+
+        <div>
+          <p class="texture-substep">B2 · Charger l'image annotée</p>
+          <label id="guideDrop" class="texture-drop">
+            <input id="guideInput" type="file" accept="image/png,image/webp,image/jpeg" />
+            <span>Charger l'image avec les noms de parties</span>
+            <small>OCR automatique + correction manuelle possible.</small>
+          </label>
+
+          <div class="texture-canvas-shell texture-guide-preview">
+            <canvas id="guideCanvas" width="512" height="512"></canvas>
+          </div>
+
+          <div class="texture-actions">
+            <button id="scanGuide" class="btn-slice btn-green" type="button" disabled>Détecter les noms</button>
+            <button id="clearDetectedLabels" class="texture-link-button" type="button">Effacer</button>
+          </div>
+
+          <div class="texture-progress" aria-live="polite">
+            <div id="guideOcrProgress" class="texture-progress__bar"></div>
+          </div>
+          <p id="ocrStatus" class="texture-status"></p>
+
+          <label class="texture-field">
+            <span>Noms détectés / corrigés</span>
+            <textarea id="detectedLabels" rows="10" placeholder="HEAD_FRONT&#10;HEAD_BACK&#10;BODY_FRONT&#10;LEG_1_FRONT&#10;LEG_2_FRONT"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div class="texture-guided-final">
+        <p class="texture-substep">B3 · Prompt final avec 2 références</p>
+        <p class="muted">
+          Dans ChatGPT Images, joins <strong>IMAGE 1 = template original</strong> et
+          <strong>IMAGE 2 = image annotée</strong>. IMAGE 1 fixe les coordonnées ; IMAGE 2 dit quoi est quoi.
+        </p>
+
+        <label class="texture-field">
+          <span>Prompt final guidé</span>
+          <textarea id="guidedPromptOutput" rows="32" readonly></textarea>
+        </label>
+
+        <div class="texture-actions">
+          <button id="copyGuidedPrompt" class="btn-slice btn-blue" type="button">Copier le prompt guidé</button>
+          <button id="openGuidedImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+        </div>
+      </div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
-  <script src="skin-viewer.js?v=20260920-2057" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="skin-viewer.js?v=20260920-2115" defer></script>
+  <script src="texture-editor.js?v=20260920-2115" defer></script>
 </body>
 </html>
