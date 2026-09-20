@@ -1028,6 +1028,9 @@
     updateModelMeta();
     updateUvScaleInfo();
     if (currentImageCanvas) rebuildModel();
+    window.dispatchEvent(new CustomEvent("minecraft-model-change", {
+      detail: { modelId: $("entityType").value }
+    }));
   }
 
 
@@ -1252,6 +1255,9 @@
   $("entityType").addEventListener("change", onModelChanged);
   $("modelType").addEventListener("change", () => {
     if ($("entityType").value === "player" && currentImageCanvas) rebuildModel();
+    window.dispatchEvent(new CustomEvent("minecraft-model-change", {
+      detail: { modelId: $("entityType").value, playerModel: $("modelType").value }
+    }));
   });
 
   $("skinInput").addEventListener("change", () => {
