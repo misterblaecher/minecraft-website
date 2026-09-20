@@ -22,6 +22,7 @@
   let detectedPanels = [];
   let detectedOcrLabels = [];
   let guidedTextureReady = false;
+  let guideMaskState = null;
 
   function autoScaleFor(width, height) {
     const maxDim = Math.max(width, height);
@@ -267,6 +268,7 @@
 
     filtered.sort((a,b) => a.y - b.y || a.x - b.x);
     detectedPanels = filtered.slice(0, 120);
+    guideMaskState = { active, width, height };
     return detectedPanels;
   }
 
@@ -398,58 +400,193 @@
     return kept;
   }
 
+  function detectPanelInsideCell(label, allLabels) {
+    if (!guideMaskState) return null;
+
+    const { active, width, height } = guideMaskState;
+    const labelCenterX = (label.bbox.x0 + label.bbox.x1) / 2;
+    const labelCenterY = (label.bbox.y0 + label.bbox.y1) / 2;
+    const rowTolerance = Math.max(16, height * 0.026);
+
+    const sameRow = allLabels
+      .filter((candidate) =>
+        Math.abs(((candidate.bbox.y0 + candidate.bbox.y1) / 2) - labelCenterY) <= rowTolerance
+      )
+      .sort((a,b) =>
+        ((a.bbox.x0 + a.bbox.x1) / 2) - ((b.bbox.x0 + b.bbox.x1) / 2)
+      );
+
+    const index = sameRow.indexOf(label);
+    const previous = index > 0 ? sameRow[index - 1] : null;
+    const next = index >= 0 && index + 1 < sameRow.length ? sameRow[index + 1] : null;
+
+    let x0 = 0;
+    let x1 = width;
+
+    if (previous) {
+      const previousCenter = (previous.bbox.x0 + previous.bbox.x1) / 2;
+      x0 = Math.floor((previousCenter + labelCenterX) / 2);
+    }
+    if (next) {
+      const nextCenter = (next.bbox.x0 + next.bbox.x1) / 2;
+      x1 = Math.ceil((labelCenterX + nextCenter) / 2);
+    }
+
+    const labelHeight = Math.max(1, label.bbox.y1 - label.bbox.y0);
+    const y0 = Math.max(0, Math.floor(label.bbox.y1 + 1));
+
+    const belowLabels = allLabels
+      .filter((candidate) => {
+        if (candidate === label) return false;
+        if (candidate.bbox.y0 <= label.bbox.y1 + labelHeight) return false;
+        const cx = (candidate.bbox.x0 + candidate.bbox.x1) / 2;
+        return cx >= x0 && cx <= x1;
+      })
+      .sort((a,b) => a.bbox.y0 - b.bbox.y0);
+
+    let y1 = height;
+    if (belowLabels.length) {
+      y1 = Math.max(y0 + 1, Math.floor(belowLabels[0].bbox.y0 - 2));
+    }
+
+    x0 = Math.max(0, Math.min(width - 1, x0));
+    x1 = Math.max(x0 + 1, Math.min(width, x1));
+    y1 = Math.max(y0 + 1, Math.min(height, y1));
+
+    const cellW = x1 - x0;
+    const cellH = y1 - y0;
+    const visited = new Uint8Array(cellW * cellH);
+    const stack = new Int32Array(cellW * cellH);
+    const candidates = [];
+    const minPercent = Number($("guideMinPanelPercent")?.value || 0.18);
+    const minArea = width * height * (minPercent / 100);
+
+    for (let localStart = 0; localStart < cellW * cellH; localStart++) {
+      if (visited[localStart]) continue;
+      const localX = localStart % cellW;
+      const localY = (localStart / cellW) | 0;
+      const globalIndex = (y0 + localY) * width + (x0 + localX);
+
+      if (!active[globalIndex]) {
+        visited[localStart] = 1;
+        continue;
+      }
+
+      let sp = 0;
+      stack[sp++] = localStart;
+      visited[localStart] = 1;
+      let count = 0;
+      let minX = cellW, minY = cellH, maxX = -1, maxY = -1;
+
+      while (sp > 0) {
+        const localIndex = stack[--sp];
+        const lx = localIndex % cellW;
+        const ly = (localIndex / cellW) | 0;
+        const gx = x0 + lx;
+        const gy = y0 + ly;
+        count++;
+
+        if (lx < minX) minX = lx;
+        if (lx > maxX) maxX = lx;
+        if (ly < minY) minY = ly;
+        if (ly > maxY) maxY = ly;
+
+        const visit = (nx,ny) => {
+          if (nx < 0 || ny < 0 || nx >= cellW || ny >= cellH) return;
+          const nLocal = ny * cellW + nx;
+          if (visited[nLocal]) return;
+          const nGlobal = (y0 + ny) * width + (x0 + nx);
+          visited[nLocal] = 1;
+          if (active[nGlobal]) stack[sp++] = nLocal;
+        };
+
+        visit(lx - 1,ly);
+        visit(lx + 1,ly);
+        visit(lx,ly - 1);
+        visit(lx,ly + 1);
+        visit(lx - 1,ly - 1);
+        visit(lx + 1,ly - 1);
+        visit(lx - 1,ly + 1);
+        visit(lx + 1,ly + 1);
+      }
+
+      const boxW = maxX - minX + 1;
+      const boxH = maxY - minY + 1;
+      const area = boxW * boxH;
+      const topGap = minY;
+
+      if (
+        area >= minArea * 0.65 &&
+        boxW >= width * 0.01 &&
+        boxH >= height * 0.035 &&
+        topGap <= height * 0.16
+      ) {
+        candidates.push({
+          x:x0 + minX,
+          y:y0 + minY,
+          w:boxW,
+          h:boxH,
+          area,
+          topGap,
+          count
+        });
+      }
+    }
+
+    if (!candidates.length) return null;
+    candidates.sort((a,b) =>
+      a.topGap - b.topGap ||
+      b.area - a.area
+    );
+    return candidates[0];
+  }
+
   function associateLabelsToPanels(labels, panels) {
-    const usedPanels = new Set();
+    const usedFallbackPanels = new Set();
     const regions = [];
 
     labels.forEach((label) => {
-      const lx = (label.bbox.x0 + label.bbox.x1) / 2;
-      const labelWidth = Math.max(1,label.bbox.x1-label.bbox.x0);
-      const labelBottom = label.bbox.y1;
-      let best = null;
+      let panel = detectPanelInsideCell(label, labels);
+      let geometryScore = 1;
 
-      panels.forEach((panel,index) => {
-        if (usedPanels.has(index)) return;
+      if (!panel) {
+        const lx = (label.bbox.x0 + label.bbox.x1) / 2;
+        const labelBottom = label.bbox.y1;
+        let best = null;
 
-        const panelCenter = panel.x + panel.w / 2;
-        const gap = panel.y - labelBottom;
-        const centerDistance = Math.abs(panelCenter - lx);
-        const horizontalOverlap =
-          Math.max(0, Math.min(panel.x+panel.w,label.bbox.x1) - Math.max(panel.x,label.bbox.x0));
-        const overlapRatio = horizontalOverlap / Math.max(1,Math.min(panel.w,labelWidth));
+        panels.forEach((candidate,index) => {
+          if (usedFallbackPanels.has(index)) return;
+          const center = candidate.x + candidate.w / 2;
+          const gap = candidate.y - labelBottom;
+          const distance = Math.abs(center - lx);
+          if (gap < -4 || gap > guideImage.naturalHeight * 0.20) return;
 
-        if (gap < -guideImage.naturalHeight * 0.01) return;
-        if (gap > guideImage.naturalHeight * 0.20) return;
-        if (overlapRatio < 0.08 && centerDistance > Math.max(panel.w,labelWidth) * 0.72) return;
+          const score = Math.max(0,gap) * 2 + distance;
+          if (!best || score < best.score) best = { candidate,index,score,gap,distance };
+        });
 
-        const score =
-          Math.max(0,gap) * 2.2 +
-          centerDistance * 0.75 -
-          horizontalOverlap * 0.45;
-
-        if (!best || score < best.score) best = { panel,index,score,gap,centerDistance,overlapRatio };
-      });
-
-      if (!best) return;
-      usedPanels.add(best.index);
+        if (!best) return;
+        usedFallbackPanels.add(best.index);
+        panel = best.candidate;
+        geometryScore = Math.max(
+          0,
+          1 - (
+            Math.max(0,best.gap) / Math.max(1,guideImage.naturalHeight * 0.20) * 0.6 +
+            best.distance / Math.max(1,guideImage.naturalWidth) * 0.4
+          )
+        );
+      }
 
       const targetMatch = matchTargetLabel(label.rawLabel);
-      const geometryConfidence = Math.max(
-        0,
-        1 - (
-          best.gap / Math.max(1,guideImage.naturalHeight * 0.20) * 0.55 +
-          best.centerDistance / Math.max(1,guideImage.naturalWidth) * 0.45
-        )
-      );
 
       regions.push({
         sourceLabel:label.rawLabel,
         targetLabel:targetMatch.label,
         ocrConfidence:label.confidence,
         targetScore:targetMatch.score,
-        spatialConfidence:geometryConfidence,
+        spatialConfidence:geometryScore,
         labelBox:{...label.bbox},
-        panel:{...best.panel}
+        panel:{...panel}
       });
     });
 
