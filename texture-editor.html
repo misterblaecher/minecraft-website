@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Sheet → Villager Builder</title>
-  <meta name="description" content="Transforme une planche de design générée par IA en texture Minecraft Villager 64×64." />
+  <title>Générateur de prompt HD Minecraft</title>
+  <meta name="description" content="Prépare un prompt HD à partir d'un template UV Minecraft et ouvre ChatGPT Images." />
   <meta name="robots" content="noindex,nofollow" />
   <link rel="icon" href="assets/logo.png">
   <link rel="stylesheet" href="style.css">
@@ -15,10 +15,10 @@
     <a class="simple texture-back" href="index.html">← Retour au site</a>
     <section class="hero texture-hero">
       <p class="texture-kicker">OUTIL EXPÉRIMENTAL · NON RÉFÉRENCÉ</p>
-      <h1 class="title">AI Sheet → Villager Builder</h1>
+      <h1 class="title">Template UV → Prompt HD</h1>
       <p class="subtitle">
-        Génère une planche de surfaces avec le prompt fourni, charge-la ici, puis laisse le site détecter,
-        nommer et replacer les panneaux dans la texture UV du villageois.
+        Charge le template Minecraft original, décris le style voulu, puis copie automatiquement le prompt complet
+        avant d’ouvrir ChatGPT Images.
       </p>
     </section>
   </header>
@@ -28,39 +28,47 @@
       <div class="texture-panel__head">
         <div>
           <p class="texture-step">ÉTAPE 1</p>
-          <h2>Créer la planche avec l’IA</h2>
+          <h2>Template de base</h2>
         </div>
-        <span class="texture-meta">Prompt standardisé</span>
+        <span id="templateMeta" class="texture-meta">Aucune image</span>
       </div>
 
-      <label class="texture-field">
-        <span>Ton idée de design</span>
-        <textarea id="designBrief" rows="6" placeholder="Ex. vendeur de frites belge, manteau violet, liseré vert fluo, tablier blanc, détails noir-jaune-rouge, style pixel-art Minecraft…"></textarea>
+      <label id="templateDrop" class="texture-drop">
+        <input id="templateInput" type="file" accept="image/png,image/webp" />
+        <span>Charger le PNG UV original</span>
+        <small>Ex. villager.png, creeper.png, cow.png… Le fichier sert de référence de topology.</small>
       </label>
 
-      <div class="texture-prompt-grid">
-        <div>
-          <label class="texture-field">
-            <span>Prompt prêt à copier</span>
-            <textarea id="promptOutput" rows="18" readonly></textarea>
-          </label>
-          <div class="texture-actions">
-            <button id="copyPrompt" class="btn-slice btn-purple" type="button">Copier le prompt</button>
-            <button id="resetPrompt" class="btn-slice btn-blue" type="button">Réinitialiser</button>
-          </div>
+      <div class="texture-template-layout">
+        <div class="texture-canvas-shell texture-template-preview">
+          <canvas id="templateCanvas" width="512" height="512"></canvas>
         </div>
 
-        <aside class="texture-tip">
-          <strong>Pourquoi ce format ?</strong>
-          <p>
-            Le programme ne demande plus à l’IA de fabriquer le PNG Minecraft final. L’IA ne produit que des surfaces
-            bien séparées et étiquetées. Le placement UV est ensuite fait mathématiquement par le site.
-          </p>
-          <p>
-            Le prompt utilise une grille de 6 colonnes : TOP, BOTTOM, FRONT, BACK, LEFT, RIGHT. Même si l’OCR rate
-            un label, l’ordre régulier permet souvent de retrouver la bonne partie.
-          </p>
-        </aside>
+        <div class="texture-template-settings">
+          <label class="texture-field">
+            <span>Échelle HD</span>
+            <select id="scaleMode">
+              <option value="auto">Auto · plus grande échelle entière jusqu’à 1024 px</option>
+              <option value="16">16×</option>
+              <option value="8">8×</option>
+              <option value="4">4×</option>
+              <option value="2">2×</option>
+              <option value="1">1×</option>
+            </select>
+          </label>
+
+          <div id="resolutionSummary" class="texture-resolution-summary">
+            Charge un template pour calculer la résolution cible.
+          </div>
+
+          <div class="texture-tip">
+            <strong>Important :</strong>
+            <p>
+              Le site ne modifie pas ton template. Il adapte seulement le prompt à ses dimensions et calcule un facteur
+              UV entier. Le template devra ensuite être joint dans ChatGPT Images avec le prompt copié.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -68,123 +76,46 @@
       <div class="texture-panel__head">
         <div>
           <p class="texture-step">ÉTAPE 2</p>
-          <h2>Importer et analyser la planche</h2>
+          <h2>Design souhaité</h2>
         </div>
-        <span id="sourceMeta" class="texture-meta">Aucune image</span>
+        <span class="texture-meta">Inséré dans DESIGN REQUEST</span>
       </div>
 
-      <label id="sheetDrop" class="texture-drop">
-        <input id="sheetInput" type="file" accept="image/png,image/webp,image/jpeg" />
-        <span>Charger la planche générée par IA</span>
-        <small>PNG conseillé · fond noir et panneaux séparés = meilleure détection</small>
+      <label class="texture-field">
+        <span>Décris uniquement l’apparence que tu veux</span>
+        <textarea id="designBrief" rows="8" placeholder="Ex. Belgian street-food villager, purple jacket with neon green trim, white apron, fries logo, Belgian flag accents, premium stitched fabric, subtle wear…"></textarea>
       </label>
-
-      <div class="texture-toolbar">
-        <label>
-          Tolérance fond
-          <input id="backgroundTolerance" type="number" min="5" max="150" value="34" />
-        </label>
-        <label>
-          Taille mini panneau
-          <input id="minPanelPercent" type="number" min="0.05" max="10" step="0.05" value="0.45" />
-        </label>
-        <button id="analyzeSheet" class="btn-slice btn-green btn-small" type="button">Analyser automatiquement</button>
-        <button id="detectPanels" class="btn-slice btn-blue btn-small" type="button">Détecter les panneaux</button>
-        <button id="runOcr" class="btn-slice btn-blue btn-small" type="button">Lire les labels (OCR)</button>
-        <button id="drawPanel" class="btn-slice btn-purple btn-small" type="button">Tracer un panneau</button>
-        <button id="clearPanels" class="texture-link-button" type="button">Tout effacer</button>
-      </div>
-
-      <div class="texture-canvas-shell">
-        <canvas id="sheetCanvas" class="texture-canvas" width="960" height="540"></canvas>
-        <div class="texture-canvas-caption">
-          Les cadres colorés sont les panneaux détectés. Clique un panneau pour le sélectionner.
-          En mode tracé, glisse pour ajouter une zone manuellement.
-        </div>
-      </div>
-
-      <div class="texture-progress" aria-live="polite">
-        <div id="ocrProgressBar" class="texture-progress__bar"></div>
-      </div>
-      <p id="analysisStatus" class="texture-status"></p>
     </section>
 
     <section class="card texture-section">
       <div class="texture-panel__head">
         <div>
           <p class="texture-step">ÉTAPE 3</p>
-          <h2>Vérifier les parties reconnues</h2>
+          <h2>Prompt final</h2>
         </div>
-        <span id="panelCount" class="texture-meta">0 panneau</span>
+        <span id="promptStatus" class="texture-meta">Prêt</span>
       </div>
 
-      <p class="muted">
-        Corrige seulement les erreurs. Les anciens labels du type <code>RIGHT ARM OUTER</code> et
-        <code>LEFT LEG INNER</code> sont aussi reconnus pour rester compatibles avec tes premières planches.
-      </p>
+      <label class="texture-field">
+        <span>Prompt généré</span>
+        <textarea id="promptOutput" rows="34" readonly></textarea>
+      </label>
 
-      <div id="panelList" class="texture-panel-list texture-empty">
-        Charge une planche puis lance l’analyse.
-      </div>
-    </section>
-
-    <section class="card texture-section texture-result">
-      <div class="texture-panel__head">
-        <div>
-          <p class="texture-step">ÉTAPE 4</p>
-          <h2>Construire la texture Villager</h2>
-        </div>
-        <span id="mappedCount" class="texture-meta">0 partie mappée</span>
+      <div class="texture-actions">
+        <button id="copyPrompt" class="btn-slice btn-blue" type="button">Copier le prompt</button>
+        <button id="openImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
       </div>
 
-      <div class="texture-result-grid">
-        <div>
-          <div class="texture-result-toolbar">
-            <label class="texture-check">
-              <input id="synthesizeMissing" type="checkbox" checked />
-              <span>Compléter les petites faces manquantes avec les couleurs voisines</span>
-            </label>
-            <label class="texture-check">
-              <input id="pixelSnap" type="checkbox" checked />
-              <span>Rééchantillonnage pixel-art (nearest-neighbor)</span>
-            </label>
-            <button id="buildTexture" class="btn-slice btn-green" type="button">Construire le PNG 64×64</button>
-          </div>
-
-          <div class="texture-canvas-shell texture-output-shell">
-            <canvas id="resultCanvas" class="texture-output-canvas" width="64" height="64"></canvas>
-          </div>
-
-          <div class="texture-actions">
-            <button id="downloadTexture" class="btn-slice btn-orange" type="button" disabled>Télécharger villager.png</button>
-            <button id="downloadMapping" class="btn-slice btn-blue" type="button">Exporter le mapping JSON</button>
-          </div>
-          <p id="buildStatus" class="texture-status"></p>
-        </div>
-
-        <aside class="texture-map-card">
-          <h3>Preset cible</h3>
-          <p><strong>Minecraft Villager · 64×64</strong></p>
-          <p class="muted">
-            Le preset contient les coordonnées exactes de la tête, du nez, du corps, des jambes, des bras et
-            de la pièce centrale des bras croisés. Les bras et jambes du villageois standard réutilisent la même texture.
-          </p>
-          <div class="texture-mini-grid">
-            <span>HEAD</span><span>NOSE</span><span>BODY</span>
-            <span>ARM</span><span>ARMS CENTER</span><span>LEG</span>
-          </div>
-          <p class="muted texture-small">
-            Les panneaux HAT sont conservés comme références dans la planche mais ne sont pas injectés dans
-            le fichier de base <code>villager.png</code>.
-          </p>
-        </aside>
+      <div class="texture-tip texture-tip--wide">
+        <strong>Dans ChatGPT Images :</strong>
+        <p>
+          ajoute le même template UV que celui chargé ici, puis colle le prompt. Le navigateur ne peut pas joindre
+          automatiquement un fichier local à un autre site.
+        </p>
       </div>
     </section>
   </main>
 
-  <datalist id="canonicalParts"></datalist>
-
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="texture-editor.js" defer></script>
 </body>
 </html>
