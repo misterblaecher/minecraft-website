@@ -4,21 +4,24 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Générateur de prompt HD Minecraft</title>
-  <meta name="description" content="Prépare un prompt HD à partir d'un template UV Minecraft et ouvre ChatGPT Images." />
+  <meta name="description" content="Prépare un prompt HD à partir d'un template UV Minecraft, avec méthode directe ou guide annoté." />
   <meta name="robots" content="noindex,nofollow" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="texture-editor.css">
+  <link rel="stylesheet" href="style.css?v=20260920-2057">
+  <link rel="stylesheet" href="texture-editor.css?v=20260920-2057">
 </head>
 <body>
   <header class="container texture-header">
     <a class="simple texture-back" href="index.html">← Retour au site</a>
     <section class="hero texture-hero">
-      <p class="texture-kicker">OUTIL EXPÉRIMENTAL · NON RÉFÉRENCÉ</p>
-      <h1 class="title">Template UV → Prompt HD</h1>
+      <p class="texture-kicker">OUTIL EXPÉRIMENTAL · UV WORKFLOW v3</p>
+      <h1 class="title">Template UV → Texture HD</h1>
       <p class="subtitle">
-        Charge le template Minecraft original, décris le style voulu, puis copie automatiquement le prompt complet
-        avant d’ouvrir ChatGPT Images.
+        Deux méthodes : génération directe depuis le template, ou méthode guidée avec une deuxième image où chaque
+        partie UV est explicitement nommée pour les modèles répétitifs ou difficiles à interpréter.
       </p>
     </section>
   </header>
@@ -28,7 +31,7 @@
       <div class="texture-panel__head">
         <div>
           <p class="texture-step">ÉTAPE 1</p>
-          <h2>Template de base</h2>
+          <h2>Template Minecraft de référence</h2>
         </div>
         <span id="templateMeta" class="texture-meta">Aucune image</span>
       </div>
@@ -36,7 +39,7 @@
       <label id="templateDrop" class="texture-drop">
         <input id="templateInput" type="file" accept="image/png,image/webp" />
         <span>Charger le PNG UV original</span>
-        <small>Ex. villager.png, creeper.png, cow.png… Le fichier sert de référence de topology.</small>
+        <small>Ex. villager.png, creeper.png, cow.png… Il définit la topologie et les limites UV immuables.</small>
       </label>
 
       <div class="texture-template-layout">
@@ -64,10 +67,10 @@
           </div>
 
           <div class="texture-tip">
-            <strong>Important :</strong>
+            <strong>Règle :</strong>
             <p>
-              Le site ne modifie pas ton template. Il adapte seulement le prompt à ses dimensions et calcule un facteur
-              UV entier. Le template devra ensuite être joint dans ChatGPT Images avec le prompt copié.
+              l’image de base reste la vérité absolue pour les coordonnées UV. La résolution finale est calculée
+              proportionnellement sans changer le ratio du template.
             </p>
           </div>
         </div>
@@ -80,11 +83,11 @@
           <p class="texture-step">ÉTAPE 2</p>
           <h2>Design souhaité</h2>
         </div>
-        <span class="texture-meta">Inséré dans DESIGN REQUEST</span>
+        <span class="texture-meta">Injecté dans les prompts finaux</span>
       </div>
 
       <label class="texture-field">
-        <span>Décris uniquement l’apparence que tu veux</span>
+        <span>Décris uniquement l’apparence à créer</span>
         <textarea id="designBrief" rows="8" placeholder="Ex. Belgian street-food villager, purple jacket with neon green trim, white apron, fries logo, Belgian flag accents, premium stitched fabric, subtle wear…"></textarea>
       </label>
     </section>
@@ -92,32 +95,124 @@
     <section class="card texture-section">
       <div class="texture-panel__head">
         <div>
-          <p class="texture-step">ÉTAPE 3</p>
-          <h2>Prompt final</h2>
+          <p class="texture-step">MÉTHODE A · RAPIDE</p>
+          <h2>Prompt direct</h2>
         </div>
-        <span id="promptStatus" class="texture-meta">Prêt</span>
+        <span id="directStatus" class="texture-meta">Prêt</span>
       </div>
 
+      <p class="muted">
+        À utiliser quand les différentes zones UV sont visuellement faciles à reconnaître. Tu joins seulement le
+        template original dans ChatGPT Images.
+      </p>
+
       <label class="texture-field">
-        <span>Prompt généré</span>
-        <textarea id="promptOutput" rows="34" readonly></textarea>
+        <span>Prompt final direct</span>
+        <textarea id="directPromptOutput" rows="28" readonly></textarea>
       </label>
 
       <div class="texture-actions">
-        <button id="copyPrompt" class="btn-slice btn-blue" type="button">Copier le prompt</button>
-        <button id="openImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+        <button id="copyDirectPrompt" class="btn-slice btn-blue" type="button">Copier le prompt direct</button>
+        <button id="openDirectImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+      </div>
+    </section>
+
+    <section class="card texture-section texture-guided">
+      <div class="texture-panel__head">
+        <div>
+          <p class="texture-step">MÉTHODE B · GUIDÉE</p>
+          <h2>Guide UV avec noms de parties</h2>
+        </div>
+        <span id="guideStatus" class="texture-meta">Recommandé pour les modèles répétitifs</span>
       </div>
 
-      <div class="texture-tip texture-tip--wide">
-        <strong>Dans ChatGPT Images :</strong>
+      <div class="texture-guided-intro">
         <p>
-          ajoute le même template UV que celui chargé ici, puis colle le prompt. Le navigateur ne peut pas joindre
-          automatiquement un fichier local à un autre site.
+          Cette méthode ajoute une étape : ChatGPT reçoit le skin Minecraft de base et produit une <strong>copie
+          annotée</strong> du même atlas. Chaque face doit porter un nom machine-readable comme
+          <code>HEAD_FRONT</code>, <code>BODY_LEFT</code>, <code>LEG_1_FRONT</code> ou
+          <code>WING_RIGHT_PLANE_2</code>.
         </p>
+        <p class="muted">
+          Les parties identiques ou répétées doivent obligatoirement avoir des noms uniques avec un numéro. Le guide
+          annoté sert uniquement à expliquer « quoi est quoi » ; le template original reste la référence géométrique.
+        </p>
+      </div>
+
+      <div class="texture-guided-grid">
+        <div>
+          <p class="texture-substep">B1 · Faire produire le guide annoté</p>
+          <label class="texture-field">
+            <span>Prompt d’annotation</span>
+            <textarea id="labelPromptOutput" rows="24" readonly></textarea>
+          </label>
+
+          <div class="texture-actions">
+            <button id="copyLabelPrompt" class="btn-slice btn-blue" type="button">Copier le prompt d’annotation</button>
+            <button id="openLabelImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+          </div>
+
+          <div class="texture-tip texture-tip--wide">
+            <strong>Dans ChatGPT Images :</strong>
+            <p>
+              joins uniquement le template Minecraft original. Le résultat attendu est un guide lisible avec les noms
+              des régions UV, pas une nouvelle texture artistique.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <p class="texture-substep">B2 · Relire automatiquement les noms</p>
+
+          <label id="guideDrop" class="texture-drop">
+            <input id="guideInput" type="file" accept="image/png,image/webp,image/jpeg" />
+            <span>Charger le guide annoté généré</span>
+            <small>Le site utilise OCR pour récupérer les noms de parties visibles sur l’image.</small>
+          </label>
+
+          <div class="texture-canvas-shell texture-guide-preview">
+            <canvas id="guideCanvas" width="512" height="512"></canvas>
+          </div>
+
+          <div class="texture-actions">
+            <button id="scanGuide" class="btn-slice btn-green" type="button" disabled>Détecter les noms</button>
+            <button id="clearDetectedLabels" class="texture-link-button" type="button">Effacer</button>
+          </div>
+
+          <div class="texture-progress" aria-live="polite">
+            <div id="guideOcrProgress" class="texture-progress__bar"></div>
+          </div>
+          <p id="ocrStatus" class="texture-status"></p>
+
+          <label class="texture-field">
+            <span>Noms détectés / corrigés manuellement</span>
+            <textarea id="detectedLabels" rows="10" placeholder="HEAD_FRONT&#10;HEAD_LEFT&#10;BODY_FRONT&#10;LEG_1_FRONT&#10;LEG_2_FRONT"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div class="texture-guided-final">
+        <p class="texture-substep">B3 · Générer la texture finale avec les 2 images de référence</p>
+        <p class="muted">
+          Pour ce prompt final, joins <strong>IMAGE 1 = template original</strong> et
+          <strong>IMAGE 2 = guide annoté</strong>. Les labels servent à l’identité des zones ; les coordonnées viennent
+          exclusivement de l’image 1.
+        </p>
+
+        <label class="texture-field">
+          <span>Prompt final guidé</span>
+          <textarea id="guidedPromptOutput" rows="32" readonly></textarea>
+        </label>
+
+        <div class="texture-actions">
+          <button id="copyGuidedPrompt" class="btn-slice btn-blue" type="button">Copier le prompt guidé</button>
+          <button id="openGuidedImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+        </div>
       </div>
     </section>
   </main>
 
-  <script src="texture-editor.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="texture-editor.js?v=20260920-2057" defer></script>
 </body>
 </html>
