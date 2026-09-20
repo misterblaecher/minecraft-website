@@ -191,3 +191,98 @@
   .texture-actions .btn-slice{width:100%;text-align:center}
   #directPromptOutput,#labelPromptOutput,#guidedPromptOutput{min-height:460px}
 }
+
+/* v4 generator layout hardening */
+.texture-section,
+.texture-section *,
+.texture-guided,
+.texture-guided *,
+.texture-template-layout,
+.texture-guided-grid{
+  box-sizing:border-box;
+}
+.texture-section,
+.texture-guided,
+.texture-template-layout,
+.texture-guided-grid,
+.texture-template-layout > *,
+.texture-guided-grid > *{
+  min-width:0;
+}
+.texture-section{
+  position:relative;
+  z-index:0;
+  overflow:visible;
+}
+.texture-field textarea,
+.texture-field select,
+.texture-drop,
+.texture-canvas-shell{
+  max-width:100%;
+}
+.texture-field textarea{
+  display:block;
+  overflow:auto;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.texture-guided-grid{
+  align-items:start;
+}
+.texture-guided-grid > div{
+  min-width:0;
+  overflow:hidden;
+}
+.texture-result-preview{
+  margin-top:18px;
+  padding:16px;
+  border:1px solid rgba(108,140,255,.24);
+  border-radius:14px;
+  background:rgba(108,140,255,.055);
+}
+.texture-result-preview--guided{
+  border-color:rgba(138,99,255,.34);
+  background:rgba(138,99,255,.055);
+}
+.compact-drop{padding:16px}
+.texture-viewer-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+}
+.texture-detected-summary{
+  margin-top:12px;
+  padding:12px;
+  border:1px solid var(--ring);
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+  color:var(--muted);
+  overflow:hidden;
+}
+.texture-detected-summary strong{color:var(--text)}
+.texture-detected-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:9px;
+}
+.texture-detected-chips span{
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  border:1px solid rgba(108,140,255,.25);
+  background:rgba(108,140,255,.08);
+  color:#d7e5ff;
+  border-radius:999px;
+  padding:5px 8px;
+  font:700 .72rem ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+.texture-small{font-size:.8rem}
+.texture-actions--inline{margin-top:0}
+@media (max-width:1199px){
+  .texture-guided-grid{grid-template-columns:1fr!important}
+}
+@media (min-width:1200px){
+  .texture-guided-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
