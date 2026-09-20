@@ -15,6 +15,46 @@
   gap:18px;
 }
 .viewer-controls h2,.viewer-stage-card h2,.viewer-about h2{margin-top:0}
+.viewer-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:12px;
+  color:var(--muted);
+  font-size:.84rem;
+}
+.viewer-field input,.viewer-field select{
+  width:100%;
+  border:1px solid var(--ring);
+  border-radius:10px;
+  background:#0d1118;
+  color:var(--text);
+  padding:10px 11px;
+  font:inherit;
+}
+.viewer-catalog-status{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:.78rem;
+}
+.viewer-catalog-status.is-success{color:#a8f1cf}
+.viewer-catalog-status.is-error{color:#ffabab}
+.viewer-model-meta{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  margin-top:10px;
+  padding:12px 13px;
+  border-radius:11px;
+  border:1px solid rgba(108,140,255,.25);
+  background:rgba(108,140,255,.07);
+}
+.viewer-model-meta span{color:var(--muted);font-size:.8rem}
+.viewer-divider{
+  height:1px;
+  margin:18px 0;
+  background:var(--ring);
+}
 .viewer-drop{
   display:flex;
   flex-direction:column;
@@ -44,11 +84,19 @@
   font-size:.86rem;
 }
 .viewer-info strong{color:var(--text)}
+.viewer-scale-info{
+  min-height:1.2em;
+  margin-top:9px;
+  font-size:.8rem;
+  color:var(--muted);
+}
+.viewer-scale-info.is-good{color:#a8f1cf}
+.viewer-scale-info.is-warning{color:#ffd59a}
 .viewer-control-grid{
   display:grid;
   grid-template-columns:1fr;
   gap:12px;
-  margin-top:16px;
+  margin-top:12px;
 }
 .viewer-control-grid label{
   display:flex;
@@ -104,12 +152,16 @@
     radial-gradient(circle at 50% 22%,rgba(108,140,255,.14),transparent 36%),
     linear-gradient(180deg,#121824,#0c1017);
 }
-#skinCanvas{
+#skinCanvas,#entityCanvas{
   display:block;
   width:100%;
   height:100%;
   min-height:520px;
+  touch-action:none;
 }
+#entityCanvas{cursor:grab}
+#entityCanvas:active{cursor:grabbing}
+#skinCanvas[hidden],#entityCanvas[hidden]{display:none}
 .viewer-empty{
   position:absolute;
   inset:0;
@@ -126,9 +178,9 @@
 .viewer-empty span{color:var(--muted)}
 .viewer-empty[hidden]{display:none}
 .viewer-about{margin-top:18px}
-.viewer-about p{margin-bottom:0}
+.viewer-about p{margin-bottom:8px}
 @media (min-width:900px){
-  .viewer-layout{grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr)}
+  .viewer-layout{grid-template-columns:minmax(300px,.78fr) minmax(0,1.22fr)}
   .viewer-controls{align-self:start;position:sticky;top:18px}
 }
 @media (min-width:520px){
