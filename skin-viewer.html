@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Skin Viewer 3D Minecraft</title>
-  <meta name="description" content="Charge un skin Minecraft local et visualise-le en 3D dans le navigateur." />
+  <title>Viewer 3D de textures Minecraft</title>
+  <meta name="description" content="Charge une texture Minecraft, choisis le modèle UV correspondant et visualise-la en 3D." />
   <link rel="icon" href="assets/logo.png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="skin-viewer.css">
@@ -14,9 +14,10 @@
     <a class="simple viewer-back" href="index.html">← Retour au site</a>
     <section class="hero viewer-hero">
       <p class="viewer-kicker">OUTIL MINECRAFT</p>
-      <h1 class="title">Skin Viewer 3D</h1>
+      <h1 class="title">Entity & Skin Viewer 3D</h1>
       <p class="subtitle">
-        Charge un skin Minecraft PNG et inspecte-le directement en 3D. Le fichier reste dans ton navigateur.
+        Choisis le modèle Minecraft correspondant à ta texture, charge ton PNG puis inspecte le résultat en 3D.
+        Les UV sont normalisés sur la taille native du modèle : une texture HD garde donc le même mapping.
       </p>
     </section>
   </header>
@@ -25,58 +26,96 @@
     <section class="viewer-layout">
       <aside class="card viewer-controls">
         <div>
-          <p class="viewer-step">SKIN</p>
-          <h2>Charger un skin</h2>
+          <p class="viewer-step">1 · MODÈLE</p>
+          <h2>Choisir le pattern UV</h2>
         </div>
 
-        <label id="skinDrop" class="viewer-drop">
-          <input id="skinInput" type="file" accept="image/png" />
-          <span>Choisir un PNG</span>
-          <small>Formats Minecraft classiques : 64×64 ou anciens 64×32</small>
+        <label class="viewer-field">
+          <span>Rechercher un modèle</span>
+          <input id="entitySearch" type="search" placeholder="villager, creeper, cow, zombie…" autocomplete="off" />
         </label>
 
-        <div id="skinInfo" class="viewer-info">Aucun skin chargé.</div>
+        <label class="viewer-field">
+          <span>Modèle / entité</span>
+          <select id="entityType">
+            <option value="player">Player (Steve / Alex)</option>
+          </select>
+        </label>
 
-        <div class="viewer-control-grid">
-          <label>
-            Modèle
+        <div id="catalogStatus" class="viewer-catalog-status">Chargement du catalogue des modèles…</div>
+
+        <div id="entityMeta" class="viewer-model-meta">
+          <strong>Player</strong>
+          <span>UV natif : 64×64</span>
+        </div>
+
+        <div id="playerOptions">
+          <label class="viewer-field">
+            <span>Type de bras</span>
             <select id="modelType">
               <option value="auto-detect">Auto-détection</option>
               <option value="default">Steve / bras classiques</option>
               <option value="slim">Alex / bras fins</option>
             </select>
           </label>
+        </div>
 
-          <label>
-            Animation
-            <select id="animationType">
-              <option value="idle">Repos</option>
-              <option value="walk">Marche</option>
-              <option value="run">Course</option>
-              <option value="wave">Salut</option>
-              <option value="crouch">Accroupi</option>
-            </select>
+        <div class="viewer-divider"></div>
+
+        <div>
+          <p class="viewer-step">2 · TEXTURE</p>
+          <h2>Charger le PNG</h2>
+        </div>
+
+        <label id="skinDrop" class="viewer-drop">
+          <input id="skinInput" type="file" accept="image/png" />
+          <span>Choisir une texture PNG</span>
+          <small>Vanilla ou HD : 64×64, 128×64, 1024×1024, etc.</small>
+        </label>
+
+        <div id="skinInfo" class="viewer-info">Aucune texture chargée.</div>
+        <div id="uvScaleInfo" class="viewer-scale-info"></div>
+
+        <div id="playerAnimationControls">
+          <div class="viewer-divider"></div>
+          <p class="viewer-step">3 · ANIMATION PLAYER</p>
+
+          <div class="viewer-control-grid">
+            <label>
+              Animation
+              <select id="animationType">
+                <option value="idle">Repos</option>
+                <option value="walk">Marche</option>
+                <option value="run">Course</option>
+                <option value="wave">Salut</option>
+                <option value="crouch">Accroupi</option>
+              </select>
+            </label>
+
+            <label>
+              Vitesse
+              <input id="animationSpeed" type="range" min="0" max="2.5" step="0.05" value="1" />
+            </label>
+          </div>
+
+          <label class="viewer-check">
+            <input id="pauseAnimation" type="checkbox" />
+            <span>Mettre l’animation en pause</span>
           </label>
+        </div>
 
-          <label>
-            Vitesse animation
-            <input id="animationSpeed" type="range" min="0" max="2.5" step="0.05" value="1" />
-          </label>
+        <div class="viewer-divider"></div>
 
+        <div class="viewer-control-grid">
           <label>
             Zoom
-            <input id="zoom" type="range" min="0.45" max="1.35" step="0.01" value="0.85" />
+            <input id="zoom" type="range" min="0.45" max="1.55" step="0.01" value="0.85" />
           </label>
         </div>
 
         <label class="viewer-check">
           <input id="autoRotate" type="checkbox" />
           <span>Rotation automatique</span>
-        </label>
-
-        <label class="viewer-check">
-          <input id="pauseAnimation" type="checkbox" />
-          <span>Mettre l’animation en pause</span>
         </label>
 
         <div class="viewer-actions">
@@ -86,7 +125,8 @@
         </div>
 
         <p class="muted viewer-note">
-          Tu peux aussi faire glisser le modèle avec la souris et utiliser la molette pour zoomer.
+          Le catalogue d’entités utilise les modèles Java Edition du CEM Template Loader. Certains modèles spéciaux
+          utilisent plusieurs textures ou des éléments particuliers et peuvent avoir une preview simplifiée.
         </p>
       </aside>
 
@@ -94,30 +134,36 @@
         <div class="viewer-stage-head">
           <div>
             <p class="viewer-step">PREVIEW</p>
-            <h2>Modèle 3D</h2>
+            <h2 id="previewTitle">Player 3D</h2>
           </div>
           <span id="viewerStatus" class="viewer-status">Prêt</span>
         </div>
 
         <div id="viewerStage" class="viewer-stage">
           <canvas id="skinCanvas"></canvas>
+          <canvas id="entityCanvas" hidden></canvas>
           <div id="viewerEmpty" class="viewer-empty">
-            <strong>Charge un skin pour commencer</strong>
-            <span>Le modèle apparaîtra ici en 3D.</span>
+            <strong>Charge une texture pour commencer</strong>
+            <span>Choisis d’abord le bon modèle UV si ce n’est pas un skin Player.</span>
           </div>
         </div>
       </section>
     </section>
 
     <section class="card viewer-about">
-      <h2>Visualisation locale</h2>
+      <h2>UV adaptatifs à la résolution</h2>
       <p class="muted">
-        Le visualiseur utilise <strong>skinview3d</strong> pour afficher les skins Minecraft avec WebGL.
-        Le PNG sélectionné n’est pas envoyé au serveur du site : il est lu localement par le navigateur.
+        Chaque modèle possède une taille UV native (par exemple 64×64, 64×32 ou 128×64). Le viewer utilise ces
+        coordonnées en valeurs normalisées : si tu charges une texture 1024×1024 pour un modèle 64×64, le même
+        mapping est utilisé à l’échelle 16×. Une alerte apparaît si le ratio de ton image ne correspond pas au modèle.
+      </p>
+      <p class="muted">
+        Sources du catalogue : modèles CEM Java Edition utilisés par le plugin Blockbench CEM Template Loader.
       </p>
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
   <script src="skin-viewer.js" defer></script>
 </body>
