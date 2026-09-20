@@ -235,3 +235,4 @@
   .texture-zone-labels{display:block}
   .texture-zone button{justify-self:end}
 }
+\n@media (max-width:520px){\n  .texture-toolbar .btn-slice{width:100%;text-align:center}\n  .texture-zone__actions{grid-column:1 / -1;justify-content:flex-end}\n}\n
