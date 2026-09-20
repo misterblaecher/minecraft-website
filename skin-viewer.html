@@ -9,15 +9,15 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="style.css?v=20260920-2115">
-  <link rel="stylesheet" href="skin-viewer.css?v=20260920-2115">
-  <link rel="stylesheet" href="texture-editor.css?v=20260920-2115">
+  <link rel="stylesheet" href="style.css?v=20260920-2145">
+  <link rel="stylesheet" href="skin-viewer.css?v=20260920-2145">
+  <link rel="stylesheet" href="texture-editor.css?v=20260920-2145">
 </head>
 <body>
   <header class="container viewer-header">
     <a class="simple viewer-back" href="index.html">← Retour au site</a>
     <section class="hero viewer-hero">
-      <p class="viewer-kicker">MINECRAFT TEXTURE STUDIO · v3</p>
+      <p class="viewer-kicker">MINECRAFT TEXTURE STUDIO · v4</p>
       <h1 class="title">Entity Viewer + Générateur HD</h1>
       <p class="subtitle">
         1) choisis le modèle UV et teste ta texture en 3D ; 2) génère une nouvelle texture avec la méthode directe
@@ -233,6 +233,16 @@
         <button id="copyDirectPrompt" class="btn-slice btn-blue" type="button">Copier le prompt direct</button>
         <button id="openDirectImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
       </div>
+
+      <div class="texture-result-preview">
+        <p class="texture-substep">A2 · Tester le PNG généré en 3D</p>
+        <label class="texture-drop compact-drop">
+          <input id="directResultInput" type="file" accept="image/png" />
+          <span>Charger le résultat de la méthode A</span>
+          <small>Le PNG est envoyé directement au viewer 3D avec le modèle sélectionné en haut.</small>
+        </label>
+        <p id="directPreviewStatus" class="texture-status"></p>
+      </div>
     </section>
 
     <section id="guided" class="card texture-section texture-guided">
@@ -314,13 +324,31 @@
           <button id="copyGuidedPrompt" class="btn-slice btn-blue" type="button">Copier le prompt guidé</button>
           <button id="openGuidedImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
         </div>
+
+        <div class="texture-result-preview texture-result-preview--guided">
+          <p class="texture-substep">B4 · Tester le skin final en 3D</p>
+          <p class="muted">
+            Après génération dans ChatGPT Images, charge ici le PNG final. Il sera appliqué automatiquement au modèle
+            sélectionné dans le Viewer 3D en haut de la page.
+          </p>
+          <label class="texture-drop compact-drop">
+            <input id="guidedResultInput" type="file" accept="image/png" />
+            <span>Charger le résultat final guidé</span>
+            <small>Le guide annoté n'est pas utilisé comme texture 3D : seul le PNG final l'est.</small>
+          </label>
+          <div class="texture-actions">
+            <button id="previewGuidedResult" class="btn-slice btn-green" type="button" disabled>Voir en 3D</button>
+            <a class="btn-slice btn-blue texture-viewer-link" href="#viewer">Retour au viewer</a>
+          </div>
+          <p id="guidedPreviewStatus" class="texture-status"></p>
+        </div>
       </div>
     </section>
   </main>
 
   <script src="vendor/three.min.js?v=r159"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="skin-viewer.js?v=20260920-2115" defer></script>
-  <script src="texture-editor.js?v=20260920-2115" defer></script>
+  <script src="skin-viewer.js?v=20260920-2145" defer></script>
+  <script src="texture-editor.js?v=20260920-2145" defer></script>
 </body>
 </html>
