@@ -1668,6 +1668,22 @@
     buildGuidedTexture(true);
   });
 
+
+  window.addEventListener("minecraft-model-change", () => {
+    detectedRegions.forEach((region) => {
+      const match = matchTargetLabel(region.sourceLabel);
+      region.targetLabel = match.label;
+      region.targetScore = match.score;
+    });
+    renderSpatialMappings();
+    updateDetectedLabelsFromRegions();
+    updateDetectedPartsSummary();
+    renderGuideAnalysis();
+    guidedTextureReady = false;
+    $("downloadGuidedTexture").disabled = true;
+    rebuildPrompts();
+  });
+
   $("templateInput").addEventListener("change", () => {
     const file = $("templateInput").files && $("templateInput").files[0];
     if (file) loadImageFile(file, "template");
