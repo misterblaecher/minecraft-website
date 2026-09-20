@@ -203,6 +203,12 @@
             Charge un template pour calculer la résolution cible.
           </div>
 
+          <div class="texture-actions texture-actions--inline">
+            <button id="previewTemplate3D" class="btn-slice btn-green" type="button" disabled>Tester ce template en 3D</button>
+            <a class="btn-slice btn-blue texture-viewer-link" href="#viewer">Choisir le modèle 3D</a>
+          </div>
+          <p id="templatePreviewStatus" class="texture-status"></p>
+
           <label class="texture-field">
             <span>Design souhaité</span>
             <textarea id="designBrief" rows="9" placeholder="Ex. Belgian street-food villager, purple jacket with neon green trim, white apron, fries logo, Belgian flag accents…"></textarea>
@@ -293,6 +299,7 @@
 
           <div class="texture-actions">
             <button id="scanGuide" class="btn-slice btn-green" type="button" disabled>Détecter les noms</button>
+            <button id="previewDetectedGuide3D" class="btn-slice btn-purple" type="button" disabled>Voir les parties détectées en 3D</button>
             <button id="clearDetectedLabels" class="texture-link-button" type="button">Effacer</button>
           </div>
 
@@ -305,6 +312,13 @@
             <span>Noms détectés / corrigés</span>
             <textarea id="detectedLabels" rows="10" placeholder="HEAD_FRONT&#10;HEAD_BACK&#10;BODY_FRONT&#10;LEG_1_FRONT&#10;LEG_2_FRONT"></textarea>
           </label>
+          <div id="detectedPartsSummary" class="texture-detected-summary">
+            Aucune partie détectée pour le moment.
+          </div>
+          <p class="muted texture-small">
+            La preview 3D de cette étape est une preview de contrôle : le guide annoté est projeté sur le modèle choisi
+            afin de vérifier que les noms tombent bien sur les bonnes faces avant de générer le skin final.
+          </p>
         </div>
       </div>
 
