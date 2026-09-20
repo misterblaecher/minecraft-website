@@ -4,6 +4,7 @@
   const $ = (id) => document.getElementById(id);
 
   const CEM_CATALOG_URLS = [
+    "data/cem_template_models.json?v=5.0.1",
     "https://raw.githubusercontent.com/ewanhowell5195/wynem/main/src/assets/json/cem_template_models.json",
     "https://cdn.jsdelivr.net/gh/ewanhowell5195/wynem@main/src/assets/json/cem_template_models.json",
     "https://wynem.com/assets/json/cem_template_models.json"
