@@ -218,3 +218,10 @@
 }
 .studio-generator{margin-top:24px}
 #entityCanvas{display:block!important}
+
+/* v4 layout stability: no sticky card can overlap generator sections */
+@media (min-width:900px){
+  .viewer-controls{position:static!important;top:auto!important}
+}
+#viewer,#generator,#guided{scroll-margin-top:18px}
+.viewer-layout,.viewer-stage-card,.viewer-controls,.studio-generator{isolation:isolate}
