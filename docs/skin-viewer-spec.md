@@ -135,13 +135,18 @@ Après génération dans ChatGPT Images, l'utilisateur peut charger le PNG final
 
 Cette méthode est destinée aux atlas ambigus ou répétitifs : plusieurs pattes identiques, tentacules, ailes, petits cuboïdes similaires, pièces répétées, etc.
 
-### B1 — Générer une image annotée
+### B1 — Générer une planche guidée
 
-Le site génère un premier prompt spécialisé.
+Le site génère un prompt spécialisé à partir du template Minecraft original, du modèle 3D sélectionné et du design demandé.
 
-L'utilisateur fournit le template Minecraft original à ChatGPT Images.
+Le résultat attendu est une planche de surfaces séparées. Chaque artwork panel représente une face UV et possède un nom machine-readable placé directement au-dessus.
 
-Le résultat attendu n'est pas un nouveau skin artistique mais une copie de l'atlas où chaque région identifiable porte un nom machine-readable.
+La règle géométrique est absolue : **LABEL ABOVE = PANEL DIRECTLY BELOW**.
+
+Deux modes sont disponibles :
+
+- **Avec background** : fond uni noir #000000 ;
+- **Sans background** : PNG transparent autour des labels et des panneaux.
 
 Exemples :
 
@@ -158,40 +163,30 @@ Les régions répétées doivent recevoir des noms uniques.
 
 Si l'identité exacte d'une région est incertaine, elle doit tout de même recevoir un identifiant stable plutôt que rester anonyme.
 
-### B2 — Détecter les noms
+### B2 — Détecter les noms et les panneaux
 
-L'utilisateur charge l'image annotée.
+L'utilisateur charge la planche guidée.
 
 Le site :
 
-- affiche la preview 2D ;
-- lance OCR avec Tesseract.js ;
-- extrait les noms machine-readable ;
-- affiche la liste des parties détectées ;
-- permet à l'utilisateur de corriger la liste manuellement.
+- crée un masque en fonction du mode choisi (fond uni ou transparence) ;
+- lance OCR avec Tesseract.js et récupère les bounding boxes des labels ;
+- pour chaque label, définit une colonne de recherche sous le texte ;
+- considère le premier panneau graphique valide directement en dessous comme la partie nommée ;
+- sépare ainsi des composants graphiques qui seraient autrement fusionnés dans une détection globale ;
+- dessine le cadre du label, le cadre du panneau et un trait reliant les deux ;
+- mappe le nom vers une face UV réelle du modèle sélectionné ;
+- permet de corriger chaque association via un menu déroulant.
 
-Après OCR, le guide annoté est automatiquement projeté en 3D sur le modèle actuellement sélectionné.
+### B3 — Assemblage automatique
 
-Cette preview 3D est une étape de validation : les noms visibles sur le modèle permettent de vérifier que les régions UV tombent sur les bonnes parties avant la génération finale.
+Le site récupère le layout UV du modèle 3D sélectionné.
 
-Un bouton « Voir les parties détectées en 3D » permet de relancer cette preview manuellement.
+Chaque panneau détecté est associé à une cible UV via son label. Le site copie ensuite le panneau dans la face UV correspondante et construit un nouveau PNG à la résolution HD choisie.
 
-### B3 — Prompt final guidé
+Les zones non détectées conservent le contenu du template original. Les UV partagés entre plusieurs parties ne sont peints qu'une fois et un avertissement l'indique.
 
-Le site produit un second prompt.
-
-Dans ChatGPT Images, l'utilisateur doit joindre :
-
-- IMAGE 1 = template Minecraft original ;
-- IMAGE 2 = guide UV annoté.
-
-Règle :
-
-- IMAGE 1 décide OÙ vont les pixels ;
-- IMAGE 2 décide CE QUE représente chaque région ;
-- la description utilisateur décide COMMENT la texture doit être peinte.
-
-La liste OCR corrigée est injectée dans le prompt comme information de contrôle supplémentaire.
+Un prompt final guidé avec IMAGE 1 + IMAGE 2 reste disponible comme solution de secours si certaines faces ne peuvent pas être mappées automatiquement.
 
 Le prompt interdit de recopier dans le skin final :
 
@@ -200,13 +195,13 @@ Le prompt interdit de recopier dans le skin final :
 - les couleurs de guide ;
 - les annotations.
 
-### B4 — Tester le résultat final en 3D
+### B4 — Preview 3D et export
 
-Après génération du skin final, l'utilisateur charge le PNG dans la section Méthode B.
+Le PNG assemblé par le site peut être envoyé immédiatement au Viewer 3D et téléchargé.
 
-Le PNG est envoyé au Viewer 3D et appliqué au modèle sélectionné.
+L'utilisateur peut également charger un résultat final généré par ChatGPT Images et l'envoyer au même viewer.
 
-Cette étape est obligatoire dans le workflow guidé : la méthode B ne doit pas se terminer uniquement par un prompt texte.
+La méthode B doit donc produire un atlas UV réel, pas seulement une liste de labels ou un prompt.
 
 ## 7. États et messages d'erreur
 

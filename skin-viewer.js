@@ -1028,8 +1028,197 @@
     updateModelMeta();
     updateUvScaleInfo();
     if (currentImageCanvas) rebuildModel();
+    window.dispatchEvent(new CustomEvent("minecraft-model-change", {
+      detail: { modelId: $("entityType").value }
+    }));
   }
 
+
+
+  function canonicalPartName(value) {
+    return String(value || "part")
+      .replace(/([A-Za-z])(\d+)/g, "$1_$2")
+      .replace(/[^A-Za-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .toUpperCase();
+  }
+
+  function uvRectObject(rect) {
+    if (!Array.isArray(rect) || rect.length < 4) return null;
+    const x1 = Number(rect[0]) || 0;
+    const y1 = Number(rect[1]) || 0;
+    const x2 = Number(rect[2]) || 0;
+    const y2 = Number(rect[3]) || 0;
+    return {
+      x: Math.min(x1, x2),
+      y: Math.min(y1, y2),
+      w: Math.abs(x2 - x1),
+      h: Math.abs(y2 - y1)
+    };
+  }
+
+  function boxSemanticPrefix(partId, box, boxIndex, boxCount, path) {
+    const base = canonicalPartName(partId);
+    const coords = Array.isArray(box.coordinates) ? box.coordinates.map(Number) : [0,0,0,0,0,0];
+    const w = Math.abs(coords[3] || 0);
+    const h = Math.abs(coords[4] || 0);
+    const mirrored = String(path || "").toUpperCase().includes("MIRRORED");
+
+    if (base === "ARMS") {
+      if (w >= 7 && h <= 5) return "ARMS_CENTER";
+      if (w <= 5 && h >= 7) return mirrored ? "LEFT_ARM" : "RIGHT_ARM";
+    }
+
+    if (boxCount > 1) return base + "_" + (boxIndex + 1);
+    return base;
+  }
+
+  function collectNodeUvTargets(node, rootPartId, textureSize, out, path = "", depth = 0) {
+    if (!node) return;
+    const ownTextureSize = Array.isArray(node.textureSize) ? node.textureSize.map(Number) : textureSize;
+    const boxes = Array.isArray(node.boxes) ? node.boxes : [];
+    const faceNames = {
+      north: "FRONT",
+      south: "BACK",
+      west: "RIGHT",
+      east: "LEFT",
+      up: "TOP",
+      down: "BOTTOM"
+    };
+
+    boxes.forEach((box, boxIndex) => {
+      const prefix = boxSemanticPrefix(rootPartId, box, boxIndex, boxes.length, path);
+      const rects = getBoxFaceUvs(box);
+
+      Object.entries(faceNames).forEach(([faceKey, faceLabel]) => {
+        const rect = uvRectObject(rects[faceKey]);
+        if (!rect || rect.w <= 0 || rect.h <= 0) return;
+
+        const label = prefix + "_" + faceLabel;
+        const aliases = [label];
+
+        if (prefix.startsWith("RIGHT_ARM_")) {
+          aliases.push(prefix.replace(/_RIGHT$|_LEFT$/, "") + "_" + faceLabel);
+        }
+
+        out.push({
+          label,
+          aliases: Array.from(new Set(aliases)),
+          part: prefix,
+          face: faceLabel,
+          rect,
+          textureWidth: Number(ownTextureSize[0]) || 64,
+          textureHeight: Number(ownTextureSize[1]) || 64,
+          path: path || canonicalPartName(rootPartId)
+        });
+      });
+    });
+
+    const children = [];
+    if (node.submodel) children.push(node.submodel);
+    if (Array.isArray(node.submodels)) children.push(...node.submodels);
+
+    children.forEach((child, childIndex) => {
+      const childId = canonicalPartName(child.id || ("SUBMODEL_" + (childIndex + 1)));
+      collectNodeUvTargets(
+        child,
+        rootPartId,
+        ownTextureSize,
+        out,
+        (path ? path + "/" : "") + childId,
+        depth + 1
+      );
+    });
+  }
+
+  function playerUvLayout() {
+    const slim = detectSlimModel() === "slim";
+    const armW = slim ? 3 : 4;
+    const targets = [];
+    const definitions = [
+      ["HEAD", [0,0], [8,8,8]],
+      ["HEADWEAR", [32,0], [8,8,8]],
+      ["BODY", [16,16], [8,12,4]],
+      ["BODYWEAR", [16,32], [8,12,4]],
+      ["RIGHT_ARM", [40,16], [armW,12,4]],
+      ["RIGHT_ARMWEAR", [40,32], [armW,12,4]],
+      ["LEFT_ARM", [32,48], [armW,12,4]],
+      ["LEFT_ARMWEAR", [48,48], [armW,12,4]],
+      ["RIGHT_LEG", [0,16], [4,12,4]],
+      ["RIGHT_LEGWEAR", [0,32], [4,12,4]],
+      ["LEFT_LEG", [16,48], [4,12,4]],
+      ["LEFT_LEGWEAR", [0,48], [4,12,4]]
+    ];
+    const faceNames = {
+      north: "FRONT",
+      south: "BACK",
+      west: "RIGHT",
+      east: "LEFT",
+      up: "TOP",
+      down: "BOTTOM"
+    };
+
+    definitions.forEach(([part, offset, dims]) => {
+      const box = {
+        coordinates: [0,0,0,dims[0],dims[1],dims[2]],
+        textureOffset: offset
+      };
+      const rects = getBoxFaceUvs(box);
+      Object.entries(faceNames).forEach(([faceKey, faceLabel]) => {
+        const rect = uvRectObject(rects[faceKey]);
+        if (!rect) return;
+        targets.push({
+          label: part + "_" + faceLabel,
+          aliases: [part + "_" + faceLabel],
+          part,
+          face: faceLabel,
+          rect,
+          textureWidth: 64,
+          textureHeight: 64,
+          path: part
+        });
+      });
+    });
+
+    return {
+      modelId: "player",
+      textureWidth: 64,
+      textureHeight: 64,
+      targets
+    };
+  }
+
+  function selectedUvLayout() {
+    if ($("entityType").value === "player") return playerUvLayout();
+
+    const selected = selectedCemModel();
+    if (!selected) return null;
+
+    const textureSize = Array.isArray(selected.model.textureSize)
+      ? selected.model.textureSize.map(Number)
+      : [64,64];
+
+    const targets = [];
+    for (const part of selected.model.models || []) {
+      if (!part || typeof part !== "object") continue;
+      const partId = part.id || part.part || "part";
+      collectNodeUvTargets(
+        part,
+        partId,
+        Array.isArray(part.textureSize) ? part.textureSize.map(Number) : textureSize,
+        targets,
+        canonicalPartName(partId)
+      );
+    }
+
+    return {
+      modelId: selected.entry.id,
+      modelName: selected.entry.name,
+      textureWidth: Number(textureSize[0]) || 64,
+      textureHeight: Number(textureSize[1]) || 64,
+      targets
+    };
+  }
 
   window.minecraftTextureStudio = {
     async loadTextureFile(file, options = {}) {
@@ -1053,6 +1242,9 @@
     },
     refresh() {
       if (currentImageCanvas) rebuildModel();
+    },
+    getUvLayout() {
+      return selectedUvLayout();
     }
   };
 
@@ -1063,6 +1255,9 @@
   $("entityType").addEventListener("change", onModelChanged);
   $("modelType").addEventListener("change", () => {
     if ($("entityType").value === "player" && currentImageCanvas) rebuildModel();
+    window.dispatchEvent(new CustomEvent("minecraft-model-change", {
+      detail: { modelId: $("entityType").value, playerModel: $("modelType").value }
+    }));
   });
 
   $("skinInput").addEventListener("change", () => {
