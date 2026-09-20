@@ -18,6 +18,10 @@
   let guideUrl = null;
   let guideImage = null;
   let pendingGuidedResult = null;
+  let detectedRegions = [];
+  let detectedPanels = [];
+  let detectedOcrLabels = [];
+  let guidedTextureReady = false;
 
   function autoScaleFor(width, height) {
     const maxDim = Math.max(width, height);
@@ -47,25 +51,549 @@
   }
 
 
+
+  function guideBackgroundMode() {
+    return document.querySelector('input[name="guideBackgroundMode"]:checked')?.value || "background";
+  }
+
+  function selectedUvLayout() {
+    return window.minecraftTextureStudio?.getUvLayout
+      ? window.minecraftTextureStudio.getUvLayout()
+      : null;
+  }
+
+  function expectedGuideLabels() {
+    const layout = selectedUvLayout();
+    if (!layout?.targets?.length) return [];
+    return Array.from(new Set(layout.targets.map((target) => normalizeLabel(target.label)).filter(Boolean)));
+  }
+
+  function semanticAlias(label) {
+    let value = normalizeLabel(label);
+
+    value = value
+      .replace(/^HAT_/, "HEADWEAR_")
+      .replace(/^ARM_RIGHT_/, "RIGHT_ARM_")
+      .replace(/^ARM_LEFT_/, "LEFT_ARM_")
+      .replace(/^LEG_RIGHT_/, "RIGHT_LEG_")
+      .replace(/^LEG_LEFT_/, "LEFT_LEG_");
+
+    const directional = [
+      [/^RIGHT_(ARM|LEG)_OUTER$/, "RIGHT_$1_RIGHT"],
+      [/^RIGHT_(ARM|LEG)_INNER$/, "RIGHT_$1_LEFT"],
+      [/^LEFT_(ARM|LEG)_OUTER$/, "LEFT_$1_LEFT"],
+      [/^LEFT_(ARM|LEG)_INNER$/, "LEFT_$1_RIGHT"]
+    ];
+    directional.forEach(([pattern, replacement]) => {
+      value = value.replace(pattern, replacement);
+    });
+
+    return value;
+  }
+
+  function levenshteinDistance(a, b) {
+    const left = String(a || "");
+    const right = String(b || "");
+    if (left === right) return 0;
+    if (!left.length) return right.length;
+    if (!right.length) return left.length;
+
+    const previous = new Array(right.length + 1);
+    const current = new Array(right.length + 1);
+    for (let j = 0; j <= right.length; j++) previous[j] = j;
+
+    for (let i = 1; i <= left.length; i++) {
+      current[0] = i;
+      for (let j = 1; j <= right.length; j++) {
+        current[j] = Math.min(
+          current[j - 1] + 1,
+          previous[j] + 1,
+          previous[j - 1] + (left[i - 1] === right[j - 1] ? 0 : 1)
+        );
+      }
+      for (let j = 0; j <= right.length; j++) previous[j] = current[j];
+    }
+    return previous[right.length];
+  }
+
+  function matchTargetLabel(rawLabel) {
+    const expected = expectedGuideLabels();
+    if (!expected.length) return { label: semanticAlias(rawLabel), score: 0.5 };
+
+    const normalized = semanticAlias(rawLabel);
+    if (expected.includes(normalized)) return { label: normalized, score: 1 };
+
+    let best = null;
+    for (const target of expected) {
+      const distance = levenshteinDistance(normalized, target);
+      const score = 1 - distance / Math.max(normalized.length, target.length, 1);
+      if (!best || score > best.score) best = { label: target, score };
+    }
+
+    return best && best.score >= 0.58 ? best : { label: normalized, score: 0 };
+  }
+
+  function imageDataFor(image) {
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(image, 0, 0);
+    return { canvas, ctx, imageData: ctx.getImageData(0, 0, canvas.width, canvas.height) };
+  }
+
+  function sampleBackgroundColor(imageData) {
+    const { width, height, data } = imageData;
+    const points = [
+      [0,0], [width - 1,0], [0,height - 1], [width - 1,height - 1],
+      [Math.floor(width / 2),0], [0,Math.floor(height / 2)]
+    ];
+    const sum = [0,0,0];
+    let count = 0;
+
+    points.forEach(([x,y]) => {
+      const index = (y * width + x) * 4;
+      if (data[index + 3] < 16) return;
+      sum[0] += data[index];
+      sum[1] += data[index + 1];
+      sum[2] += data[index + 2];
+      count++;
+    });
+
+    if (!count) return [0,0,0];
+    return sum.map((value) => value / count);
+  }
+
+  function detectGuidePanels() {
+    if (!guideImage) return [];
+
+    const prepared = imageDataFor(guideImage);
+    const { width, height, data } = prepared.imageData;
+    const mode = guideBackgroundMode();
+    const tolerance = Number($("guideBackgroundTolerance")?.value || 34);
+    const minPercent = Number($("guideMinPanelPercent")?.value || 0.18);
+    const minArea = width * height * (minPercent / 100);
+    const background = sampleBackgroundColor(prepared.imageData);
+    const total = width * height;
+    const active = new Uint8Array(total);
+    const visited = new Uint8Array(total);
+
+    for (let i = 0; i < total; i++) {
+      const p = i * 4;
+      const alpha = data[p + 3];
+
+      if (mode === "transparent") {
+        active[i] = alpha >= 24 ? 1 : 0;
+      } else {
+        if (alpha < 16) continue;
+        const dr = data[p] - background[0];
+        const dg = data[p + 1] - background[1];
+        const db = data[p + 2] - background[2];
+        const distance = Math.sqrt(dr * dr + dg * dg + db * db);
+        active[i] = distance >= tolerance ? 1 : 0;
+      }
+    }
+
+    const stack = new Int32Array(total);
+    const components = [];
+
+    for (let start = 0; start < total; start++) {
+      if (!active[start] || visited[start]) continue;
+
+      let sp = 0;
+      stack[sp++] = start;
+      visited[start] = 1;
+      let count = 0;
+      let minX = width, minY = height, maxX = -1, maxY = -1;
+
+      while (sp > 0) {
+        const index = stack[--sp];
+        const x = index % width;
+        const y = (index / width) | 0;
+        count++;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+
+        const push = (next) => {
+          if (next < 0 || next >= total || visited[next] || !active[next]) return;
+          visited[next] = 1;
+          stack[sp++] = next;
+        };
+
+        if (x > 0) push(index - 1);
+        if (x + 1 < width) push(index + 1);
+        if (y > 0) push(index - width);
+        if (y + 1 < height) push(index + width);
+        if (x > 0 && y > 0) push(index - width - 1);
+        if (x + 1 < width && y > 0) push(index - width + 1);
+        if (x > 0 && y + 1 < height) push(index + width - 1);
+        if (x + 1 < width && y + 1 < height) push(index + width + 1);
+      }
+
+      const w = maxX - minX + 1;
+      const h = maxY - minY + 1;
+      const boxArea = w * h;
+      const fill = count / Math.max(1, boxArea);
+
+      if (
+        boxArea >= minArea &&
+        w >= width * 0.012 &&
+        h >= height * 0.04 &&
+        fill >= 0.05
+      ) {
+        components.push({
+          x:minX, y:minY, w, h,
+          pixelCount:count,
+          fill,
+          area:boxArea
+        });
+      }
+    }
+
+    const filtered = components.filter((candidate, i) => {
+      return !components.some((other, j) => {
+        if (i === j || other.area <= candidate.area) return false;
+        const contained =
+          candidate.x >= other.x - 2 &&
+          candidate.y >= other.y - 2 &&
+          candidate.x + candidate.w <= other.x + other.w + 2 &&
+          candidate.y + candidate.h <= other.y + other.h + 2;
+        return contained && candidate.area < other.area * 0.45;
+      });
+    });
+
+    filtered.sort((a,b) => a.y - b.y || a.x - b.x);
+    detectedPanels = filtered.slice(0, 120);
+    return detectedPanels;
+  }
+
+  function extractOcrLines(data) {
+    const words = Array.isArray(data?.words) ? data.words : [];
+    if (!words.length) return [];
+
+    const normalizedWords = words
+      .filter((word) => String(word.text || "").trim())
+      .map((word) => ({
+        text:String(word.text || ""),
+        confidence:Number(word.confidence) || 0,
+        bbox:word.bbox || { x0:0,y0:0,x1:0,y1:0 }
+      }))
+      .sort((a,b) =>
+        ((a.bbox.y0 + a.bbox.y1) / 2) - ((b.bbox.y0 + b.bbox.y1) / 2) ||
+        a.bbox.x0 - b.bbox.x0
+      );
+
+    const lines = [];
+    const tolerance = Math.max(7, guideImage.naturalHeight * 0.012);
+
+    normalizedWords.forEach((word) => {
+      const cy = (word.bbox.y0 + word.bbox.y1) / 2;
+      let line = lines.find((entry) => Math.abs(entry.cy - cy) <= tolerance);
+      if (!line) {
+        line = { cy, words:[] };
+        lines.push(line);
+      }
+      line.words.push(word);
+      line.cy =
+        line.words.reduce((sum,item) => sum + (item.bbox.y0 + item.bbox.y1) / 2, 0) /
+        line.words.length;
+    });
+
+    return lines.map((line) => {
+      line.words.sort((a,b) => a.bbox.x0 - b.bbox.x0);
+      return {
+        text:line.words.map((word) => word.text).join(" "),
+        confidence:
+          line.words.reduce((sum,word) => sum + word.confidence, 0) /
+          Math.max(1,line.words.length),
+        bbox:{
+          x0:Math.min(...line.words.map((word) => word.bbox.x0)),
+          y0:Math.min(...line.words.map((word) => word.bbox.y0)),
+          x1:Math.max(...line.words.map((word) => word.bbox.x1)),
+          y1:Math.max(...line.words.map((word) => word.bbox.y1))
+        }
+      };
+    }).sort((a,b) => a.bbox.y0 - b.bbox.y0 || a.bbox.x0 - b.bbox.x0);
+  }
+
+  function looksLikePartLabel(value) {
+    const label = normalizeLabel(value);
+    if (!label || label.length < 4 || label.length > 90) return false;
+
+    const strongFace = /(FRONT|BACK|TOP|BOTTOM|INNER|OUTER|SIDE|PLANE|OPTIONAL|UP|DOWN)$/;
+    if (strongFace.test(label)) return true;
+
+    const lateralFace = /(HEAD|BODY|TORSO|ARM|LEG|WING|FIN|TAIL|NOSE|HAT|HEADWEAR|EAR|HORN|TENTACLE|TENDRIL|RIBCAGE|MANE).*_(LEFT|RIGHT)$/;
+    return lateralFace.test(label);
+  }
+
+  function combineOcrLabelLines(lines) {
+    const candidates = [];
+
+    lines.forEach((line, index) => {
+      if (looksLikePartLabel(line.text)) {
+        candidates.push({ ...line, rawLabel:normalizeLabel(line.text), lineCount:1 });
+      }
+
+      const next = lines[index + 1];
+      if (!next) return;
+
+      const horizontalOverlap =
+        Math.max(0, Math.min(line.bbox.x1, next.bbox.x1) - Math.max(line.bbox.x0, next.bbox.x0));
+      const minWidth = Math.max(1, Math.min(line.bbox.x1 - line.bbox.x0, next.bbox.x1 - next.bbox.x0));
+      const overlapRatio = horizontalOverlap / minWidth;
+      const verticalGap = next.bbox.y0 - line.bbox.y1;
+      const maxHeight = Math.max(line.bbox.y1 - line.bbox.y0, next.bbox.y1 - next.bbox.y0);
+
+      if (overlapRatio >= 0.25 && verticalGap >= -4 && verticalGap <= maxHeight * 1.5) {
+        const combinedText = line.text + " " + next.text;
+        if (looksLikePartLabel(combinedText)) {
+          candidates.push({
+            text:combinedText,
+            rawLabel:normalizeLabel(combinedText),
+            confidence:(line.confidence + next.confidence) / 2,
+            lineCount:2,
+            bbox:{
+              x0:Math.min(line.bbox.x0,next.bbox.x0),
+              y0:Math.min(line.bbox.y0,next.bbox.y0),
+              x1:Math.max(line.bbox.x1,next.bbox.x1),
+              y1:Math.max(line.bbox.y1,next.bbox.y1)
+            }
+          });
+        }
+      }
+    });
+
+    candidates.sort((a,b) =>
+      b.lineCount - a.lineCount ||
+      b.confidence - a.confidence ||
+      a.bbox.y0 - b.bbox.y0
+    );
+
+    const kept = [];
+    candidates.forEach((candidate) => {
+      const overlapsExisting = kept.some((other) => {
+        const ix = Math.max(0, Math.min(candidate.bbox.x1,other.bbox.x1) - Math.max(candidate.bbox.x0,other.bbox.x0));
+        const iy = Math.max(0, Math.min(candidate.bbox.y1,other.bbox.y1) - Math.max(candidate.bbox.y0,other.bbox.y0));
+        const intersection = ix * iy;
+        const area = Math.max(1,(candidate.bbox.x1-candidate.bbox.x0)*(candidate.bbox.y1-candidate.bbox.y0));
+        return intersection / area > 0.45;
+      });
+      if (!overlapsExisting) kept.push(candidate);
+    });
+
+    kept.sort((a,b) => a.bbox.y0 - b.bbox.y0 || a.bbox.x0 - b.bbox.x0);
+    return kept;
+  }
+
+  function associateLabelsToPanels(labels, panels) {
+    const usedPanels = new Set();
+    const regions = [];
+
+    labels.forEach((label) => {
+      const lx = (label.bbox.x0 + label.bbox.x1) / 2;
+      const labelWidth = Math.max(1,label.bbox.x1-label.bbox.x0);
+      const labelBottom = label.bbox.y1;
+      let best = null;
+
+      panels.forEach((panel,index) => {
+        if (usedPanels.has(index)) return;
+
+        const panelCenter = panel.x + panel.w / 2;
+        const gap = panel.y - labelBottom;
+        const centerDistance = Math.abs(panelCenter - lx);
+        const horizontalOverlap =
+          Math.max(0, Math.min(panel.x+panel.w,label.bbox.x1) - Math.max(panel.x,label.bbox.x0));
+        const overlapRatio = horizontalOverlap / Math.max(1,Math.min(panel.w,labelWidth));
+
+        if (gap < -guideImage.naturalHeight * 0.01) return;
+        if (gap > guideImage.naturalHeight * 0.20) return;
+        if (overlapRatio < 0.08 && centerDistance > Math.max(panel.w,labelWidth) * 0.72) return;
+
+        const score =
+          Math.max(0,gap) * 2.2 +
+          centerDistance * 0.75 -
+          horizontalOverlap * 0.45;
+
+        if (!best || score < best.score) best = { panel,index,score,gap,centerDistance,overlapRatio };
+      });
+
+      if (!best) return;
+      usedPanels.add(best.index);
+
+      const targetMatch = matchTargetLabel(label.rawLabel);
+      const geometryConfidence = Math.max(
+        0,
+        1 - (
+          best.gap / Math.max(1,guideImage.naturalHeight * 0.20) * 0.55 +
+          best.centerDistance / Math.max(1,guideImage.naturalWidth) * 0.45
+        )
+      );
+
+      regions.push({
+        sourceLabel:label.rawLabel,
+        targetLabel:targetMatch.label,
+        ocrConfidence:label.confidence,
+        targetScore:targetMatch.score,
+        spatialConfidence:geometryConfidence,
+        labelBox:{...label.bbox},
+        panel:{...best.panel}
+      });
+    });
+
+    detectedRegions = regions;
+    return regions;
+  }
+
+  function renderGuideAnalysis() {
+    renderImage(guideCanvas, guideCtx, guideImage, "Guide annoté");
+    if (!guideImage || !detectedRegions.length) return;
+
+    const sx = guideCanvas.width / guideImage.naturalWidth;
+    const sy = guideCanvas.height / guideImage.naturalHeight;
+
+    detectedRegions.forEach((region,index) => {
+      const hue = (index * 67) % 360;
+      const color = "hsl(" + hue + " 90% 65%)";
+      const panel = region.panel;
+      const label = region.labelBox;
+
+      guideCtx.save();
+      guideCtx.strokeStyle = color;
+      guideCtx.fillStyle = "hsla(" + hue + ",90%,65%,0.12)";
+      guideCtx.lineWidth = 2;
+
+      guideCtx.fillRect(panel.x*sx,panel.y*sy,panel.w*sx,panel.h*sy);
+      guideCtx.strokeRect(panel.x*sx,panel.y*sy,panel.w*sx,panel.h*sy);
+      guideCtx.strokeRect(
+        label.x0*sx,label.y0*sy,
+        (label.x1-label.x0)*sx,(label.y1-label.y0)*sy
+      );
+
+      const lx = ((label.x0+label.x1)/2)*sx;
+      const ly = label.y1*sy;
+      const px = (panel.x+panel.w/2)*sx;
+      const py = panel.y*sy;
+      guideCtx.beginPath();
+      guideCtx.moveTo(lx,ly);
+      guideCtx.lineTo(px,py);
+      guideCtx.stroke();
+
+      const text = region.targetLabel || region.sourceLabel;
+      guideCtx.font = "700 12px system-ui";
+      const textWidth = Math.min(panel.w*sx,guideCtx.measureText(text).width+8);
+      guideCtx.fillStyle = "rgba(0,0,0,.82)";
+      guideCtx.fillRect(panel.x*sx,panel.y*sy,textWidth,18);
+      guideCtx.fillStyle = "#fff";
+      guideCtx.textAlign = "left";
+      guideCtx.textBaseline = "top";
+      guideCtx.fillText(text,panel.x*sx+4,panel.y*sy+2,Math.max(1,panel.w*sx-8));
+      guideCtx.restore();
+    });
+  }
+
+  function updateDetectedLabelsFromRegions() {
+    $("detectedLabels").value = detectedRegions
+      .map((region) => region.targetLabel || region.sourceLabel)
+      .join("\n");
+  }
+
+  function renderSpatialMappings() {
+    const root = $("spatialMappings");
+    if (!root) return;
+
+    root.innerHTML = "";
+    if (!detectedRegions.length) {
+      root.className = "texture-spatial-mappings texture-empty";
+      root.textContent = "Les associations label → panneau apparaîtront ici.";
+      return;
+    }
+
+    root.className = "texture-spatial-mappings";
+    const targets = expectedGuideLabels();
+
+    detectedRegions.forEach((region,index) => {
+      const row = document.createElement("div");
+      row.className = "texture-spatial-row";
+
+      const title = document.createElement("div");
+      title.className = "texture-spatial-row__title";
+      title.innerHTML =
+        "<strong>" + region.sourceLabel + "</strong>" +
+        "<small>Panneau x:" + region.panel.x + " y:" + region.panel.y +
+        " · " + region.panel.w + "×" + region.panel.h + "</small>";
+
+      const select = document.createElement("select");
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = "— ne pas mapper —";
+      select.appendChild(blank);
+
+      targets.forEach((target) => {
+        const option = document.createElement("option");
+        option.value = target;
+        option.textContent = target;
+        if (target === region.targetLabel) option.selected = true;
+        select.appendChild(option);
+      });
+
+      if (region.targetLabel && !targets.includes(region.targetLabel)) {
+        const option = document.createElement("option");
+        option.value = region.targetLabel;
+        option.textContent = region.targetLabel + " (non trouvé dans le modèle)";
+        option.selected = true;
+        select.appendChild(option);
+      }
+
+      select.addEventListener("change", () => {
+        region.targetLabel = select.value;
+        updateDetectedLabelsFromRegions();
+        updateDetectedPartsSummary();
+        renderGuideAnalysis();
+        guidedTextureReady = false;
+        $("downloadGuidedTexture").disabled = true;
+      });
+
+      const confidence = document.createElement("div");
+      confidence.className = "texture-spatial-confidence";
+      const percent = Math.round(
+        Math.max(0,Math.min(1,region.spatialConfidence * 0.55 + (region.targetScore || 0) * 0.45)) * 100
+      );
+      confidence.textContent = percent + "%";
+
+      row.append(title,select,confidence);
+      root.appendChild(row);
+    });
+  }
+
   function updateDetectedPartsSummary() {
     const root = $("detectedPartsSummary");
     if (!root) return;
-    const labels = detectedLabelList();
 
-    if (!labels.length) {
+    if (!detectedRegions.length) {
       root.innerHTML = "Aucune partie détectée pour le moment.";
       return;
     }
 
-    const chips = labels
-      .slice(0, 80)
-      .map((label) => "<span>" + label.replace(/[<>&"']/g, "") + "</span>")
+    const mapped = detectedRegions.filter((region) => region.targetLabel).length;
+    const unmatched = detectedRegions.length - mapped;
+    const chips = detectedRegions
+      .slice(0,80)
+      .map((region) => {
+        const label = String(region.targetLabel || region.sourceLabel).replace(/[<>&"']/g,"");
+        return "<span>" + label + "</span>";
+      })
       .join("");
 
     root.innerHTML =
-      "<strong>" + labels.length + " partie" + (labels.length > 1 ? "s" : "") +
-      " détectée" + (labels.length > 1 ? "s" : "") + "</strong><div class=\"texture-detected-chips\">" +
-      chips + "</div>";
+      "<strong>" + detectedRegions.length + " association" +
+      (detectedRegions.length > 1 ? "s" : "") + "</strong>" +
+      " · " + mapped + " mappée" + (mapped > 1 ? "s" : "") +
+      (unmatched ? " · " + unmatched + " à corriger" : "") +
+      "<div class=\"texture-detected-chips\">" + chips + "</div>";
   }
 
   function imageToPngFile(image, filename) {
@@ -415,105 +943,117 @@
   }
 
   function buildLabelPrompt() {
-    const target = targetResolution();
-    const sourceW = templateSize ? templateSize.width : "[REFERENCE WIDTH]";
-    const sourceH = templateSize ? templateSize.height : "[REFERENCE HEIGHT]";
+    const mode = guideBackgroundMode();
+    const labels = expectedGuideLabels();
+    const labelBlock = labels.length
+      ? labels.map((label) => "- " + label)
+      : ["- Use semantic labels such as HEAD_FRONT, BODY_LEFT, LEG_1_FRONT, etc."];
+
+    const backgroundRules = mode === "transparent"
+      ? [
+          "BACKGROUND MODE: NO BACKGROUND / TRANSPARENT.",
+          "The PNG background outside labels and artwork panels must have alpha 0.",
+          "Do not draw a colored canvas behind the sheet."
+        ]
+      : [
+          "BACKGROUND MODE: SOLID BACKGROUND.",
+          "Use one perfectly uniform pure black background (#000000).",
+          "Do not use gradients, texture, noise or shadows in the background."
+        ];
 
     return [
-      "You are a Minecraft entity UV analyst.",
+      "You are creating a MACHINE-READABLE Minecraft entity design sheet.",
       "",
-      "I will provide ONE reference image: the ORIGINAL vanilla/base Minecraft entity texture atlas.",
+      "I will provide the ORIGINAL Minecraft entity texture / UV atlas as the reference image.",
+      "Use it to understand which model parts and UV faces exist.",
       "",
-      "Your task is NOT to redesign the skin.",
-      "Your task is to create a SEMANTICALLY ANNOTATED UV GUIDE that tells another AI exactly which body part and which face every UV region represents.",
-      "",
-      "This step is specifically for difficult entity atlases where many UV islands are visually identical or repeated.",
-      "",
-      "",
-      "==================================================",
-      "1. GEOMETRY MUST MATCH THE REFERENCE",
-      "==================================================",
-      "",
-      "Reference atlas size:",
-      sourceW + " × " + sourceH + " pixels",
-      "",
-      "Output the annotated guide at:",
-      target.width + " × " + target.height + " pixels",
-      "",
-      "Use the exact same atlas aspect ratio, UV island positions, orientation and spacing as the supplied image.",
-      "Scale all UV boundaries uniformly by exactly " + target.scale + "×.",
-      "",
-      "Do NOT repack, rotate, mirror, move, merge or invent UV islands.",
+      "DESIGN REQUEST:",
+      designText(),
       "",
       "",
       "==================================================",
-      "2. LABEL EVERY REPRESENTED PART",
+      "1. OUTPUT IS A LABELED DESIGN SHEET, NOT A FINAL UV ATLAS",
       "==================================================",
       "",
-      "Every identifiable UV face or plane MUST have a clear machine-readable name.",
+      "Do NOT output the final Minecraft texture atlas.",
+      "Instead, draw every requested UV face as its own isolated flat rectangular artwork panel.",
+      "No perspective. No 3D render. No overlapping panels.",
       "",
-      "Use uppercase ASCII labels with underscores only.",
-      "",
-      "Preferred naming format for cuboids:",
-      "PART_INSTANCE_FACE",
-      "",
-      "Examples:",
-      "HEAD_FRONT",
-      "HEAD_BACK",
-      "HEAD_LEFT",
-      "HEAD_RIGHT",
-      "HEAD_TOP",
-      "HEAD_BOTTOM",
-      "BODY_FRONT",
-      "LEG_1_FRONT",
-      "LEG_2_FRONT",
-      "ARM_LEFT_TOP",
-      "TENTACLE_1_LEFT",
-      "TENTACLE_2_LEFT",
-      "",
-      "For flat planes or unusual geometry, use descriptive labels such as:",
-      "WING_LEFT_PLANE_1",
-      "FIN_RIGHT_PLANE_1",
-      "MANE_PLANE_2",
-      "",
-      "CRITICAL RULE FOR REPEATED SHAPES:",
-      "If two or more UV regions look identical, they MUST still receive different unique names.",
-      "Never label repeated regions with the same generic name.",
-      "Use anatomical position when known, otherwise use deterministic numbering: PART_1, PART_2, PART_3, etc.",
-      "",
-      "If the exact anatomical meaning is uncertain, do NOT omit the region.",
-      "Give it a stable unique identifier such as UNKNOWN_PART_1_FRONT rather than leaving it unlabeled.",
+      ...backgroundRules,
       "",
       "",
       "==================================================",
-      "3. MAKE LABELS EASY TO READ",
+      "2. ABSOLUTE LABEL → PANEL RULE",
       "==================================================",
       "",
-      "This is a GUIDE image, not the final game texture.",
+      "EVERY artwork panel must have exactly one machine-readable label.",
+      "The label MUST be directly ABOVE the panel it describes.",
+      "The panel directly underneath a label is ALWAYS the part named by that label.",
       "",
-      "Use high-contrast text.",
-      "Place each name inside its matching UV face whenever there is enough room.",
-      "If a region is too small, place the full label nearby in unused atlas space and connect it to the exact region with a thin leader line.",
+      "Do not put labels inside artwork panels.",
+      "Do not put a label beside its panel.",
+      "Do not use leader lines.",
+      "Do not put unrelated text anywhere on the sheet.",
       "",
-      "Do not let a leader line point to multiple regions.",
-      "Do not let one label describe multiple repeated regions.",
+      "Center each label horizontally over its own panel.",
+      "Leave a small clear gap between the label and the top edge of its panel.",
+      "Leave a much larger gap between neighboring panels so computer vision can separate them.",
       "",
-      "You may simplify the original artwork underneath the labels to improve readability, but NEVER alter the UV boundaries.",
+      "If a label is long, it may use TWO centered lines, but both lines must remain directly above the same panel.",
       "",
       "",
       "==================================================",
-      "4. OUTPUT",
+      "3. EXACT LABELS TO USE FOR THE CURRENT SELECTED MODEL",
       "==================================================",
       "",
-      "Output exactly ONE annotated UV guide image.",
-      target.width + " × " + target.height + " PNG",
+      ...labelBlock,
       "",
-      "No 3D character render.",
-      "No perspective view.",
-      "No presentation mockup.",
-      "No extra legend outside the atlas.",
+      "Use these labels exactly whenever possible.",
+      "Do not replace them with synonyms.",
+      "Do not duplicate a label for two different panels.",
       "",
-      "The single most important requirement is that every repeated or ambiguous UV region has its own explicit readable name."
+      "",
+      "==================================================",
+      "4. PANEL CONTENT",
+      "==================================================",
+      "",
+      "Each panel is a flat orthographic view of that named face.",
+      "Keep the same character design, palette and materials across all panels.",
+      "Continue patterns logically across neighboring faces.",
+      "Keep important details away from panel edges when possible.",
+      "",
+      "The panel itself must be easy to crop:",
+      "- rectangular",
+      "- no shadow outside the panel",
+      "- no decorative frame",
+      "- no overlap with another panel",
+      "- no text inside except text that is intentionally part of the character design",
+      "",
+      "",
+      "==================================================",
+      "5. LAYOUT",
+      "==================================================",
+      "",
+      "Arrange panels in clean horizontal rows.",
+      "Labels are always above their matching panels.",
+      "Prefer left-to-right grouping by body part.",
+      "Keep at least 24 pixels of clear empty space between unrelated panels at 1536×1024 scale.",
+      "",
+      "",
+      "==================================================",
+      "6. OUTPUT",
+      "==================================================",
+      "",
+      "Output exactly ONE labeled design-sheet image.",
+      "Recommended size: 1536 × 1024 PNG.",
+      mode === "transparent" ? "RGBA with transparent unused space." : "RGB/RGBA with a pure black unused background.",
+      "",
+      "No character turnaround render.",
+      "No 3D scene.",
+      "No comparison image.",
+      "",
+      "FINAL MACHINE-READABILITY CHECK:",
+      "For every label, the first valid rectangular artwork panel immediately BELOW that label must be the part named by the label."
     ].join("\n");
   }
 
@@ -738,6 +1278,10 @@
         guideFile = file;
         guideUrl = url;
         guideImage = image;
+        detectedRegions = [];
+        detectedPanels = [];
+        detectedOcrLabels = [];
+        guidedTextureReady = false;
 
         renderImage(guideCanvas, guideCtx, guideImage, "Guide annoté");
         $("scanGuide").disabled = false;
@@ -798,87 +1342,185 @@
     }
   }
 
-  function candidateLabelsFromText(text) {
-    const faceWords = /(FRONT|BACK|LEFT|RIGHT|TOP|BOTTOM|SIDE|PLANE|UP|DOWN)/;
-    const rawLines = String(text || "").split(/\r?\n/);
-    const labels = [];
-
-    for (const line of rawLines) {
-      const normalized = normalizeLabel(line);
-      if (!normalized || normalized.length < 4 || normalized.length > 80) continue;
-
-      const parts = normalized.split("_").filter(Boolean);
-      if (parts.length >= 2 && (faceWords.test(normalized) || /\d/.test(normalized))) {
-        labels.push(normalized);
-        continue;
-      }
-
-      const tokens = line.match(/[A-Za-z][A-Za-z0-9_-]{3,}/g) || [];
-      for (const token of tokens) {
-        const label = normalizeLabel(token);
-        if (label.includes("_") && (faceWords.test(label) || /\d/.test(label))) labels.push(label);
-      }
-    }
-
-    return Array.from(new Set(labels));
-  }
-
   async function scanGuideLabels() {
     if (!guideImage) {
-      $("ocrStatus").textContent = "Charge d’abord un guide annoté.";
+      $("ocrStatus").textContent = "Charge d'abord une planche guidée.";
       return;
     }
     if (!window.Tesseract) {
-      $("ocrStatus").textContent = "Le module OCR n’a pas pu être chargé.";
+      $("ocrStatus").textContent = "Le module OCR n'a pas pu être chargé.";
       return;
     }
 
     $("scanGuide").disabled = true;
-  $("previewGuidedResult") && ($("previewGuidedResult").disabled = true);
-  $("previewTemplate3D") && ($("previewTemplate3D").disabled = true);
-  $("previewDetectedGuide3D") && ($("previewDetectedGuide3D").disabled = true);
     $("guideOcrProgress").style.width = "3%";
-    $("ocrStatus").textContent = "OCR en cours…";
+    $("ocrStatus").textContent = "Détection des panneaux puis OCR des labels…";
+    guidedTextureReady = false;
+    $("downloadGuidedTexture").disabled = true;
+
+    detectGuidePanels();
 
     let worker = null;
     try {
       worker = await Tesseract.createWorker("eng", 1, {
-        logger: (message) => {
+        logger:(message) => {
           if (typeof message.progress === "number") {
             $("guideOcrProgress").style.width =
-              Math.max(3, Math.round(message.progress * 100)) + "%";
+              Math.max(3,Math.round(message.progress * 100)) + "%";
           }
           if (message.status) $("ocrStatus").textContent = "OCR : " + message.status;
         }
       });
 
       const result = await worker.recognize(guideImage);
-      const labels = candidateLabelsFromText(result.data && result.data.text);
+      const lines = extractOcrLines(result.data || {});
+      detectedOcrLabels = combineOcrLabelLines(lines);
+      associateLabelsToPanels(detectedOcrLabels,detectedPanels);
 
-      if (labels.length) {
-        $("detectedLabels").value = labels.join("\n");
-        $("ocrStatus").textContent =
-          labels.length + " nom" + (labels.length > 1 ? "s" : "") +
-          " détecté" + (labels.length > 1 ? "s" : "") +
-          ". Corrige la liste si nécessaire.";
-      } else {
-        $("ocrStatus").textContent =
-          "Aucun nom machine-readable détecté. Tu peux saisir/corriger les noms manuellement.";
-      }
+      updateDetectedLabelsFromRegions();
+      updateDetectedPartsSummary();
+      renderSpatialMappings();
+      renderGuideAnalysis();
+      rebuildPrompts();
 
       $("guideOcrProgress").style.width = "100%";
-      rebuildPrompts();
-      if (labels.length) await previewReferenceIn3D("guide");
+      $("previewDetectedGuide3D").disabled = !detectedRegions.length;
+      $("buildGuidedTexture").disabled = !detectedRegions.length;
+
+      if (detectedRegions.length) {
+        $("ocrStatus").textContent =
+          detectedRegions.length + " label(s) associé(s) spatialement à un panneau. " +
+          detectedPanels.length + " panneau(x) candidat(s) détecté(s). Vérifie les traits label → panneau.";
+      } else {
+        $("ocrStatus").textContent =
+          "Aucune association label → panneau fiable. Essaie l'autre mode de fond ou ajuste les seuils.";
+      }
     } catch (error) {
       console.error(error);
       $("ocrStatus").textContent =
-        "Échec OCR. La méthode guidée reste utilisable : saisis les noms manuellement.";
+        "Échec OCR. Essaie l'autre mode de fond ou une planche avec des labels plus grands.";
     } finally {
       if (worker) await worker.terminate();
       $("scanGuide").disabled = false;
     }
   }
 
+  function findTargetForLabel(layout,label) {
+    const wanted = normalizeLabel(label);
+    if (!wanted || !layout?.targets?.length) return null;
+
+    let target = layout.targets.find((item) => normalizeLabel(item.label) === wanted);
+    if (target) return target;
+
+    target = layout.targets.find((item) =>
+      Array.isArray(item.aliases) &&
+      item.aliases.some((alias) => normalizeLabel(alias) === wanted)
+    );
+    if (target) return target;
+
+    const matched = matchTargetLabel(wanted);
+    return layout.targets.find((item) => normalizeLabel(item.label) === normalizeLabel(matched.label)) || null;
+  }
+
+  function canvasToPngFile(canvas,filename) {
+    return new Promise((resolve,reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error("Impossible de créer le PNG"));
+          return;
+        }
+        resolve(new File([blob],filename,{type:"image/png"}));
+      },"image/png");
+    });
+  }
+
+  async function buildGuidedTexture(preview3d = true) {
+    if (!guideImage || !detectedRegions.length) {
+      $("guidedBuildStatus").textContent = "Analyse d'abord la planche guidée.";
+      return false;
+    }
+
+    const layout = selectedUvLayout();
+    if (!layout?.targets?.length) {
+      $("guidedBuildStatus").textContent =
+        "Le modèle 3D sélectionné ne fournit pas de layout UV exploitable.";
+      return false;
+    }
+
+    const target = targetResolution();
+    const canvas = $("guidedTextureCanvas");
+    canvas.width = target.width;
+    canvas.height = target.height;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.imageSmoothingEnabled = false;
+
+    if (templateImage) {
+      ctx.drawImage(templateImage,0,0,templateImage.naturalWidth,templateImage.naturalHeight,0,0,canvas.width,canvas.height);
+    }
+
+    const sx = canvas.width / layout.textureWidth;
+    const sy = canvas.height / layout.textureHeight;
+    const usedUvRects = new Set();
+    let mapped = 0;
+    let missing = 0;
+    let sharedSkipped = 0;
+
+    for (const region of detectedRegions) {
+      if (!region.targetLabel) {
+        missing++;
+        continue;
+      }
+
+      const uvTarget = findTargetForLabel(layout,region.targetLabel);
+      if (!uvTarget) {
+        missing++;
+        continue;
+      }
+
+      const rect = uvTarget.rect;
+      const destination = {
+        x:Math.round(rect.x * sx),
+        y:Math.round(rect.y * sy),
+        w:Math.max(1,Math.round(rect.w * sx)),
+        h:Math.max(1,Math.round(rect.h * sy))
+      };
+
+      const key = [
+        destination.x,destination.y,destination.w,destination.h
+      ].join(":");
+
+      if (usedUvRects.has(key)) {
+        sharedSkipped++;
+        continue;
+      }
+      usedUvRects.add(key);
+
+      ctx.drawImage(
+        guideImage,
+        region.panel.x,region.panel.y,region.panel.w,region.panel.h,
+        destination.x,destination.y,destination.w,destination.h
+      );
+      mapped++;
+    }
+
+    guidedTextureReady = mapped > 0;
+    $("downloadGuidedTexture").disabled = !guidedTextureReady;
+
+    $("guidedBuildStatus").textContent =
+      mapped + " face(s) copiée(s) dans l'atlas " +
+      canvas.width + "×" + canvas.height +
+      (missing ? " · " + missing + " non mappée(s)" : "") +
+      (sharedSkipped ? " · " + sharedSkipped + " UV partagé(s) conservé(s) une seule fois" : "") + ".";
+
+    if (preview3d && guidedTextureReady && window.minecraftTextureStudio?.loadTextureFile) {
+      const file = await canvasToPngFile(canvas,"guided-generated-texture.png");
+      await window.minecraftTextureStudio.loadTextureFile(file,{scroll:true});
+      $("guidedBuildStatus").textContent += " Preview 3D chargée.";
+    }
+
+    return guidedTextureReady;
+  }
 
   async function previewGeneratedTexture(file, statusId, scroll = true) {
     const status = $(statusId);
@@ -933,6 +1575,52 @@
   }
 
 
+  document.querySelectorAll('input[name="guideBackgroundMode"]').forEach((input) => {
+    input.addEventListener("change", () => {
+      detectedRegions = [];
+      detectedPanels = [];
+      detectedOcrLabels = [];
+      guidedTextureReady = false;
+      $("downloadGuidedTexture").disabled = true;
+      $("buildGuidedTexture").disabled = true;
+      $("previewDetectedGuide3D").disabled = true;
+      renderSpatialMappings();
+      updateDetectedPartsSummary();
+      if (guideImage) renderImage(guideCanvas,guideCtx,guideImage,"Guide annoté");
+      rebuildPrompts();
+    });
+  });
+
+  $("guideBackgroundTolerance")?.addEventListener("input", () => {
+    if (guideImage && detectedRegions.length) {
+      $("ocrStatus").textContent = "Seuil modifié : relance l'analyse.";
+    }
+  });
+
+  $("guideMinPanelPercent")?.addEventListener("input", () => {
+    if (guideImage && detectedRegions.length) {
+      $("ocrStatus").textContent = "Seuil modifié : relance l'analyse.";
+    }
+  });
+
+  $("buildGuidedTexture")?.addEventListener("click", () => buildGuidedTexture(true));
+
+  $("downloadGuidedTexture")?.addEventListener("click", () => {
+    if (!guidedTextureReady) return;
+    const canvas = $("guidedTextureCanvas");
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "guided-minecraft-texture.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url),1000);
+    },"image/png");
+  });
+
   $("directResultInput")?.addEventListener("change", async () => {
     const file = $("directResultInput").files && $("directResultInput").files[0];
     if (file) await previewGeneratedTexture(file, "directPreviewStatus", true);
@@ -960,7 +1648,7 @@
   });
 
   $("previewDetectedGuide3D")?.addEventListener("click", () => {
-    previewReferenceIn3D("guide");
+    buildGuidedTexture(true);
   });
 
   $("templateInput").addEventListener("change", () => {
@@ -975,7 +1663,10 @@
 
   $("scaleMode").addEventListener("change", rebuildPrompts);
   $("designBrief").addEventListener("input", rebuildPrompts);
-  $("detectedLabels").addEventListener("input", rebuildPrompts);
+  $("detectedLabels").addEventListener("input", () => {
+    rebuildPrompts();
+    updateDetectedPartsSummary();
+  });
 
   $("copyDirectPrompt").addEventListener("click", () =>
     copyText("directPromptOutput", "directStatus", "Prompt direct copié ✓"));
@@ -996,8 +1687,17 @@
 
   $("clearDetectedLabels").addEventListener("click", () => {
     $("detectedLabels").value = "";
+    detectedRegions = [];
+    detectedPanels = [];
+    detectedOcrLabels = [];
+    guidedTextureReady = false;
     $("ocrStatus").textContent = "";
     $("guideOcrProgress").style.width = "0";
+    $("buildGuidedTexture").disabled = true;
+    $("downloadGuidedTexture").disabled = true;
+    $("previewDetectedGuide3D").disabled = true;
+    renderSpatialMappings();
+    if (guideImage) renderImage(guideCanvas,guideCtx,guideImage,"Guide annoté");
     rebuildPrompts();
     updateDetectedPartsSummary();
   });
@@ -1014,7 +1714,11 @@
   $("openLabelImages").disabled = true;
   $("openGuidedImages").disabled = true;
   $("scanGuide").disabled = true;
+  $("buildGuidedTexture").disabled = true;
+  $("downloadGuidedTexture").disabled = true;
+  $("previewDetectedGuide3D").disabled = true;
 
+  renderSpatialMappings();
   renderImage(templateCanvas, templateCtx, null, "Template UV");
   renderImage(guideCanvas, guideCtx, null, "Guide annoté");
   rebuildPrompts();
