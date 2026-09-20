@@ -1030,6 +1030,32 @@
     if (currentImageCanvas) rebuildModel();
   }
 
+
+  window.minecraftTextureStudio = {
+    async loadTextureFile(file, options = {}) {
+      await loadTexture(file);
+      if (options.scroll !== false) {
+        document.getElementById("viewer")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return true;
+    },
+    getSelectedModel() {
+      return $("entityType").value;
+    },
+    setSelectedModel(id) {
+      const select = $("entityType");
+      if (Array.from(select.options).some((option) => option.value === id)) {
+        select.value = id;
+        onModelChanged();
+        return true;
+      }
+      return false;
+    },
+    refresh() {
+      if (currentImageCanvas) rebuildModel();
+    }
+  };
+
   $("entitySearch").addEventListener("input", () => {
     rebuildEntityOptions($("entitySearch").value);
   });
