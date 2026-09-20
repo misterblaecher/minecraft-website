@@ -347,11 +347,6 @@ QUALITY / CONSISTENCY:
 
     const stack = new Int32Array(total);
     const components = [];
-    const pushNeighbor = (index, spObj) => {
-      if (index < 0 || index >= total || visited[index] || !active[index]) return;
-      visited[index] = 1;
-      stack[spObj.value++] = index;
-    };
 
     for (let start = 0; start < total; start++) {
       if (!active[start] || visited[start]) continue;
@@ -374,16 +369,20 @@ QUALITY / CONSISTENCY:
         if (y < minY) minY = y;
         if (y > maxY) maxY = y;
 
-        const spObj = { value: sp };
-        if (x > 0) pushNeighbor(index - 1, spObj);
-        if (x + 1 < width) pushNeighbor(index + 1, spObj);
-        if (y > 0) pushNeighbor(index - width, spObj);
-        if (y + 1 < height) pushNeighbor(index + width, spObj);
-        if (x > 0 && y > 0) pushNeighbor(index - width - 1, spObj);
-        if (x + 1 < width && y > 0) pushNeighbor(index - width + 1, spObj);
-        if (x > 0 && y + 1 < height) pushNeighbor(index + width - 1, spObj);
-        if (x + 1 < width && y + 1 < height) pushNeighbor(index + width + 1, spObj);
-        sp = spObj.value;
+        const pushNeighbor = (next) => {
+          if (next < 0 || next >= total || visited[next] || !active[next]) return;
+          visited[next] = 1;
+          stack[sp++] = next;
+        };
+
+        if (x > 0) pushNeighbor(index - 1);
+        if (x + 1 < width) pushNeighbor(index + 1);
+        if (y > 0) pushNeighbor(index - width);
+        if (y + 1 < height) pushNeighbor(index + width);
+        if (x > 0 && y > 0) pushNeighbor(index - width - 1);
+        if (x + 1 < width && y > 0) pushNeighbor(index - width + 1);
+        if (x > 0 && y + 1 < height) pushNeighbor(index + width - 1);
+        if (x + 1 < width && y + 1 < height) pushNeighbor(index + width + 1);
       }
 
       const w = maxX - minX + 1;
