@@ -1093,7 +1093,7 @@
       "",
       "The resulting texture must be suitable for application to the",
       "same Minecraft entity model using the same UV organization."
-    ].join("\\n");
+    ].join("\n");
   }
 
   function buildLabelPrompt() {
@@ -1320,7 +1320,7 @@
       "No bleeding between unrelated islands.",
       "Preserve transparent / unused areas exactly.",
       "",
-      "Where labels in IMAGE 2 identify neighboring faces of the same body part, continue material patterns naturally across their shared 3D edge without moving the UV faces."
+      "Where labels in IMAGE 2 identify neighboring faces of the same body part, continue material patterns naturally across their shared 3D edge without moving the UV faces.",
       "",
       "",
       "==================================================",
