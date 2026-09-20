@@ -369,20 +369,39 @@ QUALITY / CONSISTENCY:
         if (y < minY) minY = y;
         if (y > maxY) maxY = y;
 
-        const pushNeighbor = (next) => {
-          if (next < 0 || next >= total || visited[next] || !active[next]) return;
-          visited[next] = 1;
-          stack[sp++] = next;
-        };
-
-        if (x > 0) pushNeighbor(index - 1);
-        if (x + 1 < width) pushNeighbor(index + 1);
-        if (y > 0) pushNeighbor(index - width);
-        if (y + 1 < height) pushNeighbor(index + width);
-        if (x > 0 && y > 0) pushNeighbor(index - width - 1);
-        if (x + 1 < width && y > 0) pushNeighbor(index - width + 1);
-        if (x > 0 && y + 1 < height) pushNeighbor(index + width - 1);
-        if (x + 1 < width && y + 1 < height) pushNeighbor(index + width + 1);
+        let next;
+        if (x > 0) {
+          next = index - 1;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
+        if (x + 1 < width) {
+          next = index + 1;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
+        if (y > 0) {
+          next = index - width;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
+        if (y + 1 < height) {
+          next = index + width;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
+        if (x > 0 && y > 0) {
+          next = index - width - 1;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
+        if (x + 1 < width && y > 0) {
+          next = index - width + 1;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
+        if (x > 0 && y + 1 < height) {
+          next = index + width - 1;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
+        if (x + 1 < width && y + 1 < height) {
+          next = index + width + 1;
+          if (!visited[next] && active[next]) { visited[next] = 1; stack[sp++] = next; }
+        }
       }
 
       const w = maxX - minX + 1;
