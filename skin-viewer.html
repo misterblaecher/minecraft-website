@@ -9,15 +9,15 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="style.css?v=20260920-2145">
-  <link rel="stylesheet" href="skin-viewer.css?v=20260920-2145">
-  <link rel="stylesheet" href="texture-editor.css?v=20260920-2145">
+  <link rel="stylesheet" href="style.css?v=20260920-2215">
+  <link rel="stylesheet" href="skin-viewer.css?v=20260920-2215">
+  <link rel="stylesheet" href="texture-editor.css?v=20260920-2215">
 </head>
 <body>
   <header class="container viewer-header">
     <a class="simple viewer-back" href="index.html">← Retour au site</a>
     <section class="hero viewer-hero">
-      <p class="viewer-kicker">MINECRAFT TEXTURE STUDIO · v4</p>
+      <p class="viewer-kicker">MINECRAFT TEXTURE STUDIO · v5</p>
       <h1 class="title">Entity Viewer + Générateur HD</h1>
       <p class="subtitle">
         1) choisis le modèle UV et teste ta texture en 3D ; 2) génère une nouvelle texture avec la méthode directe
@@ -273,9 +273,22 @@
 
       <div class="texture-guided-grid">
         <div>
-          <p class="texture-substep">B1 · Générer l'image annotée</p>
+          <p class="texture-substep">B1 · Générer la planche guidée</p>
+
+          <div class="texture-detection-mode">
+            <strong>Fond de la planche</strong>
+            <label class="texture-mode-option">
+              <input type="radio" name="guideBackgroundMode" value="background" checked />
+              <span><b>Avec background</b><small>Fond uni noir. Recommandé pour une image comme ton exemple.</small></span>
+            </label>
+            <label class="texture-mode-option">
+              <input type="radio" name="guideBackgroundMode" value="transparent" />
+              <span><b>Sans background</b><small>PNG transparent autour des labels et des panneaux.</small></span>
+            </label>
+          </div>
+
           <label class="texture-field">
-            <span>Prompt « nommer toutes les parties »</span>
+            <span>Prompt « label au-dessus = panneau juste en dessous »</span>
             <textarea id="labelPromptOutput" rows="24" readonly></textarea>
           </label>
 
@@ -286,20 +299,31 @@
         </div>
 
         <div>
-          <p class="texture-substep">B2 · Charger l'image annotée</p>
+          <p class="texture-substep">B2 · Détecter le label + le panneau juste en dessous</p>
           <label id="guideDrop" class="texture-drop">
             <input id="guideInput" type="file" accept="image/png,image/webp,image/jpeg" />
-            <span>Charger l'image avec les noms de parties</span>
-            <small>OCR automatique + correction manuelle possible.</small>
+            <span>Charger la planche avec les noms de parties</span>
+            <small>Le programme lit le texte puis associe chaque label au premier panneau valide situé directement en dessous.</small>
           </label>
 
           <div class="texture-canvas-shell texture-guide-preview">
             <canvas id="guideCanvas" width="512" height="512"></canvas>
           </div>
 
+          <div class="texture-spatial-settings">
+            <label class="texture-field">
+              <span>Tolérance du fond</span>
+              <input id="guideBackgroundTolerance" type="range" min="8" max="100" step="1" value="34" />
+            </label>
+            <label class="texture-field">
+              <span>Taille minimale d'un panneau</span>
+              <input id="guideMinPanelPercent" type="range" min="0.05" max="2" step="0.05" value="0.18" />
+            </label>
+          </div>
+
           <div class="texture-actions">
-            <button id="scanGuide" class="btn-slice btn-green" type="button" disabled>Détecter les noms</button>
-            <button id="previewDetectedGuide3D" class="btn-slice btn-purple" type="button" disabled>Voir les parties détectées en 3D</button>
+            <button id="scanGuide" class="btn-slice btn-green" type="button" disabled>Analyser labels + panneaux</button>
+            <button id="previewDetectedGuide3D" class="btn-slice btn-purple" type="button" disabled>Voir le diagnostic en 3D</button>
             <button id="clearDetectedLabels" class="texture-link-button" type="button">Effacer</button>
           </div>
 
@@ -315,29 +339,49 @@
           <div id="detectedPartsSummary" class="texture-detected-summary">
             Aucune partie détectée pour le moment.
           </div>
+
+          <div id="spatialMappings" class="texture-spatial-mappings texture-empty">
+            Les associations label → panneau apparaîtront ici.
+          </div>
+
           <p class="muted texture-small">
-            La preview 3D de cette étape est une preview de contrôle : le guide annoté est projeté sur le modèle choisi
-            afin de vérifier que les noms tombent bien sur les bonnes faces avant de générer le skin final.
+            Règle spatiale : un label désigne le panneau dont le centre horizontal est le plus proche et dont le bord
+            supérieur se trouve immédiatement sous le label. Les cadres et les traits de liaison sont dessinés sur la preview.
           </p>
         </div>
       </div>
 
       <div class="texture-guided-final">
-        <p class="texture-substep">B3 · Prompt final avec 2 références</p>
+        <p class="texture-substep">B3 · Construire automatiquement le skin Minecraft</p>
         <p class="muted">
-          Dans ChatGPT Images, joins <strong>IMAGE 1 = template original</strong> et
-          <strong>IMAGE 2 = image annotée</strong>. IMAGE 1 fixe les coordonnées ; IMAGE 2 dit quoi est quoi.
+          Le site prend chaque panneau détecté, lit son nom et le copie dans la face UV portant le même nom sur le
+          modèle sélectionné. Les panneaux sont redimensionnés en nearest-neighbor dans les coordonnées UV natives.
         </p>
 
-        <label class="texture-field">
-          <span>Prompt final guidé</span>
-          <textarea id="guidedPromptOutput" rows="32" readonly></textarea>
-        </label>
-
         <div class="texture-actions">
-          <button id="copyGuidedPrompt" class="btn-slice btn-blue" type="button">Copier le prompt guidé</button>
-          <button id="openGuidedImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+          <button id="buildGuidedTexture" class="btn-slice btn-green" type="button" disabled>Construire le skin depuis les parties détectées</button>
+          <button id="downloadGuidedTexture" class="btn-slice btn-orange" type="button" disabled>Télécharger le PNG assemblé</button>
         </div>
+        <p id="guidedBuildStatus" class="texture-status"></p>
+
+        <div class="texture-canvas-shell texture-built-preview">
+          <canvas id="guidedTextureCanvas" width="64" height="64"></canvas>
+        </div>
+
+        <details class="texture-fallback-prompt">
+          <summary>Prompt final guidé de secours (si certaines parties restent impossibles à mapper)</summary>
+          <p class="muted">
+            Ce prompt utilise IMAGE 1 = template original et IMAGE 2 = planche guidée, avec la liste des associations détectées.
+          </p>
+          <label class="texture-field">
+            <span>Prompt final guidé</span>
+            <textarea id="guidedPromptOutput" rows="26" readonly></textarea>
+          </label>
+          <div class="texture-actions">
+            <button id="copyGuidedPrompt" class="btn-slice btn-blue" type="button">Copier le prompt guidé</button>
+            <button id="openGuidedImages" class="btn-slice btn-purple" type="button">Copier + ouvrir ChatGPT Images</button>
+          </div>
+        </details>
 
         <div class="texture-result-preview texture-result-preview--guided">
           <p class="texture-substep">B4 · Tester le skin final en 3D</p>
@@ -362,7 +406,7 @@
 
   <script src="vendor/three.min.js?v=r159"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="skin-viewer.js?v=20260920-2145" defer></script>
-  <script src="texture-editor.js?v=20260920-2145" defer></script>
+  <script src="skin-viewer.js?v=20260920-2215" defer></script>
+  <script src="texture-editor.js?v=20260920-2215" defer></script>
 </body>
 </html>
