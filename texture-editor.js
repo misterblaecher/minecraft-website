@@ -271,7 +271,16 @@
   }
 
   function extractOcrLines(data) {
-    const words = Array.isArray(data?.words) ? data.words : [];
+    let words = Array.isArray(data?.words) ? data.words : [];
+
+    if (!words.length && Array.isArray(data?.blocks)) {
+      words = data.blocks.flatMap((block) =>
+        (block.paragraphs || []).flatMap((paragraph) =>
+          (paragraph.lines || []).flatMap((line) => line.words || [])
+        )
+      );
+    }
+
     if (!words.length) return [];
 
     const normalizedWords = words
@@ -452,8 +461,16 @@
     renderImage(guideCanvas, guideCtx, guideImage, "Guide annoté");
     if (!guideImage || !detectedRegions.length) return;
 
-    const sx = guideCanvas.width / guideImage.naturalWidth;
-    const sy = guideCanvas.height / guideImage.naturalHeight;
+    const scale = Math.min(
+      guideCanvas.width / guideImage.naturalWidth,
+      guideCanvas.height / guideImage.naturalHeight
+    );
+    const drawW = guideImage.naturalWidth * scale;
+    const drawH = guideImage.naturalHeight * scale;
+    const offsetX = (guideCanvas.width - drawW) / 2;
+    const offsetY = (guideCanvas.height - drawH) / 2;
+    const px = (x) => offsetX + x * scale;
+    const py = (y) => offsetY + y * scale;
 
     detectedRegions.forEach((region,index) => {
       const hue = (index * 67) % 360;
@@ -466,31 +483,31 @@
       guideCtx.fillStyle = "hsla(" + hue + ",90%,65%,0.12)";
       guideCtx.lineWidth = 2;
 
-      guideCtx.fillRect(panel.x*sx,panel.y*sy,panel.w*sx,panel.h*sy);
-      guideCtx.strokeRect(panel.x*sx,panel.y*sy,panel.w*sx,panel.h*sy);
+      guideCtx.fillRect(px(panel.x),py(panel.y),panel.w*scale,panel.h*scale);
+      guideCtx.strokeRect(px(panel.x),py(panel.y),panel.w*scale,panel.h*scale);
       guideCtx.strokeRect(
-        label.x0*sx,label.y0*sy,
-        (label.x1-label.x0)*sx,(label.y1-label.y0)*sy
+        px(label.x0),py(label.y0),
+        (label.x1-label.x0)*scale,(label.y1-label.y0)*scale
       );
 
-      const lx = ((label.x0+label.x1)/2)*sx;
-      const ly = label.y1*sy;
-      const px = (panel.x+panel.w/2)*sx;
-      const py = panel.y*sy;
+      const labelCenterX = px((label.x0+label.x1)/2);
+      const labelBottomY = py(label.y1);
+      const panelCenterX = px(panel.x+panel.w/2);
+      const panelTopY = py(panel.y);
       guideCtx.beginPath();
-      guideCtx.moveTo(lx,ly);
-      guideCtx.lineTo(px,py);
+      guideCtx.moveTo(labelCenterX,labelBottomY);
+      guideCtx.lineTo(panelCenterX,panelTopY);
       guideCtx.stroke();
 
       const text = region.targetLabel || region.sourceLabel;
       guideCtx.font = "700 12px system-ui";
-      const textWidth = Math.min(panel.w*sx,guideCtx.measureText(text).width+8);
+      const textWidth = Math.min(panel.w*scale,guideCtx.measureText(text).width+8);
       guideCtx.fillStyle = "rgba(0,0,0,.82)";
-      guideCtx.fillRect(panel.x*sx,panel.y*sy,textWidth,18);
+      guideCtx.fillRect(px(panel.x),py(panel.y),textWidth,18);
       guideCtx.fillStyle = "#fff";
       guideCtx.textAlign = "left";
       guideCtx.textBaseline = "top";
-      guideCtx.fillText(text,panel.x*sx+4,panel.y*sy+2,Math.max(1,panel.w*sx-8));
+      guideCtx.fillText(text,px(panel.x)+4,py(panel.y)+2,Math.max(1,panel.w*scale-8));
       guideCtx.restore();
     });
   }
@@ -1372,7 +1389,7 @@
         }
       });
 
-      const result = await worker.recognize(guideImage);
+      const result = await worker.recognize(guideImage, {}, { text:true, blocks:true });
       const lines = extractOcrLines(result.data || {});
       detectedOcrLabels = combineOcrLabelLines(lines);
       associateLabelsToPanels(detectedOcrLabels,detectedPanels);
