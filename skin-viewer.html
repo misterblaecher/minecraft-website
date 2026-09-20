@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skin Viewer 3D Minecraft</title>
+  <meta name="description" content="Charge un skin Minecraft local et visualise-le en 3D dans le navigateur." />
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="skin-viewer.css">
+</head>
+<body>
+  <header class="container viewer-header">
+    <a class="simple viewer-back" href="index.html">← Retour au site</a>
+    <section class="hero viewer-hero">
+      <p class="viewer-kicker">OUTIL MINECRAFT</p>
+      <h1 class="title">Skin Viewer 3D</h1>
+      <p class="subtitle">
+        Charge un skin Minecraft PNG et inspecte-le directement en 3D. Le fichier reste dans ton navigateur.
+      </p>
+    </section>
+  </header>
+
+  <main class="container viewer-main">
+    <section class="viewer-layout">
+      <aside class="card viewer-controls">
+        <div>
+          <p class="viewer-step">SKIN</p>
+          <h2>Charger un skin</h2>
+        </div>
+
+        <label id="skinDrop" class="viewer-drop">
+          <input id="skinInput" type="file" accept="image/png" />
+          <span>Choisir un PNG</span>
+          <small>Formats Minecraft classiques : 64×64 ou anciens 64×32</small>
+        </label>
+
+        <div id="skinInfo" class="viewer-info">Aucun skin chargé.</div>
+
+        <div class="viewer-control-grid">
+          <label>
+            Modèle
+            <select id="modelType">
+              <option value="auto-detect">Auto-détection</option>
+              <option value="default">Steve / bras classiques</option>
+              <option value="slim">Alex / bras fins</option>
+            </select>
+          </label>
+
+          <label>
+            Animation
+            <select id="animationType">
+              <option value="idle">Repos</option>
+              <option value="walk">Marche</option>
+              <option value="run">Course</option>
+              <option value="wave">Salut</option>
+              <option value="crouch">Accroupi</option>
+            </select>
+          </label>
+
+          <label>
+            Vitesse animation
+            <input id="animationSpeed" type="range" min="0" max="2.5" step="0.05" value="1" />
+          </label>
+
+          <label>
+            Zoom
+            <input id="zoom" type="range" min="0.45" max="1.35" step="0.01" value="0.85" />
+          </label>
+        </div>
+
+        <label class="viewer-check">
+          <input id="autoRotate" type="checkbox" />
+          <span>Rotation automatique</span>
+        </label>
+
+        <label class="viewer-check">
+          <input id="pauseAnimation" type="checkbox" />
+          <span>Mettre l’animation en pause</span>
+        </label>
+
+        <div class="viewer-actions">
+          <button id="frontView" class="btn-slice btn-blue btn-small" type="button">Vue de face</button>
+          <button id="backView" class="btn-slice btn-purple btn-small" type="button">Vue de dos</button>
+          <button id="resetView" class="btn-slice btn-green btn-small" type="button">Réinitialiser</button>
+        </div>
+
+        <p class="muted viewer-note">
+          Tu peux aussi faire glisser le modèle avec la souris et utiliser la molette pour zoomer.
+        </p>
+      </aside>
+
+      <section class="card viewer-stage-card">
+        <div class="viewer-stage-head">
+          <div>
+            <p class="viewer-step">PREVIEW</p>
+            <h2>Modèle 3D</h2>
+          </div>
+          <span id="viewerStatus" class="viewer-status">Prêt</span>
+        </div>
+
+        <div id="viewerStage" class="viewer-stage">
+          <canvas id="skinCanvas"></canvas>
+          <div id="viewerEmpty" class="viewer-empty">
+            <strong>Charge un skin pour commencer</strong>
+            <span>Le modèle apparaîtra ici en 3D.</span>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="card viewer-about">
+      <h2>Visualisation locale</h2>
+      <p class="muted">
+        Le visualiseur utilise <strong>skinview3d</strong> pour afficher les skins Minecraft avec WebGL.
+        Le PNG sélectionné n’est pas envoyé au serveur du site : il est lu localement par le navigateur.
+      </p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
+  <script src="skin-viewer.js" defer></script>
+</body>
+</html>
