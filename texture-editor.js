@@ -590,6 +590,28 @@
       });
     });
 
+    const sideGroups = new Map();
+    regions.forEach((region) => {
+      if (!region.sourceLabel.endsWith("_SIDE")) return;
+      if (!sideGroups.has(region.sourceLabel)) sideGroups.set(region.sourceLabel, []);
+      sideGroups.get(region.sourceLabel).push(region);
+    });
+
+    const expected = expectedGuideLabels();
+    sideGroups.forEach((group, sourceLabel) => {
+      if (group.length < 2) return;
+      const prefix = semanticAlias(sourceLabel).replace(/_SIDE$/, "");
+      const left = prefix + "_LEFT";
+      const right = prefix + "_RIGHT";
+      if (!expected.includes(left) || !expected.includes(right)) return;
+
+      group.sort((a,b) => a.panel.x - b.panel.x);
+      group[0].targetLabel = left;
+      group[0].targetScore = 0.86;
+      group[1].targetLabel = right;
+      group[1].targetScore = 0.86;
+    });
+
     detectedRegions = regions;
     return regions;
   }
