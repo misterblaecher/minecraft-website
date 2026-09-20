@@ -17,6 +17,7 @@
   let guideFile = null;
   let guideUrl = null;
   let guideImage = null;
+  let pendingGuidedResult = null;
 
   function autoScaleFor(width, height) {
     const maxDim = Math.max(width, height);
@@ -738,6 +739,7 @@
     }
 
     $("scanGuide").disabled = true;
+  $("previewGuidedResult") && ($("previewGuidedResult").disabled = true);
     $("guideOcrProgress").style.width = "3%";
     $("ocrStatus").textContent = "OCR en cours…";
 
@@ -779,6 +781,39 @@
     }
   }
 
+
+  async function previewGeneratedTexture(file, statusId, scroll = true) {
+    const status = $(statusId);
+    if (!file) {
+      status.textContent = "Choisis d'abord un PNG final.";
+      return false;
+    }
+    if (file.type && file.type !== "image/png") {
+      status.textContent = "Le viewer 3D attend un fichier PNG.";
+      return false;
+    }
+    if (!window.minecraftTextureStudio || !window.minecraftTextureStudio.loadTextureFile) {
+      status.textContent = "Le viewer 3D n'est pas encore prêt. Recharge la page puis réessaie.";
+      return false;
+    }
+
+    try {
+      const model = window.minecraftTextureStudio.getSelectedModel
+        ? window.minecraftTextureStudio.getSelectedModel()
+        : "modèle sélectionné";
+      status.textContent = "Chargement dans le viewer 3D…";
+      await window.minecraftTextureStudio.loadTextureFile(file, { scroll });
+      status.textContent =
+        "PNG chargé dans le viewer 3D avec le modèle « " + model +
+        " ». Si la géométrie est incorrecte, change le modèle en haut de la page.";
+      return true;
+    } catch (error) {
+      console.error(error);
+      status.textContent = "Impossible d'envoyer ce PNG au viewer 3D.";
+      return false;
+    }
+  }
+
   function setupDropZone(id, kind) {
     const drop = $(id);
     ["dragenter", "dragover"].forEach((name) => {
@@ -798,6 +833,28 @@
       if (file) loadImageFile(file, kind);
     });
   }
+
+
+  $("directResultInput")?.addEventListener("change", async () => {
+    const file = $("directResultInput").files && $("directResultInput").files[0];
+    if (file) await previewGeneratedTexture(file, "directPreviewStatus", true);
+  });
+
+  $("guidedResultInput")?.addEventListener("change", async () => {
+    pendingGuidedResult =
+      $("guidedResultInput").files && $("guidedResultInput").files[0]
+        ? $("guidedResultInput").files[0]
+        : null;
+
+    $("previewGuidedResult").disabled = !pendingGuidedResult;
+    if (pendingGuidedResult) {
+      await previewGeneratedTexture(pendingGuidedResult, "guidedPreviewStatus", true);
+    }
+  });
+
+  $("previewGuidedResult")?.addEventListener("click", async () => {
+    await previewGeneratedTexture(pendingGuidedResult, "guidedPreviewStatus", true);
+  });
 
   $("templateInput").addEventListener("change", () => {
     const file = $("templateInput").files && $("templateInput").files[0];
