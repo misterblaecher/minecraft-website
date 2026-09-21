@@ -6,7 +6,7 @@ Cette page est la source de vérité pour reconstruire les archives **Lite / Sta
 
 Les trois packs clients doivent garder le **même gameplay**. Les différences entre Lite, Standard et Ultra concernent uniquement les options graphiques et les mods clients lourds.
 
-- **Lite** : priorité FPS / faible RAM, sans shaders ni Distant Horizons.
+- **Lite** : priorité FPS / faible RAM, Sodium activé, sans shaders ni Distant Horizons.
 - **Standard** : même gameplay, Sodium activé, sans shaders ni Distant Horizons.
 - **Ultra** : même gameplay + Sodium + Iris + Distant Horizons + shaderpack.
 
@@ -79,7 +79,7 @@ Le serveur ne doit pas recevoir les mods purement graphiques.
 - `trading_floor-3.0.16.jar`
 - `voicechat-neoforge-1.21.1-2.6.24.jar`
 - `waystones-neoforge-1.21.1-21.1.45.jar`
-- **Sodium 0.6.13 pour NeoForge 1.21.1** (à ajouter aux trois packs)
+- **Sodium 0.8.13 pour NeoForge 1.21.1** (à ajouter aux trois packs)
 
 ### Ne pas mettre dans les packs clients
 
@@ -91,7 +91,7 @@ Le serveur ne doit pas recevoir les mods purement graphiques.
 
 Pour PC ancien, iGPU ou machine avec peu de RAM.
 
-**Base commune uniquement**, avec Sodium.
+**Base commune + Sodium 0.8.13**.
 
 Ne pas inclure :
 
@@ -106,7 +106,7 @@ Réglages conseillés : 3–4 Go de RAM Minecraft, distance 6–10 chunks, simul
 
 Pour la majorité des PC : 8–16 Go de RAM système et GPU intégré récent ou carte graphique dédiée modeste.
 
-**Base commune + Sodium**.
+**Base commune + Sodium 0.8.13**.
 
 Ne pas inclure :
 
@@ -123,12 +123,12 @@ Pour PC avec au moins 16 Go de RAM système, CPU 6–8 threads ou plus et GPU d�
 
 **Base commune + :**
 
-- Sodium `0.6.13`
-- Iris `1.8.12`
+- Sodium `0.8.13`
+- Iris `1.8.14-beta.1`
 - `DistantHorizons-3.3.1-1.21.1-fabric-neoforge.jar`
 - `ComplementaryUnbound_r5.5.1.zip` dans `shaderpacks/`
 
-Iris 1.8.12 pour NeoForge 1.21.1 déclare Sodium 0.6.13 comme dépendance : garder cette paire pour le profil stable.
+Iris 1.8.14-beta.1 pour NeoForge 1.21.1 met à jour sa compatibilité vers Sodium 0.8 ; la paire actuelle Sodium 0.8.13 + Iris 1.8.14-beta.1 est donc cohérente. Iris reste toutefois une version bêta.
 
 Réglages conseillés : 6–8 Go de RAM Minecraft. Éviter d'allouer plus sans raison.
 
@@ -169,11 +169,12 @@ Carte web : ne jamais le distribuer dans les packs clients.
 
 ## Versions bêta actuellement utilisées
 
-Trois fichiers de la liste actuelle sont des **bêtas** :
+Quatre fichiers du canal le plus récent sont des **bêtas** :
 
 - JEI `19.57.0.445`
 - Simple Voice Chat `2.6.24`
 - Create: Enchantment Industry `2.5.4`
+- Iris `1.8.14-beta.1`
 
 Pour un canal plus conservateur/stable, utiliser à la place :
 
@@ -182,3 +183,20 @@ Pour un canal plus conservateur/stable, utiliser à la place :
 - Create: Enchantment Industry `2.4.2`
 
 Ne pas mélanger des versions différentes entre serveur et clients pour les mods de gameplay/réseau.
+
+
+## État vérifié des dossiers fournis
+
+### Ultra
+Correct : base commune + Sodium 0.8.13 + Iris 1.8.14-beta.1 + Distant Horizons 3.3.1.
+
+### Standard
+À corriger : ajouter `sodium-neoforge-0.8.13+mc1.21.1.jar`.
+
+### Lite
+À corriger :
+- supprimer `DistantHorizons-3.3.1-1.21.1-fabric-neoforge.jar`;
+- ajouter `sodium-neoforge-0.8.13+mc1.21.1.jar`.
+
+### Serveur
+La liste fournie est cohérente avec la séparation recommandée. Ne pas ajouter Sodium, Iris, JEI ou Distant Horizons au serveur par défaut.
