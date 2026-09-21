@@ -97,12 +97,13 @@
         <div class="body">
           <h2>Lancer NeoForge une première fois</h2>
           <ol>
-            <li>Dans le Minecraft Launcher, sélectionne le profil <strong>NeoForge 1.21.1</strong>.</li>
-            <li>Lance le jeu une fois jusqu'au menu principal.</li>
-            <li>Ferme Minecraft.</li>
+            <li>Dans le Launcher, ouvre <strong>Installations</strong> et crée de préférence une installation séparée pour le serveur.</li>
+            <li>Sélectionne la version <strong>NeoForge 21.1.251 / Minecraft 1.21.1</strong>.</li>
+            <li>Choisis un dossier de jeu dédié, par exemple <code>C:\Minecraft\GabCon-1.21.1</code>, afin de ne pas mélanger ce pack avec tes autres mods.</li>
+            <li>Lance cette installation une fois jusqu'au menu principal, puis ferme Minecraft.</li>
           </ol>
-          <p>Cela crée les dossiers nécessaires, notamment <code>mods</code>, <code>config</code>, <code>shaderpacks</code> et <code>resourcepacks</code> au besoin.</p>
-          <p class="muted">Dossier par défaut Windows : <code>%appdata%\.minecraft</code>. Si tu utilises un répertoire de jeu personnalisé dans le Launcher, utilise ce répertoire à la place.</p>
+          <p>Après le premier lancement, le dossier <code>mods</code> apparaît dans le répertoire de jeu. Si <code>shaderpacks</code> ou <code>resourcepacks</code> n'existent pas encore, tu peux simplement les créer.</p>
+          <p class="muted">Si tu choisis malgré tout le dossier Minecraft par défaut sous Windows, il se trouve généralement dans <code>%appdata%\.minecraft</code>.</p>
         </div>
       </div>
     </section>
@@ -154,7 +155,7 @@
             <li>Copie-les dans le dossier <code>mods</code> de ton instance NeoForge.</li>
           </ol>
           <div class="ok">
-            Le résultat doit ressembler à : <code>.minecraft\mods\create-1.21.1-6.0.10.jar</code>, <code>.minecraft\mods\ftb-library-....jar</code>, etc.
+            Le résultat doit ressembler à : <code>ton-dossier-jeu\mods\create-1.21.1-6.0.10.jar</code>, <code>ton-dossier-jeu\mods\ftb-library-....jar</code>, etc.
           </div>
           <div class="warn">
             <strong>Important :</strong> ne copie pas le dossier <code>ModPack Standard</code> lui-même dans <code>mods</code>. Les fichiers <code>.jar</code> doivent être directement dans <code>mods</code>. Supprime aussi les anciens mods d'une ancienne version avant d'installer ce pack.
@@ -174,7 +175,7 @@
           </div>
           <ol>
             <li>Ne décompresse pas le fichier shader <code>.zip</code>.</li>
-            <li>Place-le dans <code>.minecraft\shaderpacks</code>.</li>
+            <li>Place-le dans <code>shaderpacks</code> à l'intérieur de ton dossier de jeu.</li>
             <li>Lance Minecraft.</li>
             <li>Va dans <strong>Options → Vidéo → Shader Packs</strong> et sélectionne Complementary Unbound.</li>
           </ol>
@@ -193,7 +194,7 @@
           </div>
           <ol>
             <li>Garde le fichier au format <code>.zip</code>.</li>
-            <li>Place-le dans <code>.minecraft\resourcepacks</code>.</li>
+            <li>Place-le dans <code>resourcepacks</code> à l'intérieur de ton dossier de jeu.</li>
             <li>Dans Minecraft : <strong>Options → Packs de ressources</strong>.</li>
             <li>Active <strong>Gab Con</strong>.</li>
           </ol>
