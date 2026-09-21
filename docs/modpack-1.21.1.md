@@ -130,6 +130,8 @@ Pour PC avec au moins 16 Go de RAM système, CPU 6–8 threads ou plus et GPU d�
 
 Iris 1.8.14-beta.1 pour NeoForge 1.21.1 met à jour sa compatibilité vers Sodium 0.8 ; la paire actuelle Sodium 0.8.13 + Iris 1.8.14-beta.1 est donc cohérente. Iris reste toutefois une version bêta.
 
+Attention : un bug récent a été signalé avec Iris 1.8.14-beta.1 et Distant Horizons 3.3.x lors de l'activation de certains shaders. Le profil Ultra doit donc rester présenté comme plus expérimental que Standard.
+
 Réglages conseillés : 6–8 Go de RAM Minecraft. Éviter d'allouer plus sans raison.
 
 ## Mods optionnels / redondants
