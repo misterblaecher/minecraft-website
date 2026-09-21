@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Installer le serveur Minecraft — NeoForge 1.21.1</title>
+  <meta name="description" content="Tutoriel complet pour installer Java 21, NeoForge 21.1.251 et les modpacks Lite, Standard ou Ultra.">
+  <style>
+    :root{
+      --bg:#0d1117; --panel:#161b22; --panel2:#0f1420; --text:#fff; --muted:#9aa4b2;
+      --ok:#22c55e; --warn:#f59e0b; --accent:#6c8cff; --accent2:#4f6fff; --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:auto;padding:32px 20px 64px}
+    h1{margin:0 0 8px;font-size:clamp(26px,4vw,38px)}
+    h2{margin:0 0 10px;font-size:1.35rem}
+    h3{margin:18px 0 8px}
+    p{margin:8px 0}
+    .lead{color:#dbe7ff;opacity:.92;margin-bottom:22px}
+    .card{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;margin:16px 0;box-shadow:0 10px 26px rgba(0,0,0,.22)}
+    .step{display:flex;gap:14px;align-items:flex-start}
+    .num{flex:0 0 38px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:900}
+    .body{flex:1;min-width:0}
+    .download{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{display:inline-block;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:800}
+    .primary{background:linear-gradient(135deg,#00c98b,#00a97a);color:#fff}
+    .ghost{background:var(--panel2);color:#dbe7ff;border:1px solid rgba(255,255,255,.10)}
+    .warn{border-left:4px solid var(--warn);padding:10px 14px;background:rgba(245,158,11,.08);border-radius:10px;margin:14px 0}
+    .ok{border-left:4px solid var(--ok);padding:10px 14px;background:rgba(34,197,94,.08);border-radius:10px;margin:14px 0}
+    code{background:#0b1220;border:1px solid rgba(255,255,255,.08);padding:2px 6px;border-radius:7px;color:#dbe7ff}
+    pre{overflow:auto;background:#0b1220;border:1px solid rgba(255,255,255,.08);padding:12px;border-radius:12px}
+    pre code{border:0;padding:0}
+    ul,ol{padding-left:24px}
+    .packs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+    .pack{background:var(--panel2);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px}
+    .pack strong{display:block;margin-bottom:5px}
+    .muted{color:var(--muted)}
+    .topbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+    @media(max-width:760px){.packs{grid-template-columns:1fr}.step{gap:10px}.num{flex-basis:34px;width:34px;height:34px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <a class="btn ghost" href="index.html">🏠 Accueil</a>
+      <a class="btn ghost" href="modpack.html">📦 Modpacks</a>
+    </div>
+
+    <h1>🧰 Tutoriel d'installation complet</h1>
+    <p class="lead">Minecraft <strong>1.21.1</strong> • NeoForge <strong>21.1.251</strong> • Packs Lite / Standard / Ultra</p>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">1</div>
+        <div class="body">
+          <h2>Installer Java 21 (64 bits)</h2>
+          <p>Minecraft 1.21.1 avec NeoForge nécessite Java 21. Installe une version 64 bits si Java 21 n'est pas déjà présent.</p>
+          <div class="download">
+            <a class="btn primary" href="https://adoptium.net/temurin/releases/?version=21" target="_blank" rel="noopener">☕ Télécharger Java 21</a>
+            <a class="btn ghost" href="https://docs.neoforged.net/user/docs/" target="_blank" rel="noopener">Documentation NeoForge</a>
+          </div>
+          <p>Pour vérifier, ouvre <strong>PowerShell</strong> ou l'invite de commandes et exécute :</p>
+          <pre><code>java -version</code></pre>
+          <p>La première ligne doit indiquer une version <strong>21</strong> et une JVM 64 bits.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">2</div>
+        <div class="body">
+          <h2>Installer NeoForge 21.1.251</h2>
+          <p>Ferme complètement le Minecraft Launcher avant de lancer l'installateur.</p>
+          <div class="download">
+            <a class="btn primary" href="https://drive.google.com/uc?export=download&id=1hxCBJpID8qd3SEmiPpcYHfZGQzI3t1fO">⬇️ Télécharger NeoForge 21.1.251</a>
+          </div>
+          <ol>
+            <li>Télécharge <code>neoforge-21.1.251-installer.jar</code>.</li>
+            <li>Double-clique sur le fichier.</li>
+            <li>Choisis <strong>Install client</strong>.</li>
+            <li>Clique sur <strong>Proceed</strong> et attends le message de réussite.</li>
+            <li>Rouvre le Minecraft Launcher : un profil NeoForge doit être disponible.</li>
+          </ol>
+          <div class="warn">
+            <strong>Si le double-clic ne lance rien :</strong> ouvre un terminal dans le dossier du fichier et exécute :
+            <pre><code>java -jar neoforge-21.1.251-installer.jar</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">3</div>
+        <div class="body">
+          <h2>Lancer NeoForge une première fois</h2>
+          <ol>
+            <li>Dans le Launcher, ouvre <strong>Installations</strong> et crée de préférence une installation séparée pour le serveur.</li>
+            <li>Sélectionne la version <strong>NeoForge 21.1.251 / Minecraft 1.21.1</strong>.</li>
+            <li>Choisis un dossier de jeu dédié, par exemple <code>C:\Minecraft\GabCon-1.21.1</code>, afin de ne pas mélanger ce pack avec tes autres mods.</li>
+            <li>Lance cette installation une fois jusqu'au menu principal, puis ferme Minecraft.</li>
+          </ol>
+          <p>Après le premier lancement, le dossier <code>mods</code> apparaît dans le répertoire de jeu. Si <code>shaderpacks</code> ou <code>resourcepacks</code> n'existent pas encore, tu peux simplement les créer.</p>
+          <p class="muted">Si tu choisis malgré tout le dossier Minecraft par défaut sous Windows, il se trouve généralement dans <code>%appdata%\.minecraft</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">4</div>
+        <div class="body">
+          <h2>Choisir et télécharger le modpack</h2>
+          <div class="packs">
+            <div class="pack">
+              <strong>Lite</strong>
+              <span class="muted">PC ancien / iGPU. Sans shaders ni Distant Horizons.</span>
+              <div class="download">
+                <a class="btn primary" href="https://drive.google.com/uc?export=download&id=1wV2uKftrVimx2VqIpmNJkm8oBXN5FXSL">Télécharger Lite</a>
+              </div>
+            </div>
+            <div class="pack">
+              <strong>Standard</strong>
+              <span class="muted">Choix recommandé pour la majorité des PC.</span>
+              <div class="download">
+                <a class="btn primary" href="https://drive.google.com/uc?export=download&id=1Lmb8sxONUqbL3sqCvcCT_37JFiSwgq57">Télécharger Standard</a>
+              </div>
+            </div>
+            <div class="pack">
+              <strong>Ultra</strong>
+              <span class="muted">Iris + Distant Horizons. Pour PC puissant.</span>
+              <div class="download">
+                <a class="btn primary" href="https://drive.google.com/uc?export=download&id=19yLpD9x_r8DcL6-PwLjEG6Y7h5mFhMSc">Télécharger Ultra</a>
+              </div>
+            </div>
+          </div>
+          <div class="warn">
+            <strong>N'utilise pas « modpack complet.zip » comme pack joueur.</strong> Cette archive contient aussi des outils réservés au serveur et à l'administration.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">5</div>
+        <div class="body">
+          <h2>Installer les mods</h2>
+          <ol>
+            <li>Décompresse le ZIP téléchargé.</li>
+            <li>Ouvre le dossier extrait <code>ModPack Lite</code>, <code>ModPack Standard</code> ou <code>ModPack ULTRA</code>.</li>
+            <li>Sélectionne <strong>tous les fichiers <code>.jar</code></strong> qui se trouvent dedans.</li>
+            <li>Copie-les dans le dossier <code>mods</code> de ton instance NeoForge.</li>
+          </ol>
+          <div class="ok">
+            Le résultat doit ressembler à : <code>ton-dossier-jeu\mods\create-1.21.1-6.0.10.jar</code>, <code>ton-dossier-jeu\mods\ftb-library-....jar</code>, etc.
+          </div>
+          <div class="warn">
+            <strong>Important :</strong> ne copie pas le dossier <code>ModPack Standard</code> lui-même dans <code>mods</code>. Les fichiers <code>.jar</code> doivent être directement dans <code>mods</code>. Supprime aussi les anciens mods d'une ancienne version avant d'installer ce pack.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">6</div>
+        <div class="body">
+          <h2>Ultra : installer le shaderpack</h2>
+          <p>Cette étape est uniquement utile pour le pack Ultra. Iris est déjà inclus dans Ultra, mais le shaderpack se télécharge séparément.</p>
+          <div class="download">
+            <a class="btn primary" href="ComplementaryUnbound_r5.5.1.zip">⬇️ Complementary Unbound</a>
+          </div>
+          <ol>
+            <li>Ne décompresse pas le fichier shader <code>.zip</code>.</li>
+            <li>Place-le dans <code>shaderpacks</code> à l'intérieur de ton dossier de jeu.</li>
+            <li>Lance Minecraft.</li>
+            <li>Va dans <strong>Options → Vidéo → Shader Packs</strong> et sélectionne Complementary Unbound.</li>
+          </ol>
+          <p class="muted">Si les FPS baissent trop, désactive les shaders ou utilise le pack Standard.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">7</div>
+        <div class="body">
+          <h2>Installer le Resource Pack Gab Con</h2>
+          <div class="download">
+            <a class="btn primary" href="https://github.com/misterblaecher/Gab-Con/raw/refs/heads/main/1.21.1-Gab%20Con.zip">⬇️ Télécharger Gab Con</a>
+          </div>
+          <ol>
+            <li>Garde le fichier au format <code>.zip</code>.</li>
+            <li>Place-le dans <code>resourcepacks</code> à l'intérieur de ton dossier de jeu.</li>
+            <li>Dans Minecraft : <strong>Options → Packs de ressources</strong>.</li>
+            <li>Active <strong>Gab Con</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">8</div>
+        <div class="body">
+          <h2>RAM conseillée</h2>
+          <ul>
+            <li><strong>Lite :</strong> 3–4 Go alloués à Minecraft.</li>
+            <li><strong>Standard :</strong> 4–6 Go.</li>
+            <li><strong>Ultra :</strong> 6–8 Go.</li>
+          </ul>
+          <p>Dans le Launcher officiel : <strong>Installations → ton profil NeoForge → Plus d'options</strong>, puis adapte la valeur <code>-Xmx</code> dans les arguments JVM.</p>
+          <p>Exemple pour 6 Go :</p>
+          <pre><code>-Xmx6G</code></pre>
+          <p class="muted">N'alloue pas toute la RAM du PC à Minecraft : Windows, le launcher et les autres applications en ont aussi besoin.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">9</div>
+        <div class="body">
+          <h2>Lancer et rejoindre le serveur</h2>
+          <ol>
+            <li>Démarre toujours Minecraft avec le profil <strong>NeoForge 1.21.1</strong>.</li>
+            <li>Vérifie que le menu <strong>Mods</strong> affiche bien les mods du pack.</li>
+            <li>Va dans <strong>Multijoueur</strong> et utilise l'adresse du serveur communiquée sur le site ou le Discord.</li>
+          </ol>
+          <div class="ok"><strong>Installation terminée.</strong> Lite, Standard et Ultra gardent le même gameplay serveur ; seules les options graphiques/performance changent.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>🛠️ Problèmes fréquents</h2>
+      <ul>
+        <li><strong>Le fichier NeoForge ne s'ouvre pas :</strong> vérifie Java 21 et utilise la commande <code>java -jar ...</code>.</li>
+        <li><strong>Le jeu démarre sans mods :</strong> vérifie que tu utilises bien le profil NeoForge et le bon dossier <code>mods</code>.</li>
+        <li><strong>Erreur de mods incompatibles :</strong> vide les anciens <code>.jar</code> avant de copier le nouveau pack.</li>
+        <li><strong>Ultra plante avec les shaders :</strong> désactive le shaderpack et teste d'abord sans shaders ; Iris utilisé dans Ultra est une version bêta.</li>
+        <li><strong>FPS faibles :</strong> passe de Ultra à Standard ou Lite.</li>
+      </ul>
+      <div class="download">
+        <a class="btn ghost" href="https://docs.neoforged.net/user/docs/faq/" target="_blank" rel="noopener">FAQ officielle NeoForge</a>
+        <a class="btn primary" href="modpack.html">Retour aux téléchargements</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
