@@ -1,4 +1,5 @@
 (() => {
+  const MAP_URL = "http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective";
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function makeParticles() {
@@ -78,6 +79,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-map-live]').forEach((link) => { link.href = MAP_URL; });
     makeParticles();
     bindParallax();
     bindTravel();
