@@ -3,221 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Télécharger le Modpack</title>
-  <style>
-    :root{
-      --bg:#0d1117; --panel:#161b22; --text:#fff; --muted:#9aa4b2;
-      --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
-      --grad1:#6c8cff; --grad2:#4f6fff; --radius:16px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1100px;margin:auto;padding:32px 20px}
-    h1{margin:0 0 6px;font-size:clamp(24px,3.5vw,34px)}
-    p.lead{margin:0 0 18px;color:#dbe7ff;opacity:.9}
-    a.btn{display:inline-block;padding:14px 20px;border-radius:12px;text-decoration:none;font-weight:800;color:#fff;background:linear-gradient(135deg,#6c8cff,#4f6fff);box-shadow:0 10px 22px rgba(0,0,0,.25)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:22px}
-    .card{grid-column:span 12;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;position:relative;box-shadow:0 10px 26px rgba(0,0,0,.25)}
-    @media(min-width:780px){.card{grid-column:span 4}}
-    .card h3{margin:0 0 8px}
-    .card p{margin:0 0 12px;color:var(--muted)}
-    .card ul{margin:8px 0 14px 18px}
-    .download{display:flex;gap:10px;flex-wrap:wrap}
-    .download a{padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:700}
-    .primary{background:linear-gradient(135deg,#00c98b,#00a97a);color:#fff}
-    .ghost{background:#0f1420;color:#cdd6e5;border:1px solid rgba(255,255,255,.08)}
-    .ribbon{position:absolute;top:14px;right:14px;background:#10b981;color:#052e1a;font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;display:none}
-    .card.reco .ribbon{display:inline-block}
-    .specs{margin-top:18px;background:#0f1420;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px}
-    .kv{display:flex;gap:10px;flex-wrap:wrap}
-    .kv span{background:#111827;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px 10px;color:#c9d3e5}
-    .note{color:var(--muted);font-size:.95rem;margin-top:10px}
-
-    /* Effet visuel sur le bouton recommandé + note shaders */
-    @keyframes pulseA{0%,100%{transform:translateZ(0) scale(1)}50%{transform:translateZ(0) scale(1.03)}}
-    .pulse{animation:pulseA 2.2s ease-in-out infinite}
-    .note-adv{margin-top:8px;color:#cfe8ff;opacity:.95}
-  </style>
-  <link rel="stylesheet" href="world.css?v=20260926-1">
+  <title>Modpacks GabCon — Lite, Standard ou Ultra</title>
+  <meta name="description" content="Choisis le modpack GabCon adapté à ton PC : Lite, Standard ou Ultra pour Minecraft 1.21.1 NeoForge.">
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="world.css?v=20260926-2">
+  <link rel="stylesheet" href="guide.css?v=20260926-1">
 </head>
 <body class="world-page world-page--modpack">
-  <div class="wrap">
-    <h1>📦 Modpack — choix automatique selon ta configuration</h1>
-    <p class="lead">Les trois packs gardent le même gameplay serveur. Le site estime seulement le niveau graphique adapté à ta RAM, tes threads CPU et (si possible) ton GPU. Tu peux toujours choisir un autre pack.</p>
+  <main class="guide-shell">
+    <nav class="guide-nav" aria-label="Navigation">
+      <a class="guide-brand" href="index.html"><img src="assets/logo.png" alt="Logo GabCon"><span><strong>GabCon</strong><small>Choix du modpack</small></span></a>
+      <div class="guide-links"><a href="index.html">Accueil</a><a href="installation.html">Installation</a><a href="modpack.html" aria-current="page">Modpacks</a><a href="infos.html">Règles</a></div>
+    </nav>
 
-    <section class="card" id="neoforge" style="grid-column:span 12; margin-bottom:18px">
-      <h3>⚙️ Prérequis — NeoForge 21.1.251</h3>
-      <p>Installe NeoForge pour Minecraft <strong>1.21.1</strong> avant de copier les mods. Java 21 (64 bits) est requis.</p>
-      <div class="download">
-        <a class="primary" href="https://drive.google.com/uc?export=download&id=1hxCBJpID8qd3SEmiPpcYHfZGQzI3t1fO">⬇️ Télécharger NeoForge 21.1.251</a>
-        <a class="ghost" href="installation.html">📖 Tutoriel d'installation complet</a>
+    <header class="guide-hero">
+      <div class="guide-hero-grid">
+        <div><span class="guide-kicker">📦 3 profils · même gameplay serveur</span><h1 class="guide-title">Quel pack pour ton PC ?</h1><p class="guide-lead">Le site estime ton matériel et met en avant un profil. Tu peux toujours choisir manuellement.</p></div>
+        <aside class="guide-side"><strong>Prérequis communs</strong><div class="guide-pills"><span class="guide-pill">Java 21</span><span class="guide-pill">Minecraft 1.21.1</span><span class="guide-pill">NeoForge 21.1.251</span></div><div class="guide-actions"><a class="guide-btn guide-btn--ghost" href="installation.html">Voir le guide visuel</a></div></aside>
       </div>
+    </header>
+
+    <section class="guide-section">
+      <div class="guide-packs">
+        <article class="guide-pack" id="pack-lite"><span class="guide-ribbon">Recommandé</span><div class="guide-pack-kicker">Performance</div><h2>Lite</h2><p>Le pack le plus léger pour garder de bons FPS sur les PC modestes.</p><ul><li>23 JAR</li><li>Sodium + optimisations</li><li>Sans Iris</li><li>Sans Distant Horizons</li><li>Sans GabCon DH Sync</li></ul><a class="guide-btn" target="_blank" rel="noopener" href="https://drive.google.com/uc?export=download&id=1k4L5At2Qfe031jwzfeYpBR4f9pHFBMzL">⬇️ Télécharger Lite</a></article>
+        <article class="guide-pack" data-tone="blue" id="pack-standard"><span class="guide-ribbon">Recommandé</span><div class="guide-pack-kicker">Équilibré</div><h2>Standard</h2><p>Le profil conseillé pour la majorité des joueurs, avec Distant Horizons prêt à être synchronisé.</p><ul><li>26 JAR</li><li>Sodium + Iris</li><li>Distant Horizons 3.3.2</li><li>GabCon DH Sync 0.6.2</li><li>Shaders désactivés par défaut</li></ul><a class="guide-btn" target="_blank" rel="noopener" href="https://drive.google.com/uc?export=download&id=1u3V_bqOZOPGRx2A1H4XEjZgpmK6b--2Q">⬇️ Télécharger Standard</a></article>
+        <article class="guide-pack" data-tone="purple" id="pack-full"><span class="guide-ribbon">Recommandé</span><div class="guide-pack-kicker">Qualité</div><h2>Ultra</h2><p>Même base de mods que Standard, pensée pour activer les shaders et pousser les réglages visuels.</p><ul><li>26 JAR</li><li>Mêmes mods que Standard</li><li>Distant Horizons + Iris</li><li>GabCon DH Sync 0.6.2</li><li>Shader Complementary recommandé</li></ul><a class="guide-btn" target="_blank" rel="noopener" href="https://drive.google.com/uc?export=download&id=1jd64_wPCREPS9S_n9t8IczmPkUXBq4hd">⬇️ Télécharger Ultra</a></article>
+      </div>
+      <div class="guide-detect"><strong>🔍 Ce que ton navigateur arrive à détecter</strong><div class="guide-specs" id="kv"></div><p class="guide-note">La détection est indicative. Certains navigateurs masquent la RAM ou le GPU ; dans ce cas Standard est proposé par défaut.</p></div>
     </section>
 
-    <div class="grid">
-      <!-- FULL -->
-      <section class="card" id="pack-full">
-        <div class="ribbon">Recommandé</div>
-        <h3>Ultra</h3>
-        <p>Même gameplay que les autres packs + <strong>Sodium</strong>, <strong>Iris</strong>, <strong>Distant Horizons</strong> et shaders.</p>
-        <ul>
-          <li>Pour PC récents : GPU dédié correct, 16&nbsp;Go RAM+ et 8 threads CPU+.</li>
-          <li>Meilleurs graphismes, distance étendue.</li>
-        </ul>
-        <div class="download">
-          <!-- Lien Google Drive direct -->
-          <a class="primary" target="_blank" rel="noopener"
-             href="https://drive.google.com/uc?export=download&id=19yLpD9x_r8DcL6-PwLjEG6Y7h5mFhMSc">⬇️ Télécharger (Ultra)</a>
-          <a class="ghost" href="index.html">🏠 Retour</a>
-        </div>
-      </section>
-
-      <!-- STANDARD -->
-      <section class="card" id="pack-standard">
-        <div class="ribbon">Recommandé</div>
-        <h3>Standard</h3>
-        <p>Équilibré : même gameplay + Sodium. Pas d’Iris, shaders ni Distant Horizons.</p>
-        <ul>
-          <li>Pour la majorité des PC (8&nbsp;Go RAM+, 4 threads CPU+).</li>
-          <li>Bon FPS et stabilité.</li>
-        </ul>
-        <div class="download">
-          <a class="primary" target="_blank" rel="noopener"
-             href="https://drive.google.com/uc?export=download&id=1Lmb8sxONUqbL3sqCvcCT_37JFiSwgq57">⬇️ Télécharger (Standard)</a>
-          <a class="ghost" href="index.html">🏠 Retour</a>
-        </div>
-      </section>
-
-      <!-- LITE -->
-      <section class="card" id="pack-lite">
-        <div class="ribbon">Recommandé</div>
-        <h3>Lite</h3>
-        <p>Allégé : même gameplay serveur, mais sans Distant Horizons, Iris ni shaders. Priorité aux FPS.</p>
-        <ul>
-          <li>Pour PC anciens / iGPU (Intel UHD/Iris), 4–8&nbsp;Go RAM.</li>
-          <li>Priorité aux performances.</li>
-        </ul>
-        <div class="download">
-          <a class="primary" target="_blank" rel="noopener"
-             href="https://drive.google.com/uc?export=download&id=1wV2uKftrVimx2VqIpmNJkm8oBXN5FXSL">⬇️ Télécharger (Lite)</a>
-          <a class="ghost" href="index.html">🏠 Retour</a>
-        </div>
-      </section>
-    </div>
-
-    <section class="card" id="pack-complet" style="grid-column:span 12; margin-top:18px">
-      <h3>📦 Archive complète</h3>
-      <p>Archive de référence contenant l'ensemble des mods, y compris les outils serveur/admin. <strong>Ce n'est pas le pack client recommandé.</strong></p>
-      <div class="download">
-        <a class="primary" target="_blank" rel="noopener"
-           href="https://drive.google.com/uc?export=download&id=162XqW3zSZvz0NqRVGiPscxvFwQ-XLMlO">⬇️ Télécharger le modpack complet</a>
-      </div>
-      <p class="note">Pour jouer, utilise de préférence Lite, Standard ou Ultra selon la configuration du PC.</p>
+    <section class="guide-section">
+      <div class="guide-section-head"><div><h2>Comparer les packs</h2><p>Les mods de gameplay restent présents dans les trois packs. Les différences concernent surtout le rendu et Distant Horizons.</p></div></div>
+      <div class="guide-compare-wrap"><table class="guide-compare"><thead><tr><th>Fonction</th><th>Lite</th><th>Standard</th><th>Ultra</th></tr></thead><tbody>
+        <tr><td>Create + gameplay serveur</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Sodium / optimisations</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Distant Horizons 3.3.2</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>GabCon DH Sync 0.6.2</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Iris</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Shader recommandé</td><td class="no">Non</td><td class="maybe">Optionnel</td><td class="yes">Oui</td></tr>
+        <tr><td>RAM Minecraft conseillée</td><td>3–4 Go</td><td>4–6 Go</td><td>6–8 Go</td></tr>
+      </tbody></table></div>
     </section>
 
-    <!-- SHADERPACK RECOMMANDÉ -->
-    <section class="card" id="shaderpack" style="grid-column:span 12; margin-top:10px">
-      <h3>Shaderpack recommandé — Complementary Shaders: Unbound</h3>
-      <p>Fonctionne avec <strong>Iris</strong>. Télécharge et place le fichier <code>.zip</code> dans
-        <em>shaderpacks/</em> de ton instance (ne pas dézipper), puis active-le en jeu :
-        <em>Options → Vidéo → Shader Packs</em>.</p>
-      <div class="download">
-        <!-- Tu l’as déjà ajouté à la racine du repo -->
-        <a class="primary" href="ComplementaryUnbound_r5.5.1.zip">⬇️ Télécharger le shaderpack</a>
-        <a class="ghost" href="#pack-full">Voir le pack Ultra</a>
-      </div>
-      <p class="note note-adv" id="shader-advice"></p>
-    </section>
+    <section class="guide-section"><div class="guide-grid-2">
+      <article class="guide-card"><h3>🌄 Complementary Unbound</h3><p>Garde le ZIP dans <code>shaderpacks</code>. Il est surtout recommandé pour Ultra ; Standard peut aussi l'utiliser si les FPS restent bons.</p><a class="guide-btn guide-btn--purple" href="ComplementaryUnbound_r5.5.1.zip">Télécharger le shader</a><p class="guide-note" id="shader-advice"></p></article>
+      <article class="guide-card"><h3>🎨 Resource Pack Gab Con</h3><p>Place le ZIP dans <code>resourcepacks</code> sans le décompresser.</p><a class="guide-btn guide-btn--blue" href="https://github.com/misterblaecher/Gab-Con/raw/refs/heads/main/1.21.1-Gab%20Con.zip">Télécharger le Resource Pack</a></article>
+    </div></section>
 
-    <!-- RESOURCE PACK GAB CON -->
-    <section class="card" id="resourcepack" style="grid-column:span 12; margin-top:10px">
-      <h3>🎨 Resource Pack — Gab Con</h3>
-      <p>Pack graphique personnalisé pour Minecraft <strong>1.21.1</strong>. Télécharge le fichier <code>.zip</code> puis place-le tel quel dans <em>.minecraft/resourcepacks/</em> (ne le dézippe pas côté joueur).</p>
-      <div class="download">
-        <a class="primary" target="_blank" rel="noopener"
-           href="https://github.com/misterblaecher/Gab-Con/raw/refs/heads/main/1.21.1-Gab%20Con.zip">⬇️ Télécharger le Resource Pack Gab Con</a>
-        <a class="ghost" href="index.html">🏠 Retour</a>
-      </div>
-      <p class="note">Version actuelle : <strong>1.21.1 — Gab Con</strong>. Le téléchargement est public et pointe toujours vers la dernière version construite du pack.</p>
-    </section>
-
-    <div class="specs" id="specs">
-      <strong>🔍 Détection locale :</strong>
-      <div class="kv" id="kv"></div>
-      <div class="note">Cette détection est approximative : certains navigateurs masquent la RAM ou le modèle exact du GPU. Elle ne lit aucune donnée privée. Si le choix ne te convient pas, prends un autre pack.</div>
-    </div>
-  </div>
+    <section class="guide-section"><article class="guide-card"><h3>🧰 Archive complète — administration</h3><p>Cette archive contient aussi des éléments destinés au serveur et à l'administration. <strong>Ne l'utilise pas comme pack joueur.</strong></p><a class="guide-btn guide-btn--ghost" target="_blank" rel="noopener" href="https://drive.google.com/uc?export=download&id=1_6eX4Qcn_Kx57Uv4ogd6I7xXsG999rgE">Télécharger l'archive complète</a></article></section>
+  </main>
 
   <script>
-    // --- Lecture des capacités du navigateur ---
-    function getGPUInfo(){
-      try{
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-        if(!gl) return {renderer:'(WebGL indisponible)'};
-        const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-        const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-        return {renderer: String(renderer || '').trim()};
-      }catch(e){ return {renderer:'(non détecté)'} }
-    }
-
-    function getPlatform(){
-      const ua = navigator.userAgent || '';
-      if(navigator.userAgentData && navigator.userAgentData.platform) return navigator.userAgentData.platform;
-      if(/Windows/i.test(ua)) return 'Windows';
-      if(/Mac OS/i.test(ua)) return 'macOS';
-      if(/Linux/i.test(ua)) return 'Linux';
-      return 'inconnu';
-    }
-
-    function chooseTier({ram, cores, gpu}){
-      const g = String(gpu || '').toLowerCase();
-      const hasRamInfo = ram > 0;
-      const strongGPU = /(rtx\s?(20|30|40|50)|gtx\s?(16|10[6-9]0|1080)|rx\s?(5\d{3}|6\d{3}|7\d{3}|9\d{3})|radeon\s?vii|arc\s?[ab]\d{3}|apple\s?m[1-5])/i.test(g);
-      const weakGPU = /(intel.*(hd|uhd)|iris\s?(plus|xe)?|geforce\s?(mx|gt\s?7|940m)|radeon\s?(r[357]|vega\s?[38]))/i.test(g);
-
-      // Ultra exige un ensemble cohérent : GPU + CPU + RAM (quand la RAM est exposée par le navigateur).
-      if(strongGPU && cores>=8 && (!hasRamInfo || ram>=16) && !weakGPU) return 'full';
-      if(cores>=4 && (!hasRamInfo || ram>=8) && !weakGPU) return 'standard';
-      return 'lite';
-    }
-
-    function fmtRam(r){ return r ? (r+' Go RAM') : 'RAM inconnue'; }
-
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const ram = Number(navigator.deviceMemory || 0);           // Go
-      const cores = Number(navigator.hardwareConcurrency || 0);  // threads
-      const {renderer} = getGPUInfo();
-      const os = getPlatform();
-
-      const tier = chooseTier({ram, cores, gpu: renderer});
-
-      // UI: badge "Recommandé"
-      const id = tier === 'full' ? 'pack-full' : tier === 'standard' ? 'pack-standard' : 'pack-lite';
-      const card = document.getElementById(id);
-      if(card){ card.classList.add('reco'); }
-      card?.querySelector('.primary')?.classList.add('pulse');
-
-      // Affiche les specs détectées
-      const kv = document.getElementById('kv');
-      const add = (txt)=>{ const s=document.createElement('span'); s.textContent=txt; kv.appendChild(s) };
-      add(fmtRam(ram));
-      add(cores ? (cores+' threads logiques') : 'Threads CPU inconnus');
-      add(os);
-      add(renderer);
-
-      // Conseils Shader selon la config détectée
-      const advice = document.getElementById('shader-advice');
-      if (advice){
-        if (tier === 'full'){
-          advice.textContent = "✅ Recommandé : votre pack Ultra inclut déjà Iris. Activez le shaderpack dans le jeu.";
-        } else if (tier === 'standard'){
-          advice.textContent = "⚠️ Optionnel : les shaders peuvent baisser les FPS. Utilisez des presets Low/Medium et pensez à installer Iris (inclus dans le pack Ultra).";
-        } else {
-          advice.textContent = "⛔ Déconseillé : privilégiez le pack Lite sans shaders pour garder des FPS stables.";
-        }
-      }
-    });
+    function gpu(){try{var c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');if(!g)return'GPU non détecté';var d=g.getExtension('WEBGL_debug_renderer_info');return String(d?g.getParameter(d.UNMASKED_RENDERER_WEBGL):g.getParameter(g.RENDERER)||'GPU non détecté')}catch(e){return'GPU non détecté'}}
+    function platform(){var u=navigator.userAgent||'';if(navigator.userAgentData&&navigator.userAgentData.platform)return navigator.userAgentData.platform;if(/Windows/i.test(u))return'Windows';if(/Mac OS/i.test(u))return'macOS';if(/Linux/i.test(u))return'Linux';return'OS inconnu'}
+    function tier(r,c,g){g=String(g||'').toLowerCase();var hr=r>0,hc=c>0,strong=/(rtx\\s?(20|30|40|50)\\d{2}|gtx\\s?(16\\d{2}|10[6-9]0|1080)|rx\\s?(5\\d{3}|6\\d{3}|7\\d{3}|9\\d{3})|radeon\\s?vii|arc\\s?[ab]\\d{3}|apple\\s?m[1-5])/i.test(g),weak=/(intel.*(hd|uhd)|iris\\s?plus|geforce\\s?(mx|gt\\s?7|940m)|radeon\\s?(r[357]|vega\\s?[38]))/i.test(g);if(weak||(hr&&r<=4)||(hc&&c<=2))return'lite';if(strong&&(!hc||c>=8)&&(!hr||r>=16))return'full';return'standard'}
+    document.addEventListener('DOMContentLoaded',function(){var r=Number(navigator.deviceMemory||0),c=Number(navigator.hardwareConcurrency||0),g=gpu(),t=tier(r,c,g),id=t==='full'?'pack-full':t==='standard'?'pack-standard':'pack-lite',card=document.getElementById(id);if(card)card.classList.add('reco');var kv=document.getElementById('kv');[r?r+' Go RAM':'RAM inconnue',c?c+' threads logiques':'CPU inconnu',platform(),g].forEach(function(x){var s=document.createElement('span');s.textContent=x;kv.appendChild(s)});var a=document.getElementById('shader-advice');if(a)a.textContent=t==='full'?'✅ Ton matériel semble adapté à Ultra et aux shaders.':t==='standard'?'ℹ️ Commence sans shader, puis teste-le si tes FPS restent confortables.':'⛔ Sur Lite, garde les shaders désactivés pour préserver les FPS.'});
   </script>
 </body>
 </html>
