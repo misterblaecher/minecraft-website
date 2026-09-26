@@ -3,116 +3,98 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Serveur Minecraft</title>
-  <meta name="description" content="Serveur Minecraft moddé – carte en ligne, modpack et infos." />
-
-  <!-- OpenGraph -->
-  <meta property="og:title" content="Serveur Minecraft" />
-  <meta property="og:description" content="Carte en ligne, modpack et infos du serveur." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="assets/logo.png" />
-
-  <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="style.css">
+  <title>Serveur Minecraft — Monde moddé</title>
+  <meta name="description" content="Explore le serveur Minecraft moddé comme une carte vivante : modpack, installation, règles, carte, Discord et Texture Studio." />
+  <meta name="theme-color" content="#070a11" />
+  <link rel="stylesheet" href="world.css?v=20260926-1" />
 </head>
-<body>
-  <header class="container">
-    <section class="hero">
-      <div class="hero-head">
-        <img class="logo" src="assets/logo.png" alt="Logo Serveur" onerror="this.style.display='none'">
-        <div>
-          <h1 class="title">Serveur Minecraft</h1>
-          <p class="subtitle">Bienvenue sur notre monde moddé !</p>
-        </div>
+<body class="world-home">
+  <main class="world-scene" aria-label="Panorama interactif du serveur">
+    <div class="world-scene__image" aria-hidden="true"></div>
+    <div class="world-smoke" aria-hidden="true"></div>
+    <div class="world-water" aria-hidden="true"></div>
+    <div class="world-train" aria-hidden="true"></div>
+    <div class="world-dragon" aria-hidden="true"></div>
+    <div class="world-particles" aria-hidden="true"></div>
+
+    <header class="world-topbar">
+      <div class="world-brand">
+        <span class="world-brand__eyebrow">Serveur Minecraft moddé · 1.21.1</span>
+        <h1>Choisis un lieu et voyage dans le monde</h1>
+        <p>Create, Waystones, exploration, shaders et outils créatifs réunis dans une seule scène.</p>
       </div>
-    </section>
-  </header>
+      <div class="world-status">Monde interactif</div>
+    </header>
 
-  <main class="container">
-    <div class="grid">
+    <a class="world-hotspot world-hotspot--modpack"
+       href="modpack.html"
+       data-transition data-x="13%" data-y="58%" data-scale="2.05"
+       aria-label="Modpack et ressources">
+      <span class="world-hotspot__dot" aria-hidden="true"></span>
+      <span class="world-hotspot__label">
+        <strong>Modpack & ressources</strong>
+        <span>Usine Create · packs, shaders et ressources</span>
+      </span>
+    </a>
 
-      <!-- Carte & Modpack -->
-      <section class="card card--left">
-        <h2 class="h2">Carte & Modpack</h2>
-        <p class="muted mt--6">Explore la carte en ligne et récupère le modpack, les shaders et le pack de ressources Gab Con.</p>
+    <a class="world-hotspot world-hotspot--install"
+       href="installation.html"
+       data-transition data-x="29%" data-y="69%" data-scale="2.1"
+       aria-label="Guide d'installation">
+      <span class="world-hotspot__dot" aria-hidden="true"></span>
+      <span class="world-hotspot__label">
+        <strong>Guide d'installation</strong>
+        <span>Atelier de préparation · installer et configurer</span>
+      </span>
+    </a>
 
-        <!-- mini-grille : boutons à gauche, note à droite -->
-        <div style="
-          display:grid;
-          grid-template-columns:minmax(170px,220px) 1fr;
-          gap:18px;
-          align-items:start;
-        ">
-          <div class="stack center" style="align-items:stretch">
-            <a class="btn-slice btn-green"
-               href="http://80.201.203.20:8100/#world:-48:0:-1140:1500:0:0:0:0:perspective"
-               data-link="map" target="_blank" rel="noopener">Voir la Carte</a>
+    <a class="world-hotspot world-hotspot--infos"
+       href="infos.html"
+       data-transition data-x="47%" data-y="60%" data-scale="2.0"
+       aria-label="Infos et règles">
+      <span class="world-hotspot__dot" aria-hidden="true"></span>
+      <span class="world-hotspot__label">
+        <strong>Infos & règles</strong>
+        <span>Place centrale · règles, FAQ et informations serveur</span>
+      </span>
+    </a>
 
-            <a class="btn-slice btn-orange"
-               href="modpack.html#shaderpack"
-               data-link="modpack" target="_blank" rel="noopener">Modpack, Shaders & Ressources</a>
+    <a class="world-hotspot world-hotspot--map"
+       href="map.html"
+       data-transition data-x="63%" data-y="36%" data-scale="2.15"
+       aria-label="Carte du serveur">
+      <span class="world-hotspot__dot" aria-hidden="true"></span>
+      <span class="world-hotspot__label">
+        <strong>Carte du serveur</strong>
+        <span>Observatoire · explorer le monde en ligne</span>
+      </span>
+    </a>
 
-            <a class="btn-slice btn-blue"
-               href="installation.html">Guide d'installation</a>
+    <a class="world-hotspot world-hotspot--discord"
+       href="https://discord.gg/8SBNM537uZ"
+       data-transition data-x="78%" data-y="59%" data-scale="2.05"
+       aria-label="Rejoindre Discord">
+      <span class="world-hotspot__dot" aria-hidden="true"></span>
+      <span class="world-hotspot__label">
+        <strong>Communauté</strong>
+        <span>Hall social · rejoindre le Discord</span>
+      </span>
+    </a>
 
-            <a class="btn-slice btn-purple"
-               href="skin-viewer.html?v=20260920-2215">Minecraft Texture Studio</a>
-          </div>
+    <a class="world-hotspot world-hotspot--studio"
+       href="skin-viewer.html?v=20260926-1"
+       data-transition data-x="90%" data-y="48%" data-scale="2.1"
+       aria-label="Minecraft Texture Studio">
+      <span class="world-hotspot__dot" aria-hidden="true"></span>
+      <span class="world-hotspot__label">
+        <strong>Minecraft Texture Studio</strong>
+        <span>Laboratoire créatif · viewer 3D et génération HD</span>
+      </span>
+    </a>
 
-          <p class="muted" style="margin:4px 0 0">
-            Inclut le shaderpack recommandé et le pack de ressources :
-            <strong>Complementary Shaders – Unbound</strong> + <strong>Gab Con Resource Pack</strong>.
-            Tu peux tester tes textures en 3D et préparer les prompts de génération HD dans le <strong>Minecraft Texture Studio</strong>.
-          </p>
-        </div>
-      </section>
-
-      <!-- Communauté -->
-      <section class="card card--right center">
-        <h2 style="margin-top:0">Communauté</h2>
-        <p class="muted" style="margin-top:-6px">Rejoins-nous et lis les infos & règles.</p>
-        <div class="stack center" style="justify-content:center">
-        <a class="btn-slice btn-blue"
-          href="https://discord.gg/8SBNM537uZ"
-          data-link="discord" target="_blank" rel="noopener">Rejoindre Discord</a>
-
-          <button class="btn-slice btn-purple" type="button" data-toggle="infos">Infos & Règles</button>
-        </div>
-      </section>
-
-      <!-- Infos & Règles -->
-      <section id="infos" class="card glow" style="grid-column:span 12">
-        <h3 style="margin-top:0">Infos & Règles</h3>
-        <p>Bienvenue sur notre serveur Minecraft moddé ! Voici les principales règles :</p>
-        <ul>
-          <li>Respectez les autres joueurs.</li>
-          <li>Pas de cheat, hack ou exploit de bugs.</li>
-          <li>Pas de griefing ou vol.</li>
-          <li>Utilisez le Discord pour toute question ou report.</li>
-        </ul>
-        <p>👉 Pour voir la liste complète et détaillée :
-          <a href="infos.html">Infos & Règles complètes</a>
-        </p>
-
-        <div class="reveal">
-          <ul class="muted" style="margin:0 0 6px 18px">
-            <li>Version : 1.21.1 (NeoForge)</li>
-            <li>Whitelist sur demande (Discord)</li>
-            <li>Respect, fair-play, pas de grief/cheat</li>
-          </ul>
-          <p class="muted">
-            Besoin d’aide pour installer le modpack ? Consulte le
-            <a href="installation.html" class="simple">tutoriel d'installation complet</a>
-            ou demande de l'aide sur notre
-            <a href="#" class="simple" data-link="discord" target="_blank" rel="noopener">Discord</a>.
-          </p>
-        </div>
-      </section>
-
-    </div>
+    <div class="world-hint">Survole un lieu pour le découvrir · clique pour t’y rendre</div>
   </main>
 
-  <!-- on charge le JS ici -->
-  <script src="app.js" defer></script>
+  <script src="app.js?v=20260926-1" defer></script>
 </body>
 </html>
