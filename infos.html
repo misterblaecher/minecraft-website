@@ -3,125 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infos & Règles</title>
-  <style>
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:#0d1117;
-      color:#fff;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      padding:40px 20px;
-    }
-    h1{ font-size:2rem; margin-bottom:10px; }
-    p{ opacity:.8; margin-bottom:20px; }
-
-    .btn-diagonal{
-      --bg: #43b581;
-      --bg-dark:#2d7d59;
-      --text:#fff;
-      position: relative;
-      display: inline-block;
-      text-decoration: none;
-      font: 600 16px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      margin:15px 10px;
-      padding:14px 26px;
-      border-radius:12px;
-      overflow: hidden;
-      background: var(--bg);
-      transition: color .3s ease;
-      z-index:0;
-    }
-    .btn-diagonal::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: var(--bg-dark);
-      transform: skewX(-20deg) scaleX(0);
-      transform-origin: left;
-      transition: transform .35s ease;
-      z-index:-1;
-    }
-    .btn-diagonal:hover::before{
-      transform: skewX(-20deg) scaleX(1);
-    }
-
-    section{
-      max-width:800px;
-      background:#161b22;
-      padding:20px;
-      border-radius:12px;
-      margin-top:20px;
-      line-height:1.6;
-    }
-    h2{ margin-top:0; }
-    ul{ padding-left:20px; }
-  </style>
-  <link rel="stylesheet" href="world.css?v=20260926-1">
+  <title>GabCon — Infos & règles</title>
+  <meta name="description" content="Règles, FAQ et informations du serveur Minecraft GabCon.">
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="world.css?v=20260926-2">
+  <link rel="stylesheet" href="guide.css?v=20260926-1">
 </head>
 <body class="world-page world-page--infos">
-  <h1>ℹ️ Infos & Règles</h1>
-  <p>Avant de jouer, merci de lire attentivement les règles.</p>
+  <main class="guide-shell">
+    <nav class="guide-nav" aria-label="Navigation">
+      <a class="guide-brand" href="index.html"><img src="assets/logo.png" alt="Logo GabCon"><span><strong>GabCon</strong><small>Infos & règles</small></span></a>
+      <div class="guide-links"><a href="index.html">Accueil</a><a href="installation.html">Installation</a><a href="modpack.html">Modpacks</a><a href="infos.html" aria-current="page">Règles</a></div>
+    </nav>
 
-  <!-- Bouton retour -->
-  <a class="btn-diagonal" href="index.html" style="--bg:#5865F2; --bg-dark:#4752c4;">🏠 Retour Accueil</a>
+    <header class="guide-hero"><div class="guide-hero-grid"><div><span class="guide-kicker">📜 Communauté GabCon</span><h1 class="guide-title">Quelques règles simples, puis on joue.</h1><p class="guide-lead">Le but est de construire ensemble dans une ambiance propre : respecte les joueurs et leurs créations.</p></div><aside class="guide-side"><div class="guide-pills"><span class="guide-pill">Minecraft 1.21.1</span><span class="guide-pill">NeoForge</span><span class="guide-pill">Whitelist via Discord</span></div><div class="guide-actions"><a class="guide-btn guide-btn--blue" href="https://discord.gg/8SBNM537uZ" target="_blank" rel="noopener">Rejoindre Discord</a></div></aside></div></header>
 
-  <section>
-    <h2>📜 Règles du serveur</h2>
-    <ul>
-      <li>Pas de grief (ne détruisez pas les constructions des autres).</li>
-      <li>Pas de cheats, hacks ou mods interdits.</li>
-      <li>Respect entre les joueurs (pas d’insultes ni de harcèlement).</li>
-      <li>Pas de spam dans le chat.</li>
-      <li>Respectez les consignes des admins.</li>
-    </ul>
-  </section>
-  <section>
-    <h2>❓ FAQ</h2>
-    <p><strong>Q :</strong> Quelle version de Minecraft utiliser ?<br>
-    <strong>R :</strong> Minecraft 1.21.1 avec NeoForge.</p>
+    <section class="guide-section"><div class="guide-grid-2">
+      <article class="guide-card"><h2>✅ À faire</h2><ul class="guide-check"><li>Respecter les autres joueurs.</li><li>Construire sans dégrader les zones d'autrui.</li><li>Signaler les bugs importants au staff.</li><li>Utiliser Discord pour les demandes de whitelist.</li></ul></article>
+      <article class="guide-card"><h2>⛔ Interdit</h2><ul><li>Grief et vol.</li><li>Cheat, hacks ou clients donnant un avantage injuste.</li><li>Exploitation volontaire de bugs.</li><li>Harcèlement, insultes et spam.</li></ul></article>
+    </div></section>
 
-    <p><strong>Q :</strong> J’ai des lags, que faire ?<br>
-    <strong>R :</strong> Vérifiez que vous allouez assez de RAM (4–8 Go recommandé).</p>
+    <section class="guide-section"><div class="guide-section-head"><div><h2>FAQ</h2><p>Les réponses aux questions les plus fréquentes.</p></div></div>
+      <details class="guide-details" open><summary>Quelle version de Minecraft utiliser ?</summary><p>Minecraft <strong>1.21.1</strong> avec <strong>NeoForge 21.1.251</strong> et Java 21.</p></details>
+      <details class="guide-details"><summary>Quel modpack dois-je prendre ?</summary><p>Lite pour les PC modestes, Standard pour la majorité des PC, Ultra pour les machines capables d'utiliser les shaders. <a href="modpack.html">Comparer les trois packs.</a></p></details>
+      <details class="guide-details"><summary>Je ne sais pas installer les mods</summary><p>Le <a href="installation.html">guide visuel</a> montre Java, NeoForge, le dossier <code>mods</code> et chaque fichier à déplacer.</p></details>
+      <details class="guide-details"><summary>J'ai des lags</summary><p>Commence sans shader. Si nécessaire, passe de Ultra à Standard ou de Standard à Lite et vérifie la RAM allouée à Minecraft.</p></details>
+    </section>
 
-    <p><strong>Q :</strong> Où trouver le modpack ?<br>
-    <strong>R :</strong> Téléchargez-le sur la page <a href="modpack.html">Modpack</a>.</p>
-  </section>
-    <section>
-  <h2>📦 Mods du serveur & des packs</h2>
-
-  <h3>Dans tous les packs (obligatoires)</h3>
-  <ul>
-    <li>Create (+ Dragons Plus, Enchantment Industry)</li>
-    <li>Curios API</li>
-    <li>JEI, Jade</li>
-    <li>Sodium, FerriteCore, Inventory Sorter</li>
-    <li>Sophisticated Backpacks (+ Core & Create Integration)</li>
-    <li>FTB Chunks, FTB Library, FTB Teams</li>
-    <li>Waystones</li>
-    <li>Architectury, Balm</li>
-    <li>Trading Floor</li>
-  </ul>
-
-  <h3>Selon le pack (optionnels)</h3>
-  <ul>
-    <li><strong>Ultra</strong> : Iris Shaders, Distant Horizons, JourneyMap, Jade Addons</li>
-    <li><strong>Standard</strong> : JourneyMap, Jade Addons</li>
-    <li><strong>Lite</strong> : —</li>
-  </ul>
-
-  <h3>Serveur uniquement (les joueurs n’ont rien à installer)</h3>
-  <ul>
-    <li>BlueMap (carte web)</li>
-    <li>Chunky (pré-génération)</li>
-  </ul>
-
-  <p class="muted">⚙️ Version : <strong>Minecraft 1.21.1 + NeoForge</strong> — Téléchargements sur la page <a href="modpack.html">Modpack</a>.</p>
-</section>
-
+    <section class="guide-section"><div class="guide-grid-2"><article class="guide-card"><h3>🟢 Lite</h3><p>23 JAR : base gameplay + Sodium et optimisations, sans Iris, Distant Horizons ni GabCon DH Sync.</p></article><article class="guide-card"><h3>🔵 Standard / 🟣 Ultra</h3><p>26 JAR : base gameplay + Iris + Distant Horizons 3.3.2 + GabCon DH Sync 0.6.2. Ultra ajoute surtout le shader et des réglages plus élevés.</p></article></div></section>
+  </main>
 </body>
 </html>
-
