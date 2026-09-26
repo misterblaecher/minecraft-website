@@ -40,7 +40,7 @@ body.world-home{
   z-index:-5;
   background:
     linear-gradient(180deg,rgba(3,6,13,.12) 0%,rgba(3,6,13,.05) 52%,rgba(3,6,13,.58) 100%),
-    url("assets/backgrounds/home-panorama.png") center/cover no-repeat;
+    url("assets/backgrounds/map-valley.png") center/cover no-repeat;
   transform-origin:var(--zoom-x) var(--zoom-y);
   transform:
     translate3d(var(--parallax-x,0),var(--parallax-y,0),0)
@@ -389,7 +389,7 @@ body.is-zooming .world-scene::after{opacity:1}
 
 /* Internal pages: same world, focused scene */
 body.world-page{
-  --page-bg:url("assets/backgrounds/home-panorama.png");
+  --page-bg:url("assets/backgrounds/map-valley.png");
   --page-pos:center;
   position:relative;
   min-height:100%;
@@ -423,7 +423,7 @@ body.world-page::after{
 body.world-page--modpack{--page-bg:url("assets/backgrounds/modpack-industry.png");--page-pos:center}
 body.world-page--installation{--page-bg:url("assets/backgrounds/installation-workshop.png");--page-pos:center}
 body.world-page--infos{--page-bg:url("assets/backgrounds/info-city.png");--page-pos:center}
-body.world-page--map{--page-bg:url("assets/backgrounds/map-valley.png");--page-pos:center}
+body.world-page--map{--page-bg:url("assets/backgrounds/home-panorama.png");--page-pos:center}
 body.world-page--studio{--page-bg:url("assets/backgrounds/texture-studio.png");--page-pos:center}
 
 body.world-page .card,
