@@ -714,36 +714,3 @@ body.world-page .container{
 .world-landing__primary{color:#061015;background:linear-gradient(135deg,#7cecff,#a792ff)}
 .world-landing__ghost{color:#eef4ff;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
 
-@media (max-width:760px){
-  .world-scene{min-height:520px}
-  .world-brand{max-width:82vw}
-  .world-brand p,.world-status{display:none}
-  .world-topbar{padding:16px}
-  .world-hotspot{width:46px}
-  .world-hotspot__label{min-width:158px;max-width:190px}
-  .world-hotspot__label span{display:none}
-  .world-hotspot--modpack{left:11%;top:59%}
-  .world-hotspot--install{left:28%;top:72%}
-  .world-hotspot--infos{left:47%;top:62%}
-  .world-hotspot--map{left:62%;top:39%}
-  .world-hotspot--discord{left:77%;top:61%}
-  .world-hotspot--studio{left:89%;top:51%}
-  .world-hint{bottom:12px;font-size:.68rem}
-}
-
-@media (prefers-reduced-motion:reduce){
-  .world-scene__image,
-  .world-scene::after,
-  .world-hotspot::before,
-  .world-hotspot::after,
-  .world-hotspot__label,
-  .world-smoke::before,
-  .world-smoke::after,
-  .world-water,
-  .world-train,
-  .world-dragon,
-  .world-particles span{
-    animation:none !important;
-    transition:none !important;
-  }
-}
