@@ -6,95 +6,128 @@
   <title>Serveur Minecraft — Monde moddé</title>
   <meta name="description" content="Explore le serveur Minecraft moddé comme une carte vivante : modpack, installation, règles, carte, Discord et Texture Studio." />
   <meta name="theme-color" content="#070a11" />
-  <link rel="stylesheet" href="world.css?v=20260926-1" />
+  <link rel="stylesheet" href="world.css?v=20260926-2" />
 </head>
 <body class="world-home">
-  <main class="world-scene" aria-label="Panorama interactif du serveur">
-    <div class="world-scene__image" aria-hidden="true"></div>
-    <div class="world-smoke" aria-hidden="true"></div>
-    <div class="world-water" aria-hidden="true"></div>
-    <div class="world-train" aria-hidden="true"></div>
-    <div class="world-dragon" aria-hidden="true"></div>
-    <div class="world-particles" aria-hidden="true"></div>
+  <div class="world-desktop">
+    <main class="world-scene" aria-label="Panorama interactif du serveur">
+      <div class="world-scene__backdrop" aria-hidden="true"></div>
 
-    <header class="world-topbar">
-      <div class="world-brand">
-        <span class="world-brand__eyebrow">Serveur Minecraft moddé · 1.21.1</span>
-        <h1>Choisis un lieu et voyage dans le monde</h1>
-        <p>Create, Waystones, exploration, shaders et outils créatifs réunis dans une seule scène.</p>
+      <div class="world-frame">
+        <img
+          class="world-scene__image"
+          src="assets/backgrounds/map-valley.png"
+          alt=""
+          draggable="false"
+        />
+
+        <div class="world-smoke" aria-hidden="true"></div>
+        <div class="world-water" aria-hidden="true"></div>
+        <div class="world-train" aria-hidden="true"></div>
+        <div class="world-dragon" aria-hidden="true"></div>
+        <div class="world-particles" aria-hidden="true"></div>
+
+        <a class="world-hotspot world-hotspot--modpack"
+           href="modpack.html"
+           data-transition data-x="12%" data-y="57%" data-scale="2.05"
+           aria-label="Modpack et ressources">
+          <span class="world-hotspot__dot" aria-hidden="true"></span>
+          <span class="world-hotspot__label">
+            <strong>Modpack & ressources</strong>
+            <span>Usine Create · packs, shaders et ressources</span>
+          </span>
+        </a>
+
+        <a class="world-hotspot world-hotspot--install"
+           href="installation.html"
+           data-transition data-x="29%" data-y="69%" data-scale="2.1"
+           aria-label="Guide d'installation">
+          <span class="world-hotspot__dot" aria-hidden="true"></span>
+          <span class="world-hotspot__label">
+            <strong>Guide d'installation</strong>
+            <span>Atelier de préparation · installer et configurer</span>
+          </span>
+        </a>
+
+        <a class="world-hotspot world-hotspot--infos"
+           href="infos.html"
+           data-transition data-x="47%" data-y="60%" data-scale="2.0"
+           aria-label="Infos et règles">
+          <span class="world-hotspot__dot" aria-hidden="true"></span>
+          <span class="world-hotspot__label">
+            <strong>Infos & règles</strong>
+            <span>Place centrale · règles, FAQ et informations serveur</span>
+          </span>
+        </a>
+
+        <a class="world-hotspot world-hotspot--map"
+           href="map.html"
+           data-transition data-x="63%" data-y="36%" data-scale="2.15"
+           aria-label="Carte du serveur">
+          <span class="world-hotspot__dot" aria-hidden="true"></span>
+          <span class="world-hotspot__label">
+            <strong>Carte du serveur</strong>
+            <span>Observatoire · explorer le monde en ligne</span>
+          </span>
+        </a>
+
+        <a class="world-hotspot world-hotspot--discord"
+           href="https://discord.gg/8SBNM537uZ"
+           data-transition data-x="78%" data-y="59%" data-scale="2.05"
+           aria-label="Rejoindre Discord">
+          <span class="world-hotspot__dot" aria-hidden="true"></span>
+          <span class="world-hotspot__label">
+            <strong>Communauté</strong>
+            <span>Hall social · rejoindre le Discord</span>
+          </span>
+        </a>
+
+        <a class="world-hotspot world-hotspot--studio"
+           href="skin-viewer.html?v=20260926-2"
+           data-transition data-x="90%" data-y="48%" data-scale="2.1"
+           aria-label="Minecraft Texture Studio">
+          <span class="world-hotspot__dot" aria-hidden="true"></span>
+          <span class="world-hotspot__label">
+            <strong>Minecraft Texture Studio</strong>
+            <span>Laboratoire créatif · viewer 3D et génération HD</span>
+          </span>
+        </a>
       </div>
-      <div class="world-status">Monde interactif</div>
-    </header>
 
-    <a class="world-hotspot world-hotspot--modpack"
-       href="modpack.html"
-       data-transition data-x="13%" data-y="58%" data-scale="2.05"
-       aria-label="Modpack et ressources">
-      <span class="world-hotspot__dot" aria-hidden="true"></span>
-      <span class="world-hotspot__label">
-        <strong>Modpack & ressources</strong>
-        <span>Usine Create · packs, shaders et ressources</span>
-      </span>
-    </a>
+      <header class="world-topbar">
+        <div class="world-brand">
+          <span class="world-brand__eyebrow">Serveur Minecraft moddé · 1.21.1</span>
+          <h1>Choisis un lieu et voyage dans le monde</h1>
+          <p>Create, Waystones, exploration, shaders et outils créatifs réunis dans une seule scène.</p>
+        </div>
+        <div class="world-status">Monde interactif</div>
+      </header>
 
-    <a class="world-hotspot world-hotspot--install"
-       href="installation.html"
-       data-transition data-x="29%" data-y="69%" data-scale="2.1"
-       aria-label="Guide d'installation">
-      <span class="world-hotspot__dot" aria-hidden="true"></span>
-      <span class="world-hotspot__label">
-        <strong>Guide d'installation</strong>
-        <span>Atelier de préparation · installer et configurer</span>
-      </span>
-    </a>
+      <div class="world-hint">Survole un lieu pour le découvrir · clique pour t’y rendre</div>
+    </main>
 
-    <a class="world-hotspot world-hotspot--infos"
-       href="infos.html"
-       data-transition data-x="47%" data-y="60%" data-scale="2.0"
-       aria-label="Infos et règles">
-      <span class="world-hotspot__dot" aria-hidden="true"></span>
-      <span class="world-hotspot__label">
-        <strong>Infos & règles</strong>
-        <span>Place centrale · règles, FAQ et informations serveur</span>
-      </span>
-    </a>
+    <footer class="world-taskbar" aria-label="Barre du monde">
+      <div class="world-start" aria-hidden="true">
+        <span class="world-start__block"></span>
+        <strong>MONDE</strong>
+      </div>
 
-    <a class="world-hotspot world-hotspot--map"
-       href="map.html"
-       data-transition data-x="63%" data-y="36%" data-scale="2.15"
-       aria-label="Carte du serveur">
-      <span class="world-hotspot__dot" aria-hidden="true"></span>
-      <span class="world-hotspot__label">
-        <strong>Carte du serveur</strong>
-        <span>Observatoire · explorer le monde en ligne</span>
-      </span>
-    </a>
+      <div class="world-task-window" aria-hidden="true">
+        <span class="world-task-window__icon"></span>
+        <span>MineWorld 95 — Panorama</span>
+      </div>
 
-    <a class="world-hotspot world-hotspot--discord"
-       href="https://discord.gg/8SBNM537uZ"
-       data-transition data-x="78%" data-y="59%" data-scale="2.05"
-       aria-label="Rejoindre Discord">
-      <span class="world-hotspot__dot" aria-hidden="true"></span>
-      <span class="world-hotspot__label">
-        <strong>Communauté</strong>
-        <span>Hall social · rejoindre le Discord</span>
-      </span>
-    </a>
+      <div class="world-task-spacer"></div>
 
-    <a class="world-hotspot world-hotspot--studio"
-       href="skin-viewer.html?v=20260926-1"
-       data-transition data-x="90%" data-y="48%" data-scale="2.1"
-       aria-label="Minecraft Texture Studio">
-      <span class="world-hotspot__dot" aria-hidden="true"></span>
-      <span class="world-hotspot__label">
-        <strong>Minecraft Texture Studio</strong>
-        <span>Laboratoire créatif · viewer 3D et génération HD</span>
-      </span>
-    </a>
+      <div class="world-task-status" aria-hidden="true">
+        <span class="world-task-status__light"></span>
+        NeoForge 1.21.1
+      </div>
 
-    <div class="world-hint">Survole un lieu pour le découvrir · clique pour t’y rendre</div>
-  </main>
+      <time class="world-clock" id="worldClock" aria-label="Heure locale">--:--</time>
+    </footer>
+  </div>
 
-  <script src="app.js?v=20260926-1" defer></script>
+  <script src="app.js?v=20260926-2" defer></script>
 </body>
 </html>
