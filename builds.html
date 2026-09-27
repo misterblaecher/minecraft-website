@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BuildAI — Galerie des constructions</title>
+  <meta name="description" content="Prévisualise et télécharge les constructions générées par GabCon BuildAI pour le serveur Minecraft 1.21.1." />
+  <meta name="theme-color" content="#080d14" />
+  <link rel="stylesheet" href="builds.css?v=20260927-1" />
+</head>
+<body class="builds-page">
+  <header class="builds-hero">
+    <nav class="builds-nav" aria-label="Navigation">
+      <a class="builds-nav__back" href="index.html">← Retour au monde</a>
+      <span class="builds-nav__tag">Minecraft 1.21.1 · NeoForge</span>
+    </nav>
+
+    <div class="builds-hero__content">
+      <p class="builds-eyebrow">GabCon BuildAI</p>
+      <h1>Bibliothèque de constructions</h1>
+      <p>
+        Prévisualise les builds générés, vérifie leur compatibilité avec le profil serveur
+        et télécharge directement le schematic prêt pour WorldEdit.
+      </p>
+    </div>
+
+    <div class="builds-summary" id="buildSummary" aria-live="polite">Chargement de la bibliothèque…</div>
+  </header>
+
+  <main class="builds-main">
+    <section class="builds-toolbar" aria-label="Filtres de la galerie">
+      <label class="builds-search">
+        <span>Rechercher</span>
+        <input id="buildSearch" type="search" placeholder="portail, create, stone…" autocomplete="off" />
+      </label>
+      <div class="builds-toolbar__meta" id="buildSource">Source : GitHub</div>
+    </section>
+
+    <section class="builds-state" id="buildState" aria-live="polite">
+      Chargement des builds…
+    </section>
+
+    <section class="builds-grid" id="buildGrid" aria-label="Constructions BuildAI"></section>
+  </main>
+
+  <template id="buildCardTemplate">
+    <article class="build-card">
+      <div class="build-card__visual">
+        <img class="build-card__image" alt="" loading="lazy" />
+        <span class="build-card__compat"></span>
+      </div>
+
+      <div class="build-card__body">
+        <div class="build-card__heading">
+          <div>
+            <p class="build-card__id"></p>
+            <h2 class="build-card__name"></h2>
+          </div>
+          <span class="build-card__version"></span>
+        </div>
+
+        <dl class="build-card__stats">
+          <div><dt>Dimensions</dt><dd data-stat="dims"></dd></div>
+          <div><dt>Blocs</dt><dd data-stat="blocks"></dd></div>
+          <div><dt>DataVersion</dt><dd data-stat="data-version"></dd></div>
+        </dl>
+
+        <div class="build-card__section">
+          <h3>Namespaces utilisés</h3>
+          <div class="build-card__chips" data-role="namespaces"></div>
+        </div>
+
+        <div class="build-card__section">
+          <h3>Matériaux principaux</h3>
+          <div class="build-card__materials" data-role="materials"></div>
+        </div>
+
+        <div class="build-card__actions">
+          <button class="build-action build-action--primary" type="button" data-action="download">
+            Télécharger .schem
+          </button>
+          <button class="build-action" type="button" data-action="worldedit">
+            Copier commandes WorldEdit
+          </button>
+          <a class="build-action" data-action="stats" target="_blank" rel="noopener">Voir stats JSON</a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <footer class="builds-footer">
+    Galerie statique synchronisée avec <strong>GabCon-BuildAI</strong>. La prévisualisation 3D interactive arrivera en phase 2.
+  </footer>
+
+  <script src="builds.js?v=20260927-1" defer></script>
+</body>
+</html>
