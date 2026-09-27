@@ -308,12 +308,12 @@ body.is-zooming .world-scene::after{opacity:1}
   transform:translate(-50%,0) scale(1);
 }
 
-.world-hotspot--modpack{left:12%;top:57%;--accent:#ffb45e}
-.world-hotspot--install{left:29%;top:69%;--accent:#79d9ff}
-.world-hotspot--infos{left:47%;top:60%;--accent:#bc92ff}
-.world-hotspot--map{left:63%;top:36%;--accent:#73f3ff}
-.world-hotspot--discord{left:78%;top:59%;--accent:#8e9bff}
-.world-hotspot--studio{left:90%;top:48%;--accent:#d68cff}
+.world-hotspot--modpack{left:11%;top:58%;--accent:#ffb45e}
+.world-hotspot--install{left:28%;top:66%;--accent:#79d9ff}
+.world-hotspot--infos{left:49%;top:58%;--accent:#bc92ff}
+.world-hotspot--map{left:67%;top:34%;--accent:#73f3ff}
+.world-hotspot--discord{left:54%;top:54%;--accent:#8e9bff}
+.world-hotspot--studio{left:89%;top:49%;--accent:#d68cff}
 
 .world-hint{
   position:absolute;
