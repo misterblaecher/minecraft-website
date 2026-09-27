@@ -313,6 +313,7 @@ body.is-zooming .world-scene::after{opacity:1}
 .world-hotspot--infos{left:49%;top:58%;--accent:#bc92ff}
 .world-hotspot--map{left:67%;top:34%;--accent:#73f3ff}
 .world-hotspot--discord{left:54%;top:54%;--accent:#8e9bff}
+.world-hotspot--builds{left:78%;top:70%;--accent:#72f0c0}
 .world-hotspot--studio{left:89%;top:49%;--accent:#d68cff}
 
 .world-hint{
