@@ -5,219 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Télécharger le Modpack</title>
   <style>
-    :root{
-      --bg:#0d1117; --panel:#161b22; --text:#fff; --muted:#9aa4b2;
-      --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
-      --grad1:#6c8cff; --grad2:#4f6fff; --radius:16px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1100px;margin:auto;padding:32px 20px}
-    h1{margin:0 0 6px;font-size:clamp(24px,3.5vw,34px)}
-    p.lead{margin:0 0 18px;color:#dbe7ff;opacity:.9}
-    a.btn{display:inline-block;padding:14px 20px;border-radius:12px;text-decoration:none;font-weight:800;color:#fff;background:linear-gradient(135deg,#6c8cff,#4f6fff);box-shadow:0 10px 22px rgba(0,0,0,.25)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:22px}
-    .card{grid-column:span 12;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;position:relative;box-shadow:0 10px 26px rgba(0,0,0,.25)}
-    @media(min-width:780px){.card{grid-column:span 4}}
-    .card h3{margin:0 0 8px}
-    .card p{margin:0 0 12px;color:var(--muted)}
-    .card ul{margin:8px 0 14px 18px}
-    .download{display:flex;gap:10px;flex-wrap:wrap}
-    .download a{padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:700}
-    .primary{background:linear-gradient(135deg,#00c98b,#00a97a);color:#fff}
-    .ghost{background:#0f1420;color:#cdd6e5;border:1px solid rgba(255,255,255,.08)}
-    .ribbon{position:absolute;top:14px;right:14px;background:#10b981;color:#052e1a;font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;display:none}
-    .card.reco .ribbon{display:inline-block}
-    .specs{margin-top:18px;background:#0f1420;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px}
-    .kv{display:flex;gap:10px;flex-wrap:wrap}
-    .kv span{background:#111827;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px 10px;color:#c9d3e5}
-    .note{color:var(--muted);font-size:.95rem;margin-top:10px}
-
-    /* Effet visuel sur le bouton recommandé + note shaders */
-    @keyframes pulseA{0%,100%{transform:translateZ(0) scale(1)}50%{transform:translateZ(0) scale(1.03)}}
-    .pulse{animation:pulseA 2.2s ease-in-out infinite}
-    .note-adv{margin-top:8px;color:#cfe8ff;opacity:.95}
+    :root{--bg:#0d1117;--panel:#161b22;--text:#fff;--muted:#9aa4b2;--ok:#22c55e;--grad1:#6c8cff;--grad2:#4f6fff;--radius:16px}
+    *{box-sizing:border-box} body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1100px;margin:auto;padding:32px 20px} h1{margin:0 0 6px;font-size:clamp(24px,3.5vw,34px)} p.lead{margin:0 0 18px;color:#dbe7ff;opacity:.9}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:22px} .card{grid-column:span 12;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;position:relative;box-shadow:0 10px 26px rgba(0,0,0,.25)}
+    @media(min-width:780px){.grid>.card{grid-column:span 4}} .card h3{margin:0 0 8px} .card p{margin:0 0 12px;color:var(--muted)} .card ul{margin:8px 0 14px 18px}
+    .download{display:flex;gap:10px;flex-wrap:wrap} .download a{padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:700} .primary{background:linear-gradient(135deg,#00c98b,#00a97a);color:#fff} .ghost{background:#0f1420;color:#cdd6e5;border:1px solid rgba(255,255,255,.08)}
+    .ribbon{position:absolute;top:14px;right:14px;background:#10b981;color:#052e1a;font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;display:none} .card.reco .ribbon{display:inline-block}
+    .note{color:var(--muted);font-size:.95rem;margin-top:10px} .specs{margin-top:18px;background:#0f1420;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px} .kv{display:flex;gap:10px;flex-wrap:wrap} .kv span{background:#111827;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px 10px;color:#c9d3e5}
+    details{background:#0f1420;border:1px solid rgba(255,255,255,.08);border-radius:12px;margin:10px 0;padding:10px 12px} summary{cursor:pointer;font-weight:800} .mods{columns:1;column-gap:26px;max-height:560px;overflow:auto} .mods li{break-inside:avoid;margin-bottom:4px;color:#ccd6e7} .mods code{font-size:.86rem;word-break:break-all} @media(min-width:800px){.mods{columns:2}}
+    .pill{display:inline-block;background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:4px 9px;margin:2px;color:#d9e2f1;font-size:.88rem}
+    @keyframes pulseA{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}} .pulse{animation:pulseA 2.2s ease-in-out infinite}
   </style>
   <link rel="stylesheet" href="world.css?v=20260926-1">
 </head>
 <body class="world-page world-page--modpack">
-  <div class="wrap">
-    <h1>📦 Modpack — choix automatique selon ta configuration</h1>
-    <p class="lead">Les trois packs gardent le même gameplay serveur. Le site estime seulement le niveau graphique adapté à ta RAM, tes threads CPU et (si possible) ton GPU. Tu peux toujours choisir un autre pack.</p>
+<div class="wrap">
+  <h1>📦 Modpack — Ultra, Standard ou Lite</h1>
+  <p class="lead">Minecraft 1.21.1 • NeoForge 21.1.251 • même gameplay serveur. Choisis surtout selon les performances de ton PC.</p>
 
-    <section class="card" id="neoforge" style="grid-column:span 12; margin-bottom:18px">
-      <h3>⚙️ Prérequis — NeoForge 21.1.251</h3>
-      <p>Installe NeoForge pour Minecraft <strong>1.21.1</strong> avant de copier les mods. Java 21 (64 bits) est requis.</p>
-      <div class="download">
-        <a class="primary" href="https://drive.google.com/uc?export=download&id=1hxCBJpID8qd3SEmiPpcYHfZGQzI3t1fO">⬇️ Télécharger NeoForge 21.1.251</a>
-        <a class="ghost" href="installation.html">📖 Tutoriel d'installation complet</a>
-      </div>
-    </section>
+  <section class="card" style="margin-bottom:18px">
+    <h3>⚙️ Prérequis — NeoForge 21.1.251</h3>
+    <p>Installe NeoForge pour Minecraft <strong>1.21.1</strong> avec Java 21 (64 bits), puis place le contenu du pack choisi dans ton dossier <code>mods</code>.</p>
+    <div class="download"><a class="primary" href="https://drive.google.com/uc?export=download&id=1hxCBJpID8qd3SEmiPpcYHfZGQzI3t1fO">⬇️ Télécharger NeoForge 21.1.251</a><a class="ghost" href="installation.html">📖 Tutoriel</a></div>
+  </section>
 
-    <div class="grid">
-      <!-- FULL -->
-      <section class="card" id="pack-full">
-        <div class="ribbon">Recommandé</div>
-        <h3>Ultra</h3>
-        <p>Même gameplay que les autres packs + <strong>Sodium</strong>, <strong>Iris</strong>, <strong>Distant Horizons</strong> et shaders.</p>
-        <ul>
-          <li>Pour PC récents : GPU dédié correct, 16&nbsp;Go RAM+ et 8 threads CPU+.</li>
-          <li>Meilleurs graphismes, distance étendue.</li>
-        </ul>
-        <div class="download">
-          <!-- Lien Google Drive direct -->
-          <a class="primary" target="_blank" rel="noopener"
-             href="https://drive.google.com/file/d/1elnwVvnyUL767cFj8iOPW6Ftz61ox0ho/view?usp=drivesdk">⬇️ Télécharger (Ultra)</a>
-          <a class="ghost" href="index.html">🏠 Retour</a>
-        </div>
-      </section>
-
-      <!-- STANDARD -->
-      <section class="card" id="pack-standard">
-        <div class="ribbon">Recommandé</div>
-        <h3>Standard</h3>
-        <p>Équilibré : même gameplay + Sodium. Pas d’Iris, shaders ni Distant Horizons.</p>
-        <ul>
-          <li>Pour la majorité des PC (8&nbsp;Go RAM+, 4 threads CPU+).</li>
-          <li>Bon FPS et stabilité.</li>
-        </ul>
-        <div class="download">
-          <a class="primary" target="_blank" rel="noopener"
-             href="https://drive.google.com/uc?export=download&id=1Lmb8sxONUqbL3sqCvcCT_37JFiSwgq57">⬇️ Télécharger (Standard)</a>
-          <a class="ghost" href="index.html">🏠 Retour</a>
-        </div>
-      </section>
-
-      <!-- LITE -->
-      <section class="card" id="pack-lite">
-        <div class="ribbon">Recommandé</div>
-        <h3>Lite</h3>
-        <p>Allégé : même gameplay serveur, mais sans Distant Horizons, Iris ni shaders. Priorité aux FPS.</p>
-        <ul>
-          <li>Pour PC anciens / iGPU (Intel UHD/Iris), 4–8&nbsp;Go RAM.</li>
-          <li>Priorité aux performances.</li>
-        </ul>
-        <div class="download">
-          <a class="primary" target="_blank" rel="noopener"
-             href="https://drive.google.com/uc?export=download&id=1wV2uKftrVimx2VqIpmNJkm8oBXN5FXSL">⬇️ Télécharger (Lite)</a>
-          <a class="ghost" href="index.html">🏠 Retour</a>
-        </div>
-      </section>
-    </div>
-
-    <section class="card" id="pack-complet" style="grid-column:span 12; margin-top:18px">
-      <h3>📦 Archive complète</h3>
-      <p>Archive de référence contenant l'ensemble des mods, y compris les outils serveur/admin. <strong>Ce n'est pas le pack client recommandé.</strong></p>
-      <div class="download">
-        <a class="primary" target="_blank" rel="noopener"
-           href="https://drive.google.com/uc?export=download&id=162XqW3zSZvz0NqRVGiPscxvFwQ-XLMlO">⬇️ Télécharger le modpack complet</a>
-      </div>
-      <p class="note">Pour jouer, utilise de préférence Lite, Standard ou Ultra selon la configuration du PC.</p>
-    </section>
-
-    <!-- SHADERPACK RECOMMANDÉ -->
-    <section class="card" id="shaderpack" style="grid-column:span 12; margin-top:10px">
-      <h3>Shaderpack recommandé — Complementary Shaders: Unbound</h3>
-      <p>Fonctionne avec <strong>Iris</strong>. Télécharge et place le fichier <code>.zip</code> dans
-        <em>shaderpacks/</em> de ton instance (ne pas dézipper), puis active-le en jeu :
-        <em>Options → Vidéo → Shader Packs</em>.</p>
-      <div class="download">
-        <!-- Tu l’as déjà ajouté à la racine du repo -->
-        <a class="primary" href="ComplementaryUnbound_r5.5.1.zip">⬇️ Télécharger le shaderpack</a>
-        <a class="ghost" href="#pack-full">Voir le pack Ultra</a>
-      </div>
-      <p class="note note-adv" id="shader-advice"></p>
-    </section>
-
-    <!-- RESOURCE PACK GAB CON -->
-    <section class="card" id="resourcepack" style="grid-column:span 12; margin-top:10px">
-      <h3>🎨 Resource Pack — Gab Con</h3>
-      <p>Pack graphique personnalisé pour Minecraft <strong>1.21.1</strong>. Télécharge le fichier <code>.zip</code> puis place-le tel quel dans <em>.minecraft/resourcepacks/</em> (ne le dézippe pas côté joueur).</p>
-      <div class="download">
-        <a class="primary" target="_blank" rel="noopener"
-           href="https://github.com/misterblaecher/Gab-Con/raw/refs/heads/main/1.21.1-Gab%20Con.zip">⬇️ Télécharger le Resource Pack Gab Con</a>
-        <a class="ghost" href="index.html">🏠 Retour</a>
-      </div>
-      <p class="note">Version actuelle : <strong>1.21.1 — Gab Con</strong>. Le téléchargement est public et pointe toujours vers la dernière version construite du pack.</p>
-    </section>
-
-    <div class="specs" id="specs">
-      <strong>🔍 Détection locale :</strong>
-      <div class="kv" id="kv"></div>
-      <div class="note">Cette détection est approximative : certains navigateurs masquent la RAM ou le modèle exact du GPU. Elle ne lit aucune donnée privée. Si le choix ne te convient pas, prends un autre pack.</div>
-    </div>
+  <div class="grid">
+    <section class="card" id="pack-full"><div class="ribbon">Recommandé</div><h3>Ultra</h3><p><strong>35 mods</strong> — pack complet avec Sodium, Iris, Distant Horizons, JourneyMap, Jade et tous les extras.</p><ul><li>PC récent / GPU dédié.</li><li>Distance d'affichage étendue et shaders possibles.</li></ul><div class="download"><a class="primary" target="_blank" rel="noopener" href="https://drive.google.com/file/d/1SCP-zeigCr6Ok7BioyToRh8Kt5wi4drq/view?usp=drivesdk">⬇️ Télécharger Ultra</a><a class="ghost" href="#mods-ultra">Voir les mods</a></div></section>
+    <section class="card" id="pack-standard"><div class="ribbon">Recommandé</div><h3>Standard</h3><p><strong>31 mods</strong> — même gameplay, sans Iris, Distant Horizons, DH Sync ni WorldEdit. Sodium reste inclus.</p><ul><li>Bon équilibre qualité / FPS.</li><li>Conseillé pour la majorité des PC.</li></ul><div class="download"><a class="primary" target="_blank" rel="noopener" href="https://drive.google.com/file/d/1Lmb8sxONUqbL3sqCvcCT_37JFiSwgq57/view?usp=drivesdk">⬇️ Télécharger Standard</a><a class="ghost" href="#mods-standard">Voir les mods</a></div></section>
+    <section class="card" id="pack-lite"><div class="ribbon">Recommandé</div><h3>Lite</h3><p><strong>26 mods</strong> — gameplay conservé, mais sans DH/Iris, JourneyMap, Jade/JadeAddons, JEI, Inventory Sorter et WorldEdit.</p><ul><li>Pour PC plus anciens / iGPU.</li><li>Priorité aux FPS et à la RAM.</li></ul><div class="download"><a class="primary" target="_blank" rel="noopener" href="https://drive.google.com/file/d/1wV2uKftrVimx2VqIpmNJkm8oBXN5FXSL/view?usp=drivesdk">⬇️ Télécharger Lite</a><a class="ghost" href="#mods-lite">Voir les mods</a></div></section>
   </div>
 
-  <script>
-    // --- Lecture des capacités du navigateur ---
-    function getGPUInfo(){
-      try{
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-        if(!gl) return {renderer:'(WebGL indisponible)'};
-        const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-        const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-        return {renderer: String(renderer || '').trim()};
-      }catch(e){ return {renderer:'(non détecté)'} }
-    }
+  <section class="card" style="margin-top:18px"><h3>🧩 Contenu des packs</h3><p>Les trois variantes gardent les mods de gameplay importants : Create, Create Aeronautics, Create Enchantment Industry, Dragons Plus, PowerGrid, Sophisticated Backpacks, Waystones, FTB Chunks/Teams et Simple Voice Chat.</p>
+    <div><span class="pill">Ultra : 35 mods</span><span class="pill">Standard : 31 mods</span><span class="pill">Lite : 26 mods</span></div>
+    <details id="mods-ultra"><summary>Ultra — liste complète (35)</summary><ul class="mods"><li><code>architectury-13.0.11-neoforge.jar</code></li><li><code>balm-neoforge-1.21.1-21.0.65.jar</code></li><li><code>create-1.21.1-6.0.10.jar</code></li><li><code>create-aeronautics-bundled-1.21.1-1.3.2.jar</code></li><li><code>create-collision-fix-1.0.0.jar</code></li><li><code>create-enchantment-industry-2.5.4.jar</code></li><li><code>CreateDragonsPlus-1.11.9.jar</code></li><li><code>createenchantablemachinery-3.6.0+mc1.21.1-neoforge.jar</code></li><li><code>curios-neoforge-9.5.1+1.21.1.jar</code></li><li><code>DistantHorizons-3.3.2-1.21.1-fabric-neoforge.jar</code></li><li><code>ferritecore-7.0.3-neoforge.jar</code></li><li><code>ftb-chunks-neoforge-2101.1.22.jar</code></li><li><code>ftb-library-neoforge-2101.1.36.jar</code></li><li><code>ftb-teams-neoforge-2101.1.11.jar</code></li><li><code>gabcondhsync-0.6.2.jar</code></li><li><code>inventorysorter-1.21.1-24.0.24.jar</code></li><li><code>iris-neoforge-1.8.14-beta.1+mc1.21.1.jar</code></li><li><code>Jade-1.21.1-NeoForge-15.10.6.jar</code></li><li><code>JadeAddons-1.21.1-NeoForge-6.1.1.jar</code></li><li><code>jei-1.21.1-neoforge-19.57.0.445.jar</code></li><li><code>journeymap-neoforge-1.21.1-6.0.9.jar</code></li><li><code>kotlinforforge-5.12.0-all.jar</code></li><li><code>lithium-neoforge-0.15.4+mc1.21.1.jar</code></li><li><code>mcbuild_live-1.1.0.jar</code></li><li><code>modernfix-neoforge-5.27.24+mc1.21.1.jar</code></li><li><code>powergrid-mc1.21.1-0.6.2.jar</code></li><li><code>sable-neoforge-1.21.1-2.0.5.jar</code></li><li><code>sodium-neoforge-0.8.13+mc1.21.1.jar</code></li><li><code>sophisticatedbackpacks-1.21.1-3.26.3.2158.jar</code></li><li><code>sophisticatedbackpackscreateintegration-1.21.1-0.2.0.168.jar</code></li><li><code>sophisticatedcore-1.21.1-1.5.1.2341.jar</code></li><li><code>trading_floor-3.0.16.jar</code></li><li><code>voicechat-neoforge-1.21.1-2.6.24.jar</code></li><li><code>waystones-neoforge-1.21.1-21.1.45.jar</code></li><li><code>worldedit-mod-7.3.8.jar</code></li></ul></details>
+    <details id="mods-standard"><summary>Standard — liste complète (31)</summary><ul class="mods"><li><code>architectury-13.0.11-neoforge.jar</code></li><li><code>balm-neoforge-1.21.1-21.0.65.jar</code></li><li><code>create-1.21.1-6.0.10.jar</code></li><li><code>create-aeronautics-bundled-1.21.1-1.3.2.jar</code></li><li><code>create-collision-fix-1.0.0.jar</code></li><li><code>create-enchantment-industry-2.5.4.jar</code></li><li><code>CreateDragonsPlus-1.11.9.jar</code></li><li><code>createenchantablemachinery-3.6.0+mc1.21.1-neoforge.jar</code></li><li><code>curios-neoforge-9.5.1+1.21.1.jar</code></li><li><code>ferritecore-7.0.3-neoforge.jar</code></li><li><code>ftb-chunks-neoforge-2101.1.22.jar</code></li><li><code>ftb-library-neoforge-2101.1.36.jar</code></li><li><code>ftb-teams-neoforge-2101.1.11.jar</code></li><li><code>inventorysorter-1.21.1-24.0.24.jar</code></li><li><code>Jade-1.21.1-NeoForge-15.10.6.jar</code></li><li><code>JadeAddons-1.21.1-NeoForge-6.1.1.jar</code></li><li><code>jei-1.21.1-neoforge-19.57.0.445.jar</code></li><li><code>journeymap-neoforge-1.21.1-6.0.9.jar</code></li><li><code>kotlinforforge-5.12.0-all.jar</code></li><li><code>lithium-neoforge-0.15.4+mc1.21.1.jar</code></li><li><code>mcbuild_live-1.1.0.jar</code></li><li><code>modernfix-neoforge-5.27.24+mc1.21.1.jar</code></li><li><code>powergrid-mc1.21.1-0.6.2.jar</code></li><li><code>sable-neoforge-1.21.1-2.0.5.jar</code></li><li><code>sodium-neoforge-0.8.13+mc1.21.1.jar</code></li><li><code>sophisticatedbackpacks-1.21.1-3.26.3.2158.jar</code></li><li><code>sophisticatedbackpackscreateintegration-1.21.1-0.2.0.168.jar</code></li><li><code>sophisticatedcore-1.21.1-1.5.1.2341.jar</code></li><li><code>trading_floor-3.0.16.jar</code></li><li><code>voicechat-neoforge-1.21.1-2.6.24.jar</code></li><li><code>waystones-neoforge-1.21.1-21.1.45.jar</code></li></ul></details>
+    <details id="mods-lite"><summary>Lite — liste complète (26)</summary><ul class="mods"><li><code>architectury-13.0.11-neoforge.jar</code></li><li><code>balm-neoforge-1.21.1-21.0.65.jar</code></li><li><code>create-1.21.1-6.0.10.jar</code></li><li><code>create-aeronautics-bundled-1.21.1-1.3.2.jar</code></li><li><code>create-collision-fix-1.0.0.jar</code></li><li><code>create-enchantment-industry-2.5.4.jar</code></li><li><code>CreateDragonsPlus-1.11.9.jar</code></li><li><code>createenchantablemachinery-3.6.0+mc1.21.1-neoforge.jar</code></li><li><code>curios-neoforge-9.5.1+1.21.1.jar</code></li><li><code>ferritecore-7.0.3-neoforge.jar</code></li><li><code>ftb-chunks-neoforge-2101.1.22.jar</code></li><li><code>ftb-library-neoforge-2101.1.36.jar</code></li><li><code>ftb-teams-neoforge-2101.1.11.jar</code></li><li><code>kotlinforforge-5.12.0-all.jar</code></li><li><code>lithium-neoforge-0.15.4+mc1.21.1.jar</code></li><li><code>mcbuild_live-1.1.0.jar</code></li><li><code>modernfix-neoforge-5.27.24+mc1.21.1.jar</code></li><li><code>powergrid-mc1.21.1-0.6.2.jar</code></li><li><code>sable-neoforge-1.21.1-2.0.5.jar</code></li><li><code>sodium-neoforge-0.8.13+mc1.21.1.jar</code></li><li><code>sophisticatedbackpacks-1.21.1-3.26.3.2158.jar</code></li><li><code>sophisticatedbackpackscreateintegration-1.21.1-0.2.0.168.jar</code></li><li><code>sophisticatedcore-1.21.1-1.5.1.2341.jar</code></li><li><code>trading_floor-3.0.16.jar</code></li><li><code>voicechat-neoforge-1.21.1-2.6.24.jar</code></li><li><code>waystones-neoforge-1.21.1-21.1.45.jar</code></li></ul></details>
+  </section>
 
-    function getPlatform(){
-      const ua = navigator.userAgent || '';
-      if(navigator.userAgentData && navigator.userAgentData.platform) return navigator.userAgentData.platform;
-      if(/Windows/i.test(ua)) return 'Windows';
-      if(/Mac OS/i.test(ua)) return 'macOS';
-      if(/Linux/i.test(ua)) return 'Linux';
-      return 'inconnu';
-    }
-
-    function chooseTier({ram, cores, gpu}){
-      const g = String(gpu || '').toLowerCase();
-      const hasRamInfo = ram > 0;
-      const strongGPU = /(rtx\s?(20|30|40|50)|gtx\s?(16|10[6-9]0|1080)|rx\s?(5\d{3}|6\d{3}|7\d{3}|9\d{3})|radeon\s?vii|arc\s?[ab]\d{3}|apple\s?m[1-5])/i.test(g);
-      const weakGPU = /(intel.*(hd|uhd)|iris\s?(plus|xe)?|geforce\s?(mx|gt\s?7|940m)|radeon\s?(r[357]|vega\s?[38]))/i.test(g);
-
-      // Ultra exige un ensemble cohérent : GPU + CPU + RAM (quand la RAM est exposée par le navigateur).
-      if(strongGPU && cores>=8 && (!hasRamInfo || ram>=16) && !weakGPU) return 'full';
-      if(cores>=4 && (!hasRamInfo || ram>=8) && !weakGPU) return 'standard';
-      return 'lite';
-    }
-
-    function fmtRam(r){ return r ? (r+' Go RAM') : 'RAM inconnue'; }
-
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const ram = Number(navigator.deviceMemory || 0);           // Go
-      const cores = Number(navigator.hardwareConcurrency || 0);  // threads
-      const {renderer} = getGPUInfo();
-      const os = getPlatform();
-
-      const tier = chooseTier({ram, cores, gpu: renderer});
-
-      // UI: badge "Recommandé"
-      const id = tier === 'full' ? 'pack-full' : tier === 'standard' ? 'pack-standard' : 'pack-lite';
-      const card = document.getElementById(id);
-      if(card){ card.classList.add('reco'); }
-      card?.querySelector('.primary')?.classList.add('pulse');
-
-      // Affiche les specs détectées
-      const kv = document.getElementById('kv');
-      const add = (txt)=>{ const s=document.createElement('span'); s.textContent=txt; kv.appendChild(s) };
-      add(fmtRam(ram));
-      add(cores ? (cores+' threads logiques') : 'Threads CPU inconnus');
-      add(os);
-      add(renderer);
-
-      // Conseils Shader selon la config détectée
-      const advice = document.getElementById('shader-advice');
-      if (advice){
-        if (tier === 'full'){
-          advice.textContent = "✅ Recommandé : votre pack Ultra inclut déjà Iris. Activez le shaderpack dans le jeu.";
-        } else if (tier === 'standard'){
-          advice.textContent = "⚠️ Optionnel : les shaders peuvent baisser les FPS. Utilisez des presets Low/Medium et pensez à installer Iris (inclus dans le pack Ultra).";
-        } else {
-          advice.textContent = "⛔ Déconseillé : privilégiez le pack Lite sans shaders pour garder des FPS stables.";
-        }
-      }
-    });
-  </script>
-</body>
-</html>
+  <section class="card" id="shaderpack" style="margin-top:10px"><h3>✨ Shaderpack recommandé — Complementary Unbound</h3><p>À utiliser avec Iris, donc principalement avec le pack Ultra. Place le ZIP dans <code>shaderpacks/</code> sans le décompresser.</p><div class="download"><a class="primary" href="ComplementaryUnbound_r5.5.1.zip">⬇️ Télécharger le shaderpack</a><a class="ghost" href="#pack-full">Voir Ultra</a></div><p class="note" id="shader-advice"></p></section>
+  <section class="card" style="margin-top:10px"><h3>🎨 Resource Pack — Gab Con</h3><p>Pack graphique personnalisé pour Minecraft 1.21.1.</p><div class="download"><a class="primary" target="_blank" rel="noopener" href="https://github.com/misterblaecher/Gab-Con/raw/refs/heads/main/1.21.1-Gab%20Con.zip">⬇️ Télécharger Gab Con</a><a class="ghost" href="index.html">🏠 Retour</a></div></section>
+  <div class="specs"><strong>🔍 Détection locale :</strong><div class="kv" id="kv"></div><div class="note">Estimation locale et approximative. Certains navigateurs masquent la RAM ou le modèle exact du GPU.</div></div>
+</div>
+<script>
+function getGPUInfo(){try{const c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');if(!g)return{renderer:'(WebGL indisponible)'};const d=g.getExtension('WEBGL_debug_renderer_info');return{renderer:String(d?g.getParameter(d.UNMASKED_RENDERER_WEBGL):g.getParameter(g.RENDERER)||'').trim()}}catch(e){return{renderer:'(non détecté)'}}}
+function getPlatform(){const u=navigator.userAgent||'';if(navigator.userAgentData&&navigator.userAgentData.platform)return navigator.userAgentData.platform;if(/Windows/i.test(u))return'Windows';if(/Mac OS/i.test(u))return'macOS';if(/Linux/i.test(u))return'Linux';return'inconnu'}
+function chooseTier({ram,cores,gpu}){const g=String(gpu||'').toLowerCase(),has=ram>0,strong=/(rtx\s?(20|30|40|50)|gtx\s?(16|10[6-9]0|1080)|rx\s?(5\d{3}|6\d{3}|7\d{3}|9\d{3})|radeon\s?vii|arc\s?[ab]\d{3}|apple\s?m[1-5])/i.test(g),weak=/(intel.*(hd|uhd)|iris\s?(plus|xe)?|geforce\s?(mx|gt\s?7|940m)|radeon\s?(r[357]|vega\s?[38]))/i.test(g);if(strong&&cores>=8&&(!has||ram>=16)&&!weak)return'full';if(cores>=4&&(!has||ram>=8)&&!weak)return'standard';return'lite'}
+document.addEventListener('DOMContentLoaded',()=>{const ram=Number(navigator.deviceMemory||0),cores=Number(navigator.hardwareConcurrency||0),{renderer}=getGPUInfo(),tier=chooseTier({ram,cores,gpu:renderer}),id=tier==='full'?'pack-full':tier==='standard'?'pack-standard':'pack-lite',card=document.getElementById(id);card?.classList.add('reco');card?.querySelector('.primary')?.classList.add('pulse');const kv=document.getElementById('kv'),add=t=>{const s=document.createElement('span');s.textContent=t;kv.appendChild(s)};add(ram?ram+' Go RAM':'RAM inconnue');add(cores?cores+' threads logiques':'Threads CPU inconnus');add(getPlatform());add(renderer);const a=document.getElementById('shader-advice');if(a)a.textContent=tier==='full'?'✅ Iris est inclus dans Ultra : tu peux activer le shaderpack.':tier==='standard'?'⚠️ Standard n’inclut pas Iris : passe à Ultra pour les shaders.':'⛔ Lite privilégie les performances : shaders déconseillés.'})
+</script>
+</body></html>
