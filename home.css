@@ -154,7 +154,12 @@ img { max-width: 100%; }
 .hero__scroll span { font-size: 1.5rem; animation: scroll-pulse 2.5s ease-in-out infinite; }
 
 /* Voxel-style Create contraption on an independent rail layer. */
-.rail-scene { position: absolute; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; }
+.rail-scene {
+  --train-cycle: 28s;
+  --train-stop-x: -50vw;
+  position: absolute; z-index: 0; inset: 0;
+  overflow: hidden; pointer-events: none;
+}
 .rail-scene__viaduct {
   position: absolute; z-index: 1;
   width: 82%; height: 40px; bottom: calc(18% - 40px); right: -8%;
@@ -178,12 +183,13 @@ img { max-width: 100%; }
 }
 .rail-scene__train {
   position: absolute; z-index: 4; width: clamp(430px,44vw,720px);
-  right: -11%; bottom: calc(18% - 21px);
-  transform: translate3d(52vw,0,0) scale(.9);
+  /* The train's left edge starts beyond the right edge of the viewport. */
+  left: 100%; bottom: calc(18% - 21px);
+  transform: translate3d(0,-24px,0);
   transform-origin: 50% 95%;
   filter: drop-shadow(0 15px 13px rgba(0,0,0,.62));
-  animation: create-train-crossing 24s ease-in-out infinite;
-  will-change: transform,opacity;
+  animation: create-train-journey var(--train-cycle) linear infinite;
+  will-change: transform;
 }
 .rail-scene__train img { display: block; width: 100%; height: auto; }
 .rail-scene__foreground {
@@ -228,12 +234,16 @@ img { max-width: 100%; }
 @keyframes sun-glow { to { opacity: .63; transform: translate(-2%,2%) scale(1.10); } }
 @keyframes ember { 0% { transform: translate(0,18px); opacity: 0; } 25% { opacity: .7; } 75% { opacity: .35; } 100% { transform: translate(22px,-45px); opacity: 0; } }
 @keyframes scroll-pulse { 50% { transform: translateY(5px); } }
-@keyframes create-train-crossing {
-  0%, 7% { transform: translate3d(52vw,7px,0) scale(.88); opacity: 0; }
-  13% { opacity: .97; }
-  70% { transform: translate3d(-24vw,-11px,0) scale(1.0); opacity: .97; }
-  83% { transform: translate3d(-40vw,-16px,0) scale(1.03); opacity: 0; }
-  100% { transform: translate3d(-40vw,-16px,0) scale(1.03); opacity: 0; }
+/* 28 s: 2.2 s off-screen, 8.7 s arrival, 4.5 s at the station,
+   7.8 s departure, then an off-screen pause before the next pass.
+   translateX(%) is relative to the train itself, so the full train exits
+   even on narrow and ultrawide screens. */
+@keyframes create-train-journey {
+  0%, 8% { transform: translate3d(0,-24px,0); }
+  8% { animation-timing-function: cubic-bezier(.31,.05,.2,1); }
+  39%, 55% { transform: translate3d(var(--train-stop-x),0,0); }
+  55% { animation-timing-function: cubic-bezier(.52,0,.84,.45); }
+  83%, 100% { transform: translate3d(calc(-100vw - 100% - 26px),38px,0); }
 }
 @media (min-width: 1440px) {
   .hero__copy { width: 68%; }
@@ -269,11 +279,11 @@ img { max-width: 100%; }
   .hero__copy { width: 100%; }
   .hero h1 { font-size: clamp(3.1rem,10vw,5.2rem); margin-top: 20px; }
   .hero__copy > p { font-size: 1rem; max-width: 500px; }
-  .rail-scene { opacity: .49; }
+  .rail-scene { --train-stop-x: -89vw; opacity: .78; }
   .rail-scene__viaduct, .rail-scene__sleepers, .rail-scene__track { width: 112%; right: -48%; bottom: 14%; }
   .rail-scene__viaduct { bottom: calc(14% - 40px); }
   .rail-scene__sleepers { bottom: calc(14% - 2px); }
-  .rail-scene__train { bottom: calc(14% - 14px); width: 450px; right: -20%; }
+  .rail-scene__train { bottom: calc(14% - 14px); width: min(82vw,400px); }
   .rail-scene__foreground { bottom: -10%; }
   .section-heading { align-items: start; flex-direction: column; gap: 12px; }
   .section-heading p { max-width: 520px; }
@@ -291,11 +301,11 @@ img { max-width: 100%; }
   .feature-tags span { font-size: .69rem; padding: 7px 9px; }
   .destination-grid { grid-template-columns: 1fr; }
   .destination { min-height: 127px; padding: 18px; }
-  .rail-scene { opacity: .42; }
+  .rail-scene { opacity: .7; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
   .hero__landscape { transform: none !important; }
-  .rail-scene__train { transform: translate3d(-13vw,0,0) !important; opacity: .86; }
+  .rail-scene__train { transform: translate3d(var(--train-stop-x),0,0) !important; opacity: .96; }
   .hero__particles { display: none; }
 }
