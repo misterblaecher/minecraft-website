@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="230" viewBox="0 0 780 230" role="img" aria-labelledby="title desc">
+<title id="title">Train construit avec des blocs, inspiré du mod Create</title>
+<desc id="desc">Locomotive mécanique en métal, bois et laiton, suivie d'un wagon, posée sur quatre bogies à roues animées.</desc>
+<defs>
+  <linearGradient id="steel" x1="0" x2=".7" y1="0" y2="1"><stop stop-color="#636f70"/><stop offset=".42" stop-color="#43545b"/><stop offset="1" stop-color="#222e36"/></linearGradient>
+  <linearGradient id="brass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fce3a4"/><stop offset=".5" stop-color="#c6944d"/><stop offset="1" stop-color="#7d522a"/></linearGradient>
+  <linearGradient id="oak" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8e6742"/><stop offset=".65" stop-color="#69482e"/><stop offset="1" stop-color="#3a302a"/></linearGradient>
+  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d1eeec"/><stop offset=".32" stop-color="#4d8d9a"/><stop offset="1" stop-color="#142e40"/></linearGradient>
+  <filter id="lamp" x="-250%" y="-250%" width="600%" height="600%"><feGaussianBlur stdDeviation="6"/></filter>
+  <pattern id="planks" width="34" height="20" patternUnits="userSpaceOnUse"><path d="M0 1H34M0 20V1" stroke="#d1a46a" stroke-opacity=".17" stroke-width="3"/></pattern>
+  <style><![CDATA[
+    .wheel-spin{transform-box:fill-box;transform-origin:center;animation:spin 1.25s linear infinite}
+    @keyframes spin{to{transform:rotate(-360deg)}}
+    @media(prefers-reduced-motion:reduce){.wheel-spin{animation:none}}
+  ]]></style>
+</defs>
+<!-- Linked block-built carriages: no faux steam locomotive silhouette. -->
+<g shape-rendering="crispEdges">
+<path d="M372 160h54" stroke="#1d262a" stroke-width="14"/>
+<path d="M386 160h23" stroke="#ba985f" stroke-width="5"/>
+<!-- Freight carriage: plank panels, brass fittings and Create machinery. -->
+<rect x="416" y="70" width="338" height="92" fill="url(#oak)" stroke="#1e2528" stroke-width="7"/>
+<rect x="422" y="74" width="325" height="88" fill="url(#planks)"/>
+<path d="M424 68H749V79H424Z" fill="#3c4850" stroke="#ac935e" stroke-width="3"/>
+<rect x="431" y="86" width="96" height="54" fill="#343f42" stroke="#d0ab64" stroke-width="5"/>
+<rect x="440" y="95" width="79" height="36" fill="url(#glass)" stroke="#172a31" stroke-width="4"/>
+<path d="M475 95v38" stroke="#e6c586" stroke-width="5"/>
+<rect x="543" y="84" width="80" height="62" fill="#6a5134" stroke="#caa15f" stroke-width="4"/>
+<rect x="556" y="90" width="53" height="48" fill="#303f3b" stroke="#dfbd79" stroke-width="4"/>
+<circle cx="582" cy="113" r="17" fill="#253437" stroke="#d3a257" stroke-width="5"/>
+<circle cx="582" cy="113" r="6" fill="#b6bebe"/>
+<rect x="647" y="84" width="89" height="60" fill="#5c4130" stroke="#cfaa6a" stroke-width="4"/>
+<path d="M654 102h75M654 122h75" stroke="#c99c58" stroke-width="6"/>
+<rect x="418" y="148" width="335" height="22" fill="url(#steel)" stroke="#b18e55" stroke-width="4"/>
+<rect x="420" y="166" width="333" height="11" fill="#1c292f"/>
+<path d="M434 64V54h90v10m31 0V47h84v17m22 0V55h68v9" stroke="#3a3f41" stroke-width="13" fill="none"/>
+<path d="M428 57h99m21-10h93m18 10h73" stroke="#b39464" stroke-width="3"/>
+<!-- Engine underframe -->
+<rect x="23" y="141" width="370" height="30" fill="#273238" stroke="#c69d5d" stroke-width="5"/>
+<path d="M24 152H392" stroke="#7f8889" stroke-width="4"/>
+<rect x="4" y="150" width="34" height="18" fill="url(#brass)" stroke="#2e292a" stroke-width="4"/>
+<rect x="18" y="164" width="39" height="12" fill="#333434"/>
+<!-- Driver cabin, built as block segments with green-tinted framed windows -->
+<rect x="50" y="48" width="130" height="96" fill="url(#oak)" stroke="#c8a06a" stroke-width="7"/>
+<rect x="57" y="56" width="111" height="55" fill="#242d33" stroke="#2c3339" stroke-width="6"/>
+<rect x="62" y="61" width="100" height="43" fill="url(#glass)" stroke="#d9be82" stroke-width="5"/>
+<path d="M115 60v44" stroke="#cfae74" stroke-width="7"/>
+<path d="M64 104l43-43M122 101l34-36" stroke="#b0eff8" stroke-opacity=".3" stroke-width="5"/>
+<path d="M38 44h154v14H38z" fill="#313e44" stroke="#c79b57" stroke-width="5"/>
+<path d="M55 121h115v21H55z" fill="#353f40" stroke="#e4b76c" stroke-width="4"/>
+<path d="M64 128h32m21 0h42" stroke="#9b8b68" stroke-width="3"/>
+<!-- Block-built engine hood -->
+<rect x="184" y="78" width="199" height="65" fill="url(#steel)" stroke="#bd945d" stroke-width="6"/>
+<rect x="198" y="86" width="153" height="46" fill="#29363c" stroke="#787d77" stroke-width="4"/>
+<path d="M208 92v34m15-34v34m15-34v34m15-34v34m15-34v34" stroke="#a3a9a0" stroke-width="5"/>
+<rect x="303" y="92" width="39" height="36" fill="#4d5f61" stroke="#d5ae69" stroke-width="5"/>
+<circle cx="323" cy="109" r="12" fill="#203138" stroke="#d4a864" stroke-width="5"/>
+<path d="M323 98v22m-11-11h22" stroke="#c5b790" stroke-width="4"/>
+<rect x="188" y="68" width="194" height="12" fill="#3f4f52" stroke="#be9856" stroke-width="4"/>
+<rect x="365" y="90" width="22" height="28" fill="url(#brass)"/>
+<rect x="366" y="95" width="13" height="14" fill="#f7d990"/>
+<!-- Side-mounted rotating mechanical cog -->
+<g transform="translate(233 149)">
+<circle r="18" fill="#253237" stroke="#d0a768" stroke-width="5"/>
+<circle r="10" fill="#8e6740" stroke="#e9cf90" stroke-width="3"/>
+<path d="M-22 0h44M0-22v44" stroke="#927040" stroke-width="5"/>
+<circle r="4" fill="#efcf88"/>
+</g>
+<rect x="271" y="144" width="97" height="13" fill="#b09059" stroke="#353331" stroke-width="4"/>
+<!-- Headlamp and brass face -->
+<rect x="18" y="108" width="31" height="26" fill="url(#brass)" stroke="#201f20" stroke-width="5"/>
+<circle cx="31" cy="120" r="11" fill="#fff0b7" filter="url(#lamp)" opacity=".67" shape-rendering="auto"/>
+<rect x="24" y="113" width="14" height="14" fill="#ffebb5" stroke="#e2a455" stroke-width="3"/>
+<rect x="7" y="134" width="30" height="11" fill="#616965" stroke="#cba86b" stroke-width="3"/>
+<!-- Top machinery: small brass vent (not a chimney) -->
+<rect x="275" y="50" width="34" height="17" fill="#bd995f" stroke="#262d2e" stroke-width="4"/>
+<rect x="284" y="37" width="17" height="14" fill="#515c5a" stroke="#d5b16e" stroke-width="4"/>
+<path d="M261 42h51" stroke="#4b5555" stroke-width="7"/>
+</g>
+<!-- Bogies are the actual rail attachment points in Create. -->
+<g transform="translate(103 183)">
+<rect x="-50" y="-21" width="100" height="19" fill="#222a2f" stroke="#8a7760" stroke-width="3"/>
+<path d="M-45-16H45" stroke="#d6a55a" stroke-width="4"/>
+<path d="M-52-13L-34 5H35L52-13" fill="none" stroke="#8a9da4" stroke-width="5"/>
+<g transform="translate(-27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<g transform="translate(27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<rect x="-7" y="-19" width="14" height="13" fill="#d7b26a" stroke="#3a3230" stroke-width="3"/>
+</g>
+<g transform="translate(320 183)">
+<rect x="-50" y="-21" width="100" height="19" fill="#222a2f" stroke="#8a7760" stroke-width="3"/>
+<path d="M-45-16H45" stroke="#d6a55a" stroke-width="4"/>
+<path d="M-52-13L-34 5H35L52-13" fill="none" stroke="#8a9da4" stroke-width="5"/>
+<g transform="translate(-27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<g transform="translate(27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<rect x="-7" y="-19" width="14" height="13" fill="#d7b26a" stroke="#3a3230" stroke-width="3"/>
+</g>
+<g transform="translate(486 183)">
+<rect x="-50" y="-21" width="100" height="19" fill="#222a2f" stroke="#8a7760" stroke-width="3"/>
+<path d="M-45-16H45" stroke="#d6a55a" stroke-width="4"/>
+<path d="M-52-13L-34 5H35L52-13" fill="none" stroke="#8a9da4" stroke-width="5"/>
+<g transform="translate(-27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<g transform="translate(27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<rect x="-7" y="-19" width="14" height="13" fill="#d7b26a" stroke="#3a3230" stroke-width="3"/>
+</g>
+<g transform="translate(682 183)">
+<rect x="-50" y="-21" width="100" height="19" fill="#222a2f" stroke="#8a7760" stroke-width="3"/>
+<path d="M-45-16H45" stroke="#d6a55a" stroke-width="4"/>
+<path d="M-52-13L-34 5H35L52-13" fill="none" stroke="#8a9da4" stroke-width="5"/>
+<g transform="translate(-27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<g transform="translate(27 11)">
+ <circle r="21" fill="#151c20" stroke="#4c5b5f" stroke-width="5"/>
+ <circle r="16" fill="#4d5b5e" stroke="#a0a4a2" stroke-width="3"/>
+ <g class="wheel-spin">
+   <path d="M-13 0H13M0-13V13M-9-9L9 9M-9 9L9-9" stroke="#c1aa78" stroke-width="3.2" stroke-linecap="square"/>
+   <circle r="7.5" fill="#332d29" stroke="#e0bc67" stroke-width="3"/>
+   <circle r="2.8" fill="#f9e0a0"/>
+ </g>
+ </g>
+<rect x="-7" y="-19" width="14" height="13" fill="#d7b26a" stroke="#3a3230" stroke-width="3"/>
+</g>
+<g shape-rendering="crispEdges"><path d="M71 204h63m156 0h60m104 0h62m136 0h63" stroke="#121b22" stroke-opacity=".45" stroke-width="5"/></g>
+</svg>
