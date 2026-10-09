@@ -10,50 +10,54 @@ Les trois packs clients doivent garder le **même gameplay**. Les différences e
 - **Standard** : même gameplay, Sodium activé, sans shaders ni Distant Horizons.
 - **Ultra** : même gameplay + Sodium + Iris + Distant Horizons + shaderpack.
 
-Le serveur ne doit pas recevoir les mods purement graphiques.
+L'inventaire serveur ci-dessous est distinct des archives clients. Les mods purement graphiques (comme Sodium et Iris) restent côté client.
 
-## Mods à mettre côté serveur
+## Inventaire actuel des mods du serveur (35 fichiers)
 
-### Gameplay / dépendances
+Voici les **35 fichiers .jar installés dans le dossier mods du serveur**, selon l'inventaire communiqué. Cette liste sert à documenter l'état du serveur, pas à générer les archives clients.
 
 - `architectury-13.0.11-neoforge.jar`
 - `balm-neoforge-1.21.1-21.0.65.jar`
+- `bluemap-5.7-neoforge.jar`
+- `Chunky-NeoForge-1.4.23.jar`
 - `create-1.21.1-6.0.10.jar`
+- `create-aeronautics-bundled-1.21.1-1.3.2.jar`
+- `create-collision-fix-1.0.0.jar`
 - `CreateDragonsPlus-1.11.9.jar`
+- `createenchantablemachinery-3.6.0+mc1.21.1-neoforge.jar`
 - `create-enchantment-industry-2.5.4.jar`
 - `curios-neoforge-9.5.1+1.21.1.jar`
+- `DistantHorizons-3.3.2-1.21.1-fabric-neoforge.jar`
+- `ferritecore-7.0.3-neoforge.jar`
 - `ftb-chunks-neoforge-2101.1.22.jar`
 - `ftb-library-neoforge-2101.1.36.jar`
 - `ftb-teams-neoforge-2101.1.11.jar`
+- `gabcondhsync-0.6.2-mvp.jar`
 - `inventorysorter-1.21.1-24.0.24.jar`
 - `Jade-1.21.1-NeoForge-15.10.6.jar`
 - `JadeAddons-1.21.1-NeoForge-6.1.1.jar`
+- `jei-1.21.1-neoforge-19.57.0.445.jar`
+- `kotlinforforge-5.12.0-all.jar`
+- `lithium-neoforge-0.15.4+mc1.21.1.jar`
+- `mcbuild_live-1.1.0.jar`
+- `modernfix-neoforge-5.27.24+mc1.21.1.jar`
+- `powergrid-mc1.21.1-0.6.2.jar`
+- `sable-neoforge-1.21.1-2.0.5.jar`
 - `sophisticatedbackpacks-1.21.1-3.26.3.2158.jar`
 - `sophisticatedbackpackscreateintegration-1.21.1-0.2.0.168.jar`
 - `sophisticatedcore-1.21.1-1.5.1.2341.jar`
+- `spark-1.10.124-neoforge.jar`
 - `trading_floor-3.0.16.jar`
 - `voicechat-neoforge-1.21.1-2.6.24.jar`
 - `waystones-neoforge-1.21.1-21.1.45.jar`
+- `worldedit-mod-7.3.8.jar`
 
-### Performance serveur
+### Différence avec les packs joueurs
 
-- `ferritecore-7.0.3-neoforge.jar`
-- `lithium-neoforge-0.15.4+mc1.21.1.jar`
-- `modernfix-neoforge-5.27.24+mc1.21.1.jar`
-
-### Administration serveur uniquement
-
-- `bluemap-5.7-neoforge.jar`
-- `Chunky-NeoForge-1.4.23.jar`
-- `spark-1.10.124-neoforge.jar`
-
-## Mods à ne pas mettre côté serveur par défaut
-
-- **Sodium** : rendu client uniquement.
-- **Iris** : shaders client uniquement.
-- **Distant Horizons** : peut fonctionner serveur + client, mais le mode serveur envoie des LOD aux joueurs et augmente charge/bande passante. Garder client-only par défaut.
-- **JourneyMap** : installation serveur optionnelle. Le serveur utilise déjà FTB Chunks pour les claims et BlueMap pour la carte web.
-- **JEI** : fonctionne client-only sur Minecraft 1.21.1. Installation serveur optionnelle si l'on veut toutes les fonctions de transfert/synchronisation JEI.
+- **BlueMap, Chunky et spark** sont des outils destinés au serveur et ne doivent pas être copiés automatiquement dans les packs clients.
+- **JEI, Distant Horizons et gabcondhsync** figurent bien dans l'inventaire serveur communiqué.
+- **Sodium, Iris et JourneyMap** ne figurent pas dans cet inventaire serveur ; ils peuvent rester propres aux packs clients.
+- Les versions et contenus des archives **Ultra / Standard / Lite** n'ont pas été vérifiés à partir de cet inventaire serveur. Leurs liens de téléchargement ne sont pas modifiés.
 
 ## Base commune des trois packs clients
 
@@ -201,4 +205,4 @@ Correct : base commune + Sodium 0.8.13 + Iris 1.8.14-beta.1 + Distant Horizons 3
 - ajouter `sodium-neoforge-0.8.13+mc1.21.1.jar`.
 
 ### Serveur
-La liste fournie est cohérente avec la séparation recommandée. Ne pas ajouter Sodium, Iris, JEI ou Distant Horizons au serveur par défaut.
+L'inventaire actuel du serveur contient 35 fichiers, dont JEI, Distant Horizons et gabcondhsync. Ne pas confondre cette liste avec le contenu des packs clients.
