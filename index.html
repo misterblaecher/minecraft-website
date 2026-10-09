@@ -1,144 +1,151 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Serveur Minecraft — Monde moddé</title>
-  <meta name="description" content="Explore le serveur Minecraft moddé comme une carte vivante : modpack, installation, règles, carte, Discord, BuildAI et Texture Studio." />
-  <meta name="theme-color" content="#070a11" />
-  <link rel="stylesheet" href="world.css?v=20260927-1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08131a">
+  <meta name="description" content="Gab Con : un serveur Minecraft 1.21.1 NeoForge axé sur Create, l'exploration et la création. Découvre nos modpacks, la carte et nos outils.">
+  <title>Gab Con — Ton aventure Minecraft commence ici</title>
+  <link rel="preload" href="assets/backgrounds/map-valley.png" as="image">
+  <link rel="stylesheet" href="home.css?v=20261009-1">
+  <script src="home.js?v=20261009-1" defer></script>
 </head>
-<body class="world-home">
-  <div class="world-desktop">
-    <main class="world-scene" aria-label="Panorama interactif du serveur">
-      <div class="world-scene__backdrop" aria-hidden="true"></div>
+<body class="home-cinematic">
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
 
-      <div class="world-frame">
-        <img
-          class="world-scene__image"
-          src="assets/backgrounds/map-valley.png"
-          alt=""
-          draggable="false"
-        />
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html" aria-label="Gab Con, accueil">
+        <svg class="brand__logo" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#ffc86b" d="M24 2 44 13v22L24 46 4 35V13Z"/>
+          <path fill="#a96d32" d="M24 24 44 13v22L24 46Z"/>
+          <path fill="#f6db91" d="M24 24 4 13 24 2l20 11Z"/>
+          <path fill="#553719" d="M24 26v18M7 16l17 10 17-10" stroke="#553719" stroke-width="2" fill="none"/>
+        </svg>
+        <span>GAB <strong>CON</strong></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="primary-nav" aria-label="Navigation principale">
+        <a class="site-nav__active" aria-current="page" href="index.html">Accueil</a>
+        <a href="modpack.html">Modpack</a>
+        <a href="installation.html">Installation</a>
+        <a href="infos.html">Infos &amp; règles</a>
+        <a href="map.html">Carte</a>
+        <a class="site-nav__discord" href="https://discord.gg/8SBNM537uZ" target="_blank" rel="noopener noreferrer">Discord <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
 
-        <div class="world-smoke" aria-hidden="true"></div>
-        <div class="world-water" aria-hidden="true"></div>
-        <div class="world-train" aria-hidden="true"></div>
-        <div class="world-dragon" aria-hidden="true"></div>
-        <div class="world-particles" aria-hidden="true"></div>
+  <main id="contenu">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__landscape" aria-hidden="true"></div>
+      <div class="hero__atmosphere" aria-hidden="true"></div>
+      <div class="hero__sunbeam" aria-hidden="true"></div>
+      <div class="hero__particles" aria-hidden="true" data-particles></div>
 
-        <a class="world-hotspot world-hotspot--modpack"
-           href="modpack.html"
-           data-transition data-x="11%" data-y="58%" data-scale="2.05"
-           aria-label="Modpack et ressources">
-          <span class="world-hotspot__dot" aria-hidden="true"></span>
-          <span class="world-hotspot__label">
-            <strong>Modpack & ressources</strong>
-            <span>Usine Create · packs, shaders et ressources</span>
-          </span>
-        </a>
-
-        <a class="world-hotspot world-hotspot--install"
-           href="installation.html"
-           data-transition data-x="28%" data-y="66%" data-scale="2.1"
-           aria-label="Guide d'installation">
-          <span class="world-hotspot__dot" aria-hidden="true"></span>
-          <span class="world-hotspot__label">
-            <strong>Guide d'installation</strong>
-            <span>Atelier de préparation · installer et configurer</span>
-          </span>
-        </a>
-
-        <a class="world-hotspot world-hotspot--infos"
-           href="infos.html"
-           data-transition data-x="49%" data-y="58%" data-scale="2.0"
-           aria-label="Infos et règles">
-          <span class="world-hotspot__dot" aria-hidden="true"></span>
-          <span class="world-hotspot__label">
-            <strong>Infos & règles</strong>
-            <span>Place centrale · règles, FAQ et informations serveur</span>
-          </span>
-        </a>
-
-        <a class="world-hotspot world-hotspot--map"
-           href="map.html"
-           data-transition data-x="67%" data-y="34%" data-scale="2.15"
-           aria-label="Carte du serveur">
-          <span class="world-hotspot__dot" aria-hidden="true"></span>
-          <span class="world-hotspot__label">
-            <strong>Carte du serveur</strong>
-            <span>Observatoire · explorer le monde en ligne</span>
-          </span>
-        </a>
-
-        <a class="world-hotspot world-hotspot--discord"
-           href="https://discord.gg/8SBNM537uZ"
-           data-transition data-x="54%" data-y="54%" data-scale="2.05"
-           aria-label="Rejoindre Discord">
-          <span class="world-hotspot__dot" aria-hidden="true"></span>
-          <span class="world-hotspot__label">
-            <strong>Communauté</strong>
-            <span>Hall social · rejoindre le Discord</span>
-          </span>
-        </a>
-
-        <a class="world-hotspot world-hotspot--builds"
-           href="builds.html"
-           data-transition data-x="78%" data-y="70%" data-scale="2.1"
-           aria-label="Galerie des constructions BuildAI">
-          <span class="world-hotspot__dot" aria-hidden="true"></span>
-          <span class="world-hotspot__label">
-            <strong>Galerie BuildAI</strong>
-            <span>Atelier de plans · prévisualiser et télécharger les .schem</span>
-          </span>
-        </a>
-
-        <a class="world-hotspot world-hotspot--studio"
-           href="skin-viewer.html?v=20260926-2"
-           data-transition data-x="89%" data-y="49%" data-scale="2.1"
-           aria-label="Minecraft Texture Studio">
-          <span class="world-hotspot__dot" aria-hidden="true"></span>
-          <span class="world-hotspot__label">
-            <strong>Minecraft Texture Studio</strong>
-            <span>Laboratoire créatif · viewer 3D et génération HD</span>
-          </span>
-        </a>
-      </div>
-
-      <header class="world-topbar">
-        <div class="world-brand">
-          <span class="world-brand__eyebrow">Serveur Minecraft moddé · 1.21.1</span>
-          <h1>Choisis un lieu et voyage dans le monde</h1>
-          <p>Create, Waystones, exploration, shaders et outils créatifs réunis dans une seule scène.</p>
+      <div class="rail-scene" aria-hidden="true">
+        <div class="rail-scene__viaduct"></div>
+        <div class="rail-scene__sleepers"></div>
+        <div class="rail-scene__track"></div>
+        <div class="rail-scene__train">
+          <img src="assets/create-train.svg" alt="" width="780" height="230" draggable="false">
         </div>
-        <div class="world-status">Monde interactif</div>
-      </header>
-
-      <div class="world-hint">Survole un lieu pour le découvrir · clique pour t’y rendre</div>
-    </main>
-
-    <footer class="world-taskbar" aria-label="Barre du monde">
-      <div class="world-start" aria-hidden="true">
-        <span class="world-start__block"></span>
-        <strong>MONDE</strong>
+        <div class="rail-scene__foreground"></div>
       </div>
 
-      <div class="world-task-window" aria-hidden="true">
-        <span class="world-task-window__icon"></span>
-        <span>MineWorld 95 — Panorama</span>
+      <div class="hero__content site-container">
+        <div class="hero__copy">
+          <span class="eyebrow"><span class="eyebrow__light" aria-hidden="true"></span> Minecraft 1.21.1 <span class="eyebrow__separator">•</span> NeoForge</span>
+          <h1 id="hero-title">Ton aventure<br><em>commence ici.</em></h1>
+          <p>Explore, construis, automatise et découvre un monde moddé immersif, pensé pour la communauté.</p>
+          <div class="hero__actions">
+            <a class="button button--gold" href="installation.html"><span aria-hidden="true">✦</span> Rejoindre le serveur <span aria-hidden="true">→</span></a>
+            <a class="button button--glass" href="map.html"><span aria-hidden="true">▧</span> Explorer la carte</a>
+          </div>
+          <div class="hero__features">
+            <span class="hero__features-label">UN MONDE ENRICHI PAR</span>
+            <div class="feature-tags" aria-label="Univers et fonctionnalités">
+              <span>⚙ Create</span>
+              <span>◈ Waystones</span>
+              <span>▧ BlueMap</span>
+              <span>◩ BuildAI</span>
+              <span>◉ Texture Studio</span>
+            </div>
+          </div>
+        </div>
+        <aside class="hero-info" aria-label="Informations sur le serveur">
+          <div class="hero-info__heading"><span class="hero-info__mark" aria-hidden="true">◆</span><strong>L'univers Gab Con</strong></div>
+          <div class="hero-info__item"><span>Version</span><strong>1.21.1 · NeoForge</strong></div>
+          <div class="hero-info__item"><span>Mods du serveur</span><strong>35 fichiers</strong></div>
+          <a href="infos.html#mods-serveur">Découvrir les mods <span aria-hidden="true">→</span></a>
+        </aside>
+      </div>
+      <a class="hero__scroll" href="#explorer" aria-label="Défiler vers les rubriques du site"><span aria-hidden="true">⌄</span> Explorer le site</a>
+    </section>
+
+    <section class="explore site-container" id="explorer" aria-labelledby="explore-title">
+      <div class="section-heading">
+        <div>
+          <span class="section-heading__eyebrow">ACCÈS RAPIDE</span>
+          <h2 id="explore-title">Tout ce qu'il te faut<br><em>au même endroit.</em></h2>
+        </div>
+        <p>Découvre les principaux contenus du serveur et rejoins l'aventure en quelques clics seulement.</p>
       </div>
 
-      <div class="world-task-spacer"></div>
-
-      <div class="world-task-status" aria-hidden="true">
-        <span class="world-task-status__light"></span>
-        NeoForge 1.21.1
+      <div class="destination-grid">
+        <a class="destination" href="modpack.html">
+          <img src="assets/backgrounds/modpack-industry.png" alt="" loading="lazy" decoding="async">
+          <span class="destination__shade"></span>
+          <span class="destination__icon" aria-hidden="true">◈</span>
+          <span class="destination__body"><strong>Modpack &amp; ressources</strong><small>Mods, packs et optimisations.</small></span>
+          <span class="destination__arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="destination" href="installation.html">
+          <img src="assets/backgrounds/installation-workshop.png" alt="" loading="lazy" decoding="async">
+          <span class="destination__shade"></span>
+          <span class="destination__icon" aria-hidden="true">⚒</span>
+          <span class="destination__body"><strong>Guide d'installation</strong><small>Tout pour rejoindre le serveur.</small></span>
+          <span class="destination__arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="destination" href="infos.html">
+          <img src="assets/backgrounds/info-city.png" alt="" loading="lazy" decoding="async">
+          <span class="destination__shade"></span>
+          <span class="destination__icon" aria-hidden="true">☷</span>
+          <span class="destination__body"><strong>Infos &amp; règles</strong><small>Les infos utiles à l'aventure.</small></span>
+          <span class="destination__arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="destination" href="map.html">
+          <img src="assets/backgrounds/map-valley.png" alt="" loading="lazy" decoding="async">
+          <span class="destination__shade"></span>
+          <span class="destination__icon" aria-hidden="true">▧</span>
+          <span class="destination__body"><strong>Carte du serveur</strong><small>Explore notre monde avec BlueMap.</small></span>
+          <span class="destination__arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="destination" href="builds.html">
+          <img src="assets/backgrounds/home-panorama.png" alt="" loading="lazy" decoding="async">
+          <span class="destination__shade"></span>
+          <span class="destination__icon" aria-hidden="true">▣</span>
+          <span class="destination__body"><strong>Galerie BuildAI</strong><small>Découvre des constructions créatives.</small></span>
+          <span class="destination__arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="destination" href="skin-viewer.html?v=20260926-2">
+          <img src="assets/backgrounds/texture-studio.png" alt="" loading="lazy" decoding="async">
+          <span class="destination__shade"></span>
+          <span class="destination__icon" aria-hidden="true">◉</span>
+          <span class="destination__body"><strong>Texture Studio</strong><small>Textures, skins et création visuelle.</small></span>
+          <span class="destination__arrow" aria-hidden="true">→</span>
+        </a>
       </div>
+    </section>
+  </main>
 
-      <time class="world-clock" id="worldClock" aria-label="Heure locale">--:--</time>
-    </footer>
-  </div>
-
-  <script src="app.js?v=20260926-2" defer></script>
+  <footer class="site-footer">
+    <div class="site-container site-footer__inner">
+      <p><strong>GAB CON</strong> <span>·</span> Minecraft 1.21.1 · NeoForge</p>
+      <a href="https://discord.gg/8SBNM537uZ" target="_blank" rel="noopener noreferrer">Rejoindre la communauté ↗</a>
+    </div>
+  </footer>
 </body>
 </html>
