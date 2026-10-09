@@ -9,8 +9,15 @@
   <filter id="lamp" x="-250%" y="-250%" width="600%" height="600%"><feGaussianBlur stdDeviation="6"/></filter>
   <pattern id="planks" width="34" height="20" patternUnits="userSpaceOnUse"><path d="M0 1H34M0 20V1" stroke="#d1a46a" stroke-opacity=".17" stroke-width="3"/></pattern>
   <style><![CDATA[
-    .wheel-spin{transform-box:fill-box;transform-origin:center;animation:spin 1.25s linear infinite}
-    @keyframes spin{to{transform:rotate(-360deg)}}
+    /* Same 28 s clock as the CSS journey: wheels are still at the station. */
+    .wheel-spin{transform-box:fill-box;transform-origin:center;animation:wheel-journey 28s linear infinite}
+    @keyframes wheel-journey{
+      0%,8%{transform:rotate(0deg)}
+      8%{animation-timing-function:cubic-bezier(.31,.05,.2,1)}
+      39%,55%{transform:rotate(-2520deg)}
+      55%{animation-timing-function:cubic-bezier(.52,0,.84,.45)}
+      83%,100%{transform:rotate(-5040deg)}
+    }
     @media(prefers-reduced-motion:reduce){.wheel-spin{animation:none}}
   ]]></style>
 </defs>
