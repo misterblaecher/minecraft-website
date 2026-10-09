@@ -59,6 +59,11 @@
     }
     h2{ margin-top:0; }
     ul{ padding-left:20px; }
+  
+    .server-mods{columns:1;column-gap:24px;padding-left:20px}
+    .server-mods li{break-inside:avoid;margin:0 0 7px}
+    .server-mods code{overflow-wrap:anywhere;font-size:.88rem}
+    @media(min-width:700px){.server-mods{columns:2}}
   </style>
   <link rel="stylesheet" href="world.css?v=20260926-1">
 </head>
@@ -90,37 +95,50 @@
     <p><strong>Q :</strong> Où trouver le modpack ?<br>
     <strong>R :</strong> Téléchargez-le sur la page <a href="modpack.html">Modpack</a>.</p>
   </section>
-    <section>
-  <h2>📦 Mods du serveur & des packs</h2>
 
-  <h3>Dans tous les packs (obligatoires)</h3>
-  <ul>
-    <li>Create (+ Dragons Plus, Enchantment Industry)</li>
-    <li>Curios API</li>
-    <li>JEI, Jade</li>
-    <li>Sodium, FerriteCore, Inventory Sorter</li>
-    <li>Sophisticated Backpacks (+ Core & Create Integration)</li>
-    <li>FTB Chunks, FTB Library, FTB Teams</li>
-    <li>Waystones</li>
-    <li>Architectury, Balm</li>
-    <li>Trading Floor</li>
-  </ul>
-
-  <h3>Selon le pack (optionnels)</h3>
-  <ul>
-    <li><strong>Ultra</strong> : Iris Shaders, Distant Horizons, JourneyMap, Jade Addons</li>
-    <li><strong>Standard</strong> : JourneyMap, Jade Addons</li>
-    <li><strong>Lite</strong> : —</li>
-  </ul>
-
-  <h3>Serveur uniquement (les joueurs n’ont rien à installer)</h3>
-  <ul>
-    <li>BlueMap (carte web)</li>
-    <li>Chunky (pré-génération)</li>
-  </ul>
-
-  <p class="muted">⚙️ Version : <strong>Minecraft 1.21.1 + NeoForge</strong> — Téléchargements sur la page <a href="modpack.html">Modpack</a>.</p>
-</section>
+  <section id="mods-serveur" aria-labelledby="mods-serveur-title">
+    <h2 id="mods-serveur-title">🧩 Liste des mods du serveur — 35 fichiers</h2>
+    <p>Inventaire actuel du serveur Minecraft 1.21.1 sous NeoForge, avec les noms et versions exacts des fichiers <code>.jar</code> :</p>
+    <ul class="server-mods">
+    <li><code>architectury-13.0.11-neoforge.jar</code></li>
+    <li><code>balm-neoforge-1.21.1-21.0.65.jar</code></li>
+    <li><code>bluemap-5.7-neoforge.jar</code></li>
+    <li><code>Chunky-NeoForge-1.4.23.jar</code></li>
+    <li><code>create-1.21.1-6.0.10.jar</code></li>
+    <li><code>create-aeronautics-bundled-1.21.1-1.3.2.jar</code></li>
+    <li><code>create-collision-fix-1.0.0.jar</code></li>
+    <li><code>CreateDragonsPlus-1.11.9.jar</code></li>
+    <li><code>createenchantablemachinery-3.6.0+mc1.21.1-neoforge.jar</code></li>
+    <li><code>create-enchantment-industry-2.5.4.jar</code></li>
+    <li><code>curios-neoforge-9.5.1+1.21.1.jar</code></li>
+    <li><code>DistantHorizons-3.3.2-1.21.1-fabric-neoforge.jar</code></li>
+    <li><code>ferritecore-7.0.3-neoforge.jar</code></li>
+    <li><code>ftb-chunks-neoforge-2101.1.22.jar</code></li>
+    <li><code>ftb-library-neoforge-2101.1.36.jar</code></li>
+    <li><code>ftb-teams-neoforge-2101.1.11.jar</code></li>
+    <li><code>gabcondhsync-0.6.2-mvp.jar</code></li>
+    <li><code>inventorysorter-1.21.1-24.0.24.jar</code></li>
+    <li><code>Jade-1.21.1-NeoForge-15.10.6.jar</code></li>
+    <li><code>JadeAddons-1.21.1-NeoForge-6.1.1.jar</code></li>
+    <li><code>jei-1.21.1-neoforge-19.57.0.445.jar</code></li>
+    <li><code>kotlinforforge-5.12.0-all.jar</code></li>
+    <li><code>lithium-neoforge-0.15.4+mc1.21.1.jar</code></li>
+    <li><code>mcbuild_live-1.1.0.jar</code></li>
+    <li><code>modernfix-neoforge-5.27.24+mc1.21.1.jar</code></li>
+    <li><code>powergrid-mc1.21.1-0.6.2.jar</code></li>
+    <li><code>sable-neoforge-1.21.1-2.0.5.jar</code></li>
+    <li><code>sophisticatedbackpacks-1.21.1-3.26.3.2158.jar</code></li>
+    <li><code>sophisticatedbackpackscreateintegration-1.21.1-0.2.0.168.jar</code></li>
+    <li><code>sophisticatedcore-1.21.1-1.5.1.2341.jar</code></li>
+    <li><code>spark-1.10.124-neoforge.jar</code></li>
+    <li><code>trading_floor-3.0.16.jar</code></li>
+    <li><code>voicechat-neoforge-1.21.1-2.6.24.jar</code></li>
+    <li><code>waystones-neoforge-1.21.1-21.1.45.jar</code></li>
+    <li><code>worldedit-mod-7.3.8.jar</code></li>
+    </ul>
+    <p><strong>Outils d’administration :</strong> BlueMap, Chunky et spark sont notamment utilisés côté serveur.</p>
+    <p><strong>Attention :</strong> cette liste correspond au serveur, pas aux packs à installer sur un PC. Pour jouer, utilise les archives <a href="modpack.html">Lite, Standard ou Ultra</a> adaptées à ta configuration.</p>
+  </section>
 
 </body>
 </html>
