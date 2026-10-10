@@ -229,7 +229,6 @@ img { max-width: 100%; }
   .site-nav__active::after { display: none; }
   .site-nav .site-nav__discord { justify-content: space-between; padding: 11px 12px; }
   .hero { min-height: 740px; min-height: max(720px, 100svh); align-items: flex-start; }
-  .hero__landscape { background-position: 58% center; }
   .hero__atmosphere { background: linear-gradient(90deg,rgba(5,15,22,.9),rgba(5,15,22,.53)),linear-gradient(0deg,#07131b,transparent 42%); }
   .hero__content { padding-top: 180px; padding-bottom: 130px; }
   .hero__copy { width: 100%; }
