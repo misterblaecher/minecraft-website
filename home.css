@@ -73,15 +73,21 @@ img { max-width: 100%; }
   background: #152a36;
 }
 .hero__landscape {
-  position: absolute; z-index: -4; inset: -14px;
-  background-image: url("assets/backgrounds/map-valley.png");
-  background-size: cover;
-  background-position: 52% 48%;
-  filter: saturate(1.16) contrast(1.06);
-  transform: translate3d(var(--hero-x,0px),var(--hero-y,0px),0) scale(1.045);
-  will-change: transform;
-  transition: transform .20s ease-out;
+  position: absolute; z-index: -4; inset: 0;
+  overflow: hidden;
 }
+/* SVG scales the full BG-1 art and the smoke together: no drifting off the chimney on resize. */
+.hero__landscape-art { display: block; width: 100%; height: 100%; }
+.hero__chimney-puff {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: chimney-wisp 6.8s ease-out infinite;
+}
+.hero__chimney-puff--one { animation-delay: -.25s; }
+.hero__chimney-puff--two { animation-delay: -1.95s; }
+.hero__chimney-puff--three { animation-delay: -3.65s; }
+.hero__chimney-puff--four { animation-delay: -5.35s; }
 .hero__atmosphere {
   position: absolute; z-index: -2; inset: 0;
   background:
@@ -153,51 +159,6 @@ img { max-width: 100%; }
 .hero__scroll { position: absolute; z-index: 10; bottom: 22px; left: 50%; transform: translateX(-50%); color: #dbe8ee; font-size: .75rem; text-decoration: none; text-shadow: 0 2px 8px #000; display: flex; align-items: center; gap: 7px; }
 .hero__scroll span { font-size: 1.5rem; animation: scroll-pulse 2.5s ease-in-out infinite; }
 
-/* Voxel-style Create contraption on an independent rail layer. */
-.rail-scene {
-  --train-cycle: 28s;
-  --train-stop-x: -50vw;
-  position: absolute; z-index: 0; inset: 0;
-  overflow: hidden; pointer-events: none;
-}
-.rail-scene__viaduct {
-  position: absolute; z-index: 1;
-  width: 82%; height: 40px; bottom: calc(18% - 40px); right: -8%;
-  transform: rotate(-2.5deg);
-  background: linear-gradient(180deg,#657078 0 18%,#313d46 18% 38%,#202c34 38% 100%);
-  border-top: 5px solid #90969a; border-bottom: 7px solid #10191f;
-  box-shadow: 0 17px 32px rgba(0,0,0,.5);
-  opacity: .90;
-}
-.rail-scene__viaduct::after { content: ""; position: absolute; inset: 11px 0 6px; background: repeating-linear-gradient(90deg,transparent 0 45px,rgba(0,0,0,.3) 46px 51px); }
-.rail-scene__sleepers {
-  position: absolute; z-index: 2; width: 84%; height: 32px; bottom: calc(18% - 2px); right: -9%;
-  background: repeating-linear-gradient(90deg,transparent 0 27px,#524038 28px 39px,transparent 40px 60px);
-  transform: rotate(-2.5deg); opacity: .9;
-}
-.rail-scene__track {
-  position: absolute; z-index: 3; width: 84%; height: 13px; bottom: 18%; right: -9%;
-  transform: rotate(-2.5deg);
-  border-top: 4px solid #c8c1ad; border-bottom: 3px solid #45433d;
-  box-shadow: 0 5px 1px #192229,0 9px 12px rgba(0,0,0,.65);
-}
-.rail-scene__train {
-  position: absolute; z-index: 4; width: clamp(430px,44vw,720px);
-  /* The train's left edge starts beyond the right edge of the viewport. */
-  left: 100%; bottom: calc(18% - 21px);
-  transform: translate3d(0,-24px,0);
-  transform-origin: 50% 95%;
-  filter: drop-shadow(0 15px 13px rgba(0,0,0,.62));
-  animation: create-train-journey var(--train-cycle) linear infinite;
-  will-change: transform;
-}
-.rail-scene__train img { display: block; width: 100%; height: auto; }
-.rail-scene__foreground {
-  position: absolute; z-index: 5; width: 88%; height: 16%; bottom: -11%; right: -10%;
-  background: linear-gradient(180deg,rgba(4,11,16,.38),#091820);
-  transform: rotate(-2.5deg); pointer-events: none;
-}
-
 .explore { padding-block: 75px 93px; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 34px; margin-bottom: 30px; }
 .section-heading__eyebrow { display: block; margin-bottom: 12px; color: #92cbf4; letter-spacing: .2em; font-size: .7rem; font-weight: 900; }
@@ -234,16 +195,12 @@ img { max-width: 100%; }
 @keyframes sun-glow { to { opacity: .63; transform: translate(-2%,2%) scale(1.10); } }
 @keyframes ember { 0% { transform: translate(0,18px); opacity: 0; } 25% { opacity: .7; } 75% { opacity: .35; } 100% { transform: translate(22px,-45px); opacity: 0; } }
 @keyframes scroll-pulse { 50% { transform: translateY(5px); } }
-/* 28 s: 2.2 s off-screen, 8.7 s arrival, 4.5 s at the station,
-   7.8 s departure, then an off-screen pause before the next pass.
-   translateX(%) is relative to the train itself, so the full train exits
-   even on narrow and ultrawide screens. */
-@keyframes create-train-journey {
-  0%, 8% { transform: translate3d(0,-24px,0); }
-  8% { animation-timing-function: cubic-bezier(.31,.05,.2,1); }
-  39%, 55% { transform: translate3d(var(--train-stop-x),0,0); }
-  55% { animation-timing-function: cubic-bezier(.52,0,.84,.45); }
-  83%, 100% { transform: translate3d(calc(-100vw - 100% - 26px),38px,0); }
+/* Soft voxel-inspired wisps rise slightly downwind from the fixed locomotive. */
+@keyframes chimney-wisp {
+  0%   { opacity: 0; transform: translate(0,0) scale(.5); }
+  13%  { opacity: .64; }
+  55%  { opacity: .40; }
+  100% { opacity: 0; transform: translate(100px,-145px) scale(2.05); }
 }
 @media (min-width: 1440px) {
   .hero__copy { width: 68%; }
@@ -257,7 +214,6 @@ img { max-width: 100%; }
   .site-nav a { font-size: .75rem; }
   .hero-info { display: none; }
   .hero__copy { width: min(670px,83%); }
-  .rail-scene { opacity: .77; }
   .destination { min-height: 150px; padding: 15px; gap: 8px; }
   .destination__body strong { font-size: .96rem; }
 }
@@ -279,12 +235,6 @@ img { max-width: 100%; }
   .hero__copy { width: 100%; }
   .hero h1 { font-size: clamp(3.1rem,10vw,5.2rem); margin-top: 20px; }
   .hero__copy > p { font-size: 1rem; max-width: 500px; }
-  .rail-scene { --train-stop-x: -89vw; opacity: .78; }
-  .rail-scene__viaduct, .rail-scene__sleepers, .rail-scene__track { width: 112%; right: -48%; bottom: 14%; }
-  .rail-scene__viaduct { bottom: calc(14% - 40px); }
-  .rail-scene__sleepers { bottom: calc(14% - 2px); }
-  .rail-scene__train { bottom: calc(14% - 14px); width: min(82vw,400px); }
-  .rail-scene__foreground { bottom: -10%; }
   .section-heading { align-items: start; flex-direction: column; gap: 12px; }
   .section-heading p { max-width: 520px; }
   .explore { padding-block: 56px 72px; }
@@ -301,11 +251,9 @@ img { max-width: 100%; }
   .feature-tags span { font-size: .69rem; padding: 7px 9px; }
   .destination-grid { grid-template-columns: 1fr; }
   .destination { min-height: 127px; padding: 18px; }
-  .rail-scene { opacity: .7; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
-  .hero__landscape { transform: none !important; }
-  .rail-scene__train { transform: translate3d(var(--train-stop-x),0,0) !important; opacity: .96; }
+  .hero__chimney-puff { opacity: 0 !important; }
   .hero__particles { display: none; }
 }
