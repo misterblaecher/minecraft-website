@@ -21,6 +21,8 @@ jobs:
           node --check buildai-worker.js
           node --check buildai-studio.js
           node --check buildai-schem.js
+      - name: Test WorldEdit schematic gzip/NBT writer
+        run: node tests/test_buildai_schem.mjs
       - name: Compile Python DSL and run smoke tests
         run: |
           python -m py_compile buildai-runtime.py
