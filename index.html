@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#08131a">
   <meta name="description" content="Gab Con : un serveur Minecraft 1.21.1 NeoForge axé sur Create, l'exploration et la création. Découvre nos modpacks, la carte et nos outils.">
   <title>Gab Con — Ton aventure Minecraft commence ici</title>
-  <link rel="preload" href="assets/backgrounds/map-valley.png" as="image">
-  <link rel="stylesheet" href="home.css?v=20261009-2">
-  <script src="home.js?v=20261009-1" defer></script>
+  <link rel="preload" href="BG-1.png" as="image">
+  <link rel="stylesheet" href="home.css?v=20261010-1">
+  <script src="home.js?v=20261010-1" defer></script>
 </head>
 <body class="home-cinematic">
   <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -40,20 +40,30 @@
 
   <main id="contenu">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero__landscape" aria-hidden="true"></div>
+      <div class="hero__landscape" aria-hidden="true">
+        <!-- BG-1 contains the real train and bridge. The aligned SVG overlay only animates chimney smoke. -->
+        <svg class="hero__landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" preserveAspectRatio="xMaxYMid slice" focusable="false">
+          <image href="BG-1.png" width="1672" height="941" preserveAspectRatio="none"/>
+          <!-- Reference chimney location: about x=1195, y=440 in BG-1's 1672x941 frame. -->
+          <g class="hero__chimney-smoke" transform="translate(1195 440)" fill="#f8f1dd">
+            <g class="hero__chimney-puff hero__chimney-puff--one">
+              <path d="M-16 4h11V-7H8v-10h15v12h11v16H23v12H-6V15h-10z"/>
+            </g>
+            <g class="hero__chimney-puff hero__chimney-puff--two">
+              <path d="M-11 7h-7V-8h10v-10H8v8h14v10h8v17H16v9H-7V17h-4z"/>
+            </g>
+            <g class="hero__chimney-puff hero__chimney-puff--three">
+              <path d="M-17 0h11v-11H9v-10h14v14h12V8H25v11H6v8H-8V14h-9z"/>
+            </g>
+            <g class="hero__chimney-puff hero__chimney-puff--four">
+              <path d="M-14 4h10V-8h11v-10h17v10h9V8h-8v15H5v7H-9V16h-5z"/>
+            </g>
+          </g>
+        </svg>
+      </div>
       <div class="hero__atmosphere" aria-hidden="true"></div>
       <div class="hero__sunbeam" aria-hidden="true"></div>
       <div class="hero__particles" aria-hidden="true" data-particles></div>
-
-      <div class="rail-scene" aria-hidden="true">
-        <div class="rail-scene__viaduct"></div>
-        <div class="rail-scene__sleepers"></div>
-        <div class="rail-scene__track"></div>
-        <div class="rail-scene__train">
-          <img src="assets/create-train.svg?v=20261009-2" alt="" width="780" height="230" draggable="false">
-        </div>
-        <div class="rail-scene__foreground"></div>
-      </div>
 
       <div class="hero__content site-container">
         <div class="hero__copy">

@@ -1,7 +1,6 @@
 (() => {
   "use strict";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const finePointer = window.matchMedia("(pointer: fine)");
 
   function setupMenu() {
     const toggle = document.querySelector(".menu-toggle");
@@ -27,6 +26,34 @@
     });
   }
 
+
+  // Crop BG-1 and its inline smoke in one SVG coordinate system.
+  // On narrow screens keep the chimney and locomotive in view.
+  function setupLandscapeFraming() {
+    const art = document.querySelector(".hero__landscape-art");
+    if (!art) return;
+    const frame = () => {
+      const width = art.clientWidth;
+      const height = art.clientHeight;
+      if (!width || !height) return;
+      const sourceWidth = 1672;
+      const sourceHeight = 941;
+      const chimneyX = 1195;
+      const visibleWidth = sourceHeight * (width / height);
+      if (visibleWidth < sourceWidth) {
+        const offsetX = Math.max(0, Math.min(sourceWidth - visibleWidth, chimneyX - visibleWidth * .22));
+        art.setAttribute("viewBox", `${offsetX.toFixed(2)} 0 ${visibleWidth.toFixed(2)} ${sourceHeight}`);
+        art.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      } else {
+        art.setAttribute("viewBox", "0 0 1672 941");
+        art.setAttribute("preserveAspectRatio", "xMidYMid slice");
+      }
+    };
+    frame();
+    if ("ResizeObserver" in window) new ResizeObserver(frame).observe(art);
+    else window.addEventListener("resize", frame, { passive: true });
+  }
+
   function setupAtmosphere() {
     const scene = document.querySelector(".hero");
     const container = document.querySelector("[data-particles]");
@@ -44,28 +71,12 @@
     }
     container.appendChild(fragments);
 
-    if (finePointer.matches) {
-      let raf = 0;
-      scene.addEventListener("pointermove", (event) => {
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          raf = 0;
-          const bounds = scene.getBoundingClientRect();
-          const x = (event.clientX - bounds.left) / bounds.width - .5;
-          const y = (event.clientY - bounds.top) / bounds.height - .5;
-          scene.style.setProperty("--hero-x", `${(-x * 15).toFixed(2)}px`);
-          scene.style.setProperty("--hero-y", `${(-y * 10).toFixed(2)}px`);
-        });
-      }, { passive: true });
-      scene.addEventListener("pointerleave", () => {
-        scene.style.setProperty("--hero-x", "0px");
-        scene.style.setProperty("--hero-y", "0px");
-      });
-    }
+
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     setupMenu();
+    setupLandscapeFraming();
     setupAtmosphere();
   });
 })();
