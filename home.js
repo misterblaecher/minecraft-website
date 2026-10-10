@@ -1,7 +1,6 @@
 (() => {
   "use strict";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const finePointer = window.matchMedia("(pointer: fine)");
 
   function setupMenu() {
     const toggle = document.querySelector(".menu-toggle");
@@ -44,24 +43,7 @@
     }
     container.appendChild(fragments);
 
-    if (finePointer.matches) {
-      let raf = 0;
-      scene.addEventListener("pointermove", (event) => {
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          raf = 0;
-          const bounds = scene.getBoundingClientRect();
-          const x = (event.clientX - bounds.left) / bounds.width - .5;
-          const y = (event.clientY - bounds.top) / bounds.height - .5;
-          scene.style.setProperty("--hero-x", `${(-x * 15).toFixed(2)}px`);
-          scene.style.setProperty("--hero-y", `${(-y * 10).toFixed(2)}px`);
-        });
-      }, { passive: true });
-      scene.addEventListener("pointerleave", () => {
-        scene.style.setProperty("--hero-x", "0px");
-        scene.style.setProperty("--hero-y", "0px");
-      });
-    }
+
   }
 
   document.addEventListener("DOMContentLoaded", () => {
