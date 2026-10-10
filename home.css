@@ -76,18 +76,23 @@ img { max-width: 100%; }
   position: absolute; z-index: -4; inset: 0;
   overflow: hidden;
 }
-/* SVG scales the full BG-1 art and the smoke together: no drifting off the chimney on resize. */
+/* BG-1.1 and the smoke use one SVG viewBox: the chimney stays aligned on every screen. */
 .hero__landscape-art { display: block; width: 100%; height: 100%; }
+.hero__chimney-smoke { pointer-events: none; }
 .hero__chimney-puff {
   opacity: 0;
+  filter: url(#chimney-smoke-soft);
   transform-box: fill-box;
   transform-origin: center;
-  animation: chimney-wisp 6.8s ease-out infinite;
+  animation: chimney-wisp var(--smoke-duration, 8.6s) cubic-bezier(.22,.12,.44,1) infinite;
+  animation-delay: var(--smoke-delay, 0s);
+  will-change: opacity, transform;
 }
-.hero__chimney-puff--one { animation-delay: -.25s; }
-.hero__chimney-puff--two { animation-delay: -1.95s; }
-.hero__chimney-puff--three { animation-delay: -3.65s; }
-.hero__chimney-puff--four { animation-delay: -5.35s; }
+.hero__chimney-puff--one   { --smoke-duration: 8.5s; --smoke-delay: -0.8s; --smoke-drift: 72px; --smoke-rise: -165px; }
+.hero__chimney-puff--two   { --smoke-duration: 8.9s; --smoke-delay: -2.5s; --smoke-drift: 98px; --smoke-rise: -185px; }
+.hero__chimney-puff--three { --smoke-duration: 8.2s; --smoke-delay: -4.2s; --smoke-drift: 61px; --smoke-rise: -157px; }
+.hero__chimney-puff--four  { --smoke-duration: 9.1s; --smoke-delay: -5.9s; --smoke-drift: 88px; --smoke-rise: -178px; }
+.hero__chimney-puff--five  { --smoke-duration: 8.7s; --smoke-delay: -7.6s; --smoke-drift: 76px; --smoke-rise: -170px; }
 .hero__atmosphere {
   position: absolute; z-index: -2; inset: 0;
   background:
@@ -197,10 +202,12 @@ img { max-width: 100%; }
 @keyframes scroll-pulse { 50% { transform: translateY(5px); } }
 /* Soft voxel-inspired wisps rise slightly downwind from the fixed locomotive. */
 @keyframes chimney-wisp {
-  0%   { opacity: 0; transform: translate(0,0) scale(.5); }
-  13%  { opacity: .64; }
-  55%  { opacity: .40; }
-  100% { opacity: 0; transform: translate(100px,-145px) scale(2.05); }
+  0%   { opacity: 0; transform: translate(0px,0px) scale(.38); }
+  10%  { opacity: .46; }
+  25%  { opacity: .63; }
+  52%  { opacity: .38; }
+  78%  { opacity: .15; }
+  100% { opacity: 0; transform: translate(var(--smoke-drift, 76px), var(--smoke-rise, -170px)) scale(2.15); }
 }
 @media (min-width: 1440px) {
   .hero__copy { width: 68%; }
