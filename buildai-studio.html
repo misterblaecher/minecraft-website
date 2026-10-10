@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b151e">
+  <meta name="description" content="GabCon BuildAI Studio Web : colle un blueprint Python généré avec ChatGPT, visualise les blocs en 3D et exporte un schematic Minecraft depuis ton navigateur.">
+  <title>BuildAI Studio — Gab Con Minecraft</title>
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="buildai-studio.css?v=20261010-1">
+  <script src="buildai-schem.js?v=20261010-1" defer></script>
+  <script src="buildai-studio.js?v=20261010-1" defer></script>
+</head>
+<body class="buildai-page">
+  <a class="skip-link" href="#workspace">Passer à l'atelier</a>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="index.html" aria-label="Gab Con, accueil"><span class="brand__cube" aria-hidden="true">▧</span><strong>GAB CON</strong><span class="brand__slash">/</span><span>BUILD<strong>AI</strong></span></a>
+      <nav class="nav" aria-label="Navigation BuildAI">
+        <a href="index.html">Accueil</a>
+        <a href="builds.html">Galerie</a>
+        <a href="skin-viewer.html">Texture Studio</a>
+        <a href="installation.html">Rejoindre le serveur</a>
+      </nav>
+      <span class="web-tag"><i aria-hidden="true"></i> MODE WEB</span>
+    </div>
+  </header>
+
+  <main id="workspace" class="wrapper">
+    <section class="intro">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> GAB CON / ATELIER CRÉATIF / 001</div>
+        <h1>Imagine. Code. <em>Construis.</em></h1>
+        <p>Transforme une idée en construction Minecraft. Utilise <strong>ChatGPT sans API</strong>, colle le blueprint Python, visualise et exporte un fichier <code>.schem</code> pour WorldEdit.</p>
+      </div>
+      <div class="intro__stamp" aria-hidden="true"><span>✦</span><small>NEOFORGE<br>1.21.1</small></div>
+    </section>
+
+    <div class="workflow">
+      <span><b>01</b> Ton idée</span><span class="workflow__sep">→</span>
+      <span><b>02</b> Python ChatGPT</span><span class="workflow__sep">→</span>
+      <span><b>03</b> Visualiser</span><span class="workflow__sep">→</span>
+      <span><b>04</b> Export WorldEdit</span>
+    </div>
+
+    <div class="workspace">
+      <div class="editor-column">
+        <section class="panel prompt-panel" aria-labelledby="prompt-heading">
+          <div class="panel__head"><div class="number">01</div><div><h2 id="prompt-heading">Imaginer la construction</h2><p>Décris ce que tu veux construire dans Minecraft.</p></div><span class="chip">SANS API</span></div>
+          <label for="idea">TA DESCRIPTION</label>
+          <textarea id="idea" rows="3" placeholder="Ex. Une tour médiévale avec toit pointu, fenêtres et escaliers.">Une petite tour médiévale en pierre, avec un toit en bois et des fenêtres.</textarea>
+          <div class="prompt-actions">
+            <button id="copyPrompt" type="button" class="primary primary--gold"><span aria-hidden="true">✦</span> Copier le prompt ChatGPT <span aria-hidden="true">↗</span></button>
+            <a class="square-action" target="_blank" rel="noopener noreferrer" href="https://chatgpt.com/" aria-label="Ouvrir ChatGPT">↗</a>
+          </div>
+          <p class="micro-note">ⓘ Le code est généré dans une conversation ChatGPT classique. Aucun jeton API.</p>
+        </section>
+
+        <section class="panel code-panel" aria-labelledby="code-heading">
+          <div class="panel__head"><div class="number">02</div><div><h2 id="code-heading">Blueprint Python</h2><p>Colle le code généré par ChatGPT ou importe un fichier <code>.py</code>.</p></div></div>
+          <div class="code-head"><span class="file-tab"><span aria-hidden="true">●</span> blueprint.py</span><span class="code-head__language">PYTHON / DSL</span></div>
+          <div class="editor-wrap"><div id="lineNumbers" class="line-numbers" aria-hidden="true">1</div><textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Blueprint Python"></textarea></div>
+          <div class="code-foot"><span id="lineCount">— lignes</span><div><button id="example" class="text-action" type="button">↻ Exemple</button><label class="text-action import" for="importPy">↑ Importer .py</label><input hidden type="file" id="importPy" accept=".py,text/x-python,text/plain"></div></div>
+          <div class="run-controls">
+            <label for="seed">SEED <input id="seed" type="number" min="0" max="2147483647" value="0"></label>
+            <button type="button" id="runBuild" class="primary primary--green">▣ <span id="runLabel">Générer & visualiser</span><span aria-hidden="true">→</span></button>
+          </div>
+          <div id="errorPanel" class="error-panel hidden" role="alert"><strong>Erreur du blueprint</strong><pre id="errorText"></pre></div>
+          <p class="local-note"><span>◈</span> Exécution Python sur ton appareil, jamais sur le serveur Minecraft. <a href="https://github.com/misterblaecher/GabCon-BuildAI" target="_blank" rel="noopener">Version complète BuildAI ↗</a></p>
+        </section>
+      </div>
+
+      <div class="preview-column">
+        <section class="panel viewer-panel" aria-labelledby="viewer-heading">
+          <div class="panel__head panel__head--viewer"><div class="number">03</div><div><h2 id="viewer-heading">Visualiseur de construction</h2><p>Tourne, zoome et découvre ta création.</p></div><span id="status" class="status">APERÇU DÉMO</span></div>
+          <div class="view-tabs" role="group" aria-label="Type de visualisation"><button id="tab3d" class="selected" type="button">▧ Vue 3D</button><button id="tabTop" type="button">▤ Vue de dessus</button><span class="view-tabs__aside">BLOCS / VOXELS</span></div>
+          <div class="viewport">
+            <canvas id="previewCanvas" aria-label="Aperçu interactif des blocs Minecraft" role="img"></canvas>
+            <div class="viewport__top"><span id="viewTitle">STUDIO PREVIEW / EXEMPLE</span><span id="zoomLabel">100%</span></div>
+            <div class="viewport__bottom"><span id="controlHint">Glisser : rotation · Molette : zoom</span><div><button type="button" id="rotateLeft" aria-label="Tourner à gauche">↶</button><button type="button" id="rotateRight" aria-label="Tourner à droite">↷</button><button type="button" id="resetView" aria-label="Réinitialiser la vue">⌖</button></div></div>
+            <div id="loader" class="loader hidden" aria-live="polite"><span class="loader__spinner"></span><strong>BuildAI prépare ton monde…</strong><p id="loaderText">Chargement du moteur Python…</p><button id="cancelBuild" type="button">Annuler</button></div>
+          </div>
+          <div class="metrics"><div><small>BLOCS</small><strong id="statCount">—</strong><span>blocs placés</span></div><div><small>DIMENSIONS</small><strong id="statDims">—</strong><span>X × Y × Z</span></div><div><small>MATÉRIAUX</small><strong id="statMaterials">—</strong><span>types de blocs</span></div></div>
+          <div class="materials"><div class="section-line"><strong>Palette de matériaux</strong><small id="materialLabel">Aucune construction</small></div><div id="materialBar" class="material-bar"><span></span></div><div id="materialList" class="material-items"><small>Lance un blueprint pour voir les blocs utilisés.</small></div></div>
+          <div class="exports">
+            <div class="section-line"><div class="export-title"><span class="number">04</span><strong>Exporter ma création</strong></div><small id="exportStatus">EN ATTENTE</small></div>
+            <div class="export-grid">
+              <button id="exportSchem" disabled type="button">▤ <span><strong>Schematic</strong><small>WorldEdit .schem</small></span><b>↓</b></button>
+              <button id="exportPython" type="button">⌘ <span><strong>Code source</strong><small>Blueprint .py</small></span><b>↓</b></button>
+              <button id="exportJson" disabled type="button">☷ <span><strong>Blocs JSON</strong><small>Voxel grid .json</small></span><b>↓</b></button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="info-section" aria-labelledby="info-heading">
+      <div><span class="info-eyebrow">À SAVOIR / VERSION WEB</span><h2 id="info-heading">Ton monde, <em>dans ton navigateur.</em></h2><p>La version Web embarque une sélection des primitives du DSL BuildAI et exécute du vrai Python via WebAssembly. Elle fonctionne depuis un smartphone ou un ordinateur, sans serveur Python public et sans API ChatGPT.</p></div>
+      <div class="info-limit"><span>MODE NAVIGATEUR</span><strong>120 000</strong><small>blocs maximum · aperçu 3D simplifié</small><p>Les constructions très grandes ou les blocs moddés complexes doivent être vérifiés avec le <a href="https://github.com/misterblaecher/GabCon-BuildAI" target="_blank" rel="noopener noreferrer">moteur complet GabCon-BuildAI</a>. Certains détails (orientation, textures) ne sont pas reproduits à l'identique.</p></div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>GAB CON • BUILD<span>AI</span> STUDIO</span><div><a href="builds.html">Galerie</a><a href="index.html">Retour à l'accueil</a><a href="https://github.com/misterblaecher/minecraft-website" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
