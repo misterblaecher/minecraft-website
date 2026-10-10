@@ -263,3 +263,18 @@ img { max-width: 100%; }
   .hero__chimney-puff { opacity: 0 !important; }
   .hero__particles { display: none; }
 }
+
+/* Featured interactive BuildAI Studio entry on the Minecraft home page. */
+.destination--studio {
+  grid-column: 1 / -1;
+  background: linear-gradient(110deg,#142830 5%,#30443a 56%,#55442f 100%);
+  border-color: rgba(251,198,103,.6);
+  min-height: 118px;
+}
+.destination--studio .destination__shade { background: linear-gradient(90deg,rgba(8,22,29,.9),rgba(8,22,29,.15)); }
+.destination--studio .destination__icon { color: #ffd08a; font-size: 2rem; text-shadow: 0 0 20px rgba(255,210,121,.4); }
+.destination--studio .destination__body { max-width: unset; }
+.destination--studio .destination__body strong { font-size: clamp(1.07rem,1.8vw,1.35rem); color: #ffdc9c; }
+.destination--studio .destination__body small { color: #e1ecdd; }
+.destination--studio:hover { border-color: #ffdf9d; }
+@media(max-width:620px){.destination--studio { min-height: 135px; }}

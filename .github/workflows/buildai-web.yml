@@ -1,0 +1,29 @@
+name: BuildAI Web Studio checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  browser-studio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check browser JavaScript syntax
+        run: |
+          node --check buildai-worker.js
+          node --check buildai-studio.js
+          node --check buildai-schem.js
+      - name: Test WorldEdit schematic gzip/NBT writer
+        run: node tests/test_buildai_schem.mjs
+      - name: Compile Python DSL and run smoke tests
+        run: |
+          python -m py_compile buildai-runtime.py
+          python tests/test_buildai_web.py
