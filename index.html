@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#08131a">
   <meta name="description" content="Gab Con : un serveur Minecraft 1.21.1 NeoForge axé sur Create, l'exploration et la création. Découvre nos modpacks, la carte et nos outils.">
   <title>Gab Con — Ton aventure Minecraft commence ici</title>
-  <link rel="preload" href="BG-1.png" as="image">
-  <link rel="stylesheet" href="home.css?v=20261010-1">
+  <link rel="preload" href="BG-1.1.png" as="image">
+  <link rel="stylesheet" href="home.css?v=20261010-2">
   <script src="home.js?v=20261010-1" defer></script>
 </head>
 <body class="home-cinematic">
@@ -41,22 +41,53 @@
   <main id="contenu">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero__landscape" aria-hidden="true">
-        <!-- BG-1 contains the real train and bridge. The aligned SVG overlay only animates chimney smoke. -->
+        <!-- BG-1.1 contains the fixed Minecraft landscape and locomotive. Only smoke is animated. -->
         <svg class="hero__landscape-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" preserveAspectRatio="xMaxYMid slice" focusable="false">
-          <image href="BG-1.png" width="1672" height="941" preserveAspectRatio="none"/>
-          <!-- Reference chimney location: about x=1195, y=440 in BG-1's 1672x941 frame. -->
-          <g class="hero__chimney-smoke" transform="translate(1195 440)" fill="#f8f1dd">
+          <image href="BG-1.1.png" width="1672" height="941" preserveAspectRatio="none"/>
+          <!-- Smoke originates from the locomotive's chimney, in the same coordinate system as BG-1.1. -->
+          <defs>
+            <radialGradient id="smoke-warm" cx="45%" cy="38%" r="67%">
+              <stop offset="0%" stop-color="#fff8e9" stop-opacity=".72"/>
+              <stop offset="42%" stop-color="#deded7" stop-opacity=".48"/>
+              <stop offset="78%" stop-color="#b4c0c0" stop-opacity=".14"/>
+              <stop offset="100%" stop-color="#b4c0c0" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="smoke-shadow" cx="38%" cy="48%" r="62%">
+              <stop offset="0%" stop-color="#b9b9b3" stop-opacity=".34"/>
+              <stop offset="62%" stop-color="#aeb6b5" stop-opacity=".13"/>
+              <stop offset="100%" stop-color="#aeb6b5" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="chimney-smoke-soft" x="-100%" y="-100%" width="300%" height="300%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency=".038" numOctaves="2" seed="7" stitchTiles="stitch" result="smokeNoise"/>
+              <feDisplacementMap in="SourceGraphic" in2="smokeNoise" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+              <feGaussianBlur stdDeviation="3.2"/>
+            </filter>
+          </defs>
+          <g class="hero__chimney-smoke" transform="translate(1195 440)">
             <g class="hero__chimney-puff hero__chimney-puff--one">
-              <path d="M-16 4h11V-7H8v-10h15v12h11v16H23v12H-6V15h-10z"/>
+              <ellipse cx="-6" cy="-11" rx="18" ry="21" fill="url(#smoke-shadow)"/>
+              <ellipse cx="8" cy="-24" rx="23" ry="27" fill="url(#smoke-warm)"/>
+              <ellipse cx="0" cy="-34" rx="14" ry="19" fill="url(#smoke-warm)"/>
             </g>
             <g class="hero__chimney-puff hero__chimney-puff--two">
-              <path d="M-11 7h-7V-8h10v-10H8v8h14v10h8v17H16v9H-7V17h-4z"/>
+              <ellipse cx="-10" cy="-18" rx="15" ry="25" fill="url(#smoke-shadow)"/>
+              <ellipse cx="10" cy="-18" rx="24" ry="21" fill="url(#smoke-warm)"/>
+              <ellipse cx="16" cy="-35" rx="16" ry="23" fill="url(#smoke-warm)"/>
             </g>
             <g class="hero__chimney-puff hero__chimney-puff--three">
-              <path d="M-17 0h11v-11H9v-10h14v14h12V8H25v11H6v8H-8V14h-9z"/>
+              <ellipse cx="-7" cy="-14" rx="19" ry="22" fill="url(#smoke-warm)"/>
+              <ellipse cx="12" cy="-28" rx="21" ry="28" fill="url(#smoke-warm)"/>
+              <ellipse cx="21" cy="-15" rx="17" ry="20" fill="url(#smoke-shadow)"/>
             </g>
             <g class="hero__chimney-puff hero__chimney-puff--four">
-              <path d="M-14 4h10V-8h11v-10h17v10h9V8h-8v15H5v7H-9V16h-5z"/>
+              <ellipse cx="-10" cy="-26" rx="21" ry="25" fill="url(#smoke-shadow)"/>
+              <ellipse cx="6" cy="-23" rx="18" ry="28" fill="url(#smoke-warm)"/>
+              <ellipse cx="21" cy="-36" rx="19" ry="18" fill="url(#smoke-warm)"/>
+            </g>
+            <g class="hero__chimney-puff hero__chimney-puff--five">
+              <ellipse cx="-8" cy="-22" rx="18" ry="27" fill="url(#smoke-shadow)"/>
+              <ellipse cx="7" cy="-22" rx="22" ry="24" fill="url(#smoke-warm)"/>
+              <ellipse cx="18" cy="-40" rx="16" ry="20" fill="url(#smoke-warm)"/>
             </g>
           </g>
         </svg>
