@@ -26,6 +26,34 @@
     });
   }
 
+
+  // Crop BG-1 and its inline smoke in one SVG coordinate system.
+  // On narrow screens keep the chimney and locomotive in view.
+  function setupLandscapeFraming() {
+    const art = document.querySelector(".hero__landscape-art");
+    if (!art) return;
+    const frame = () => {
+      const width = art.clientWidth;
+      const height = art.clientHeight;
+      if (!width || !height) return;
+      const sourceWidth = 1672;
+      const sourceHeight = 941;
+      const chimneyX = 1195;
+      const visibleWidth = sourceHeight * (width / height);
+      if (visibleWidth < sourceWidth) {
+        const offsetX = Math.max(0, Math.min(sourceWidth - visibleWidth, chimneyX - visibleWidth * .22));
+        art.setAttribute("viewBox", `${offsetX.toFixed(2)} 0 ${visibleWidth.toFixed(2)} ${sourceHeight}`);
+        art.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      } else {
+        art.setAttribute("viewBox", "0 0 1672 941");
+        art.setAttribute("preserveAspectRatio", "xMidYMid slice");
+      }
+    };
+    frame();
+    if ("ResizeObserver" in window) new ResizeObserver(frame).observe(art);
+    else window.addEventListener("resize", frame, { passive: true });
+  }
+
   function setupAtmosphere() {
     const scene = document.querySelector(".hero");
     const container = document.querySelector("[data-particles]");
@@ -48,6 +76,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     setupMenu();
+    setupLandscapeFraming();
     setupAtmosphere();
   });
 })();
